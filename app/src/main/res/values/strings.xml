@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Musicompose 2</string>
+
+    <string name="unknown">Unknown</string>
 </resources>
