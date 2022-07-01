@@ -74,6 +74,7 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     // Material Design
+    implementation "com.google.android.material:material:1.6.1"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.material3:material3:1.0.0-alpha14"
@@ -84,6 +85,16 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     kapt 'androidx.lifecycle:lifecycle-common-java8:2.4.1'
+
+    // Datastore
+    implementation "androidx.datastore:datastore:1.0.0"
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation  "androidx.datastore:datastore-core:1.0.0"
+
+    // Room
+    implementation 'androidx.room:room-runtime:2.4.2'
+    implementation 'androidx.room:room-ktx:2.4.2'
+    kapt 'androidx.room:room-compiler:2.4.2'
 
     // Dependency Injection
     implementation 'com.google.dagger:hilt-android:2.39.1'
