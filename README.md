@@ -1,4 +1,4 @@
-# Musicompose-V2
+# Musicompose-V2 (on progress)
 
 Music app made with Jetpack Compose, improvement from [Musicompose](https://github.com/kafri8889/Musicompose)
 
