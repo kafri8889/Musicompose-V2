@@ -1,5 +1,7 @@
 package com.anafthdev.musicompose2.feature.musicompose
 
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -7,10 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.feature.theme.Musicompose2
+import com.anafthdev.musicompose2.feature.theme.MusicomposeRippleTheme
+import com.anafthdev.musicompose2.feature.theme.black01
+import com.anafthdev.musicompose2.feature.theme.black10
 import com.anafthdev.musicompose2.foundation.extension.isDark
 import com.anafthdev.musicompose2.foundation.extension.isDynamicDark
 import com.anafthdev.musicompose2.foundation.uimode.UiModeViewModel
 import com.anafthdev.musicompose2.foundation.uimode.data.LocalUiMode
+import com.anafthdev.musicompose2.runtime.navigation.MusicomposeNavHost
 
 @Composable
 fun Musicompose(appDatastore: AppDatastore) {
@@ -26,13 +32,15 @@ fun Musicompose(appDatastore: AppDatastore) {
 	
 	CompositionLocalProvider(
 		LocalUiMode provides uiModeState.uiMode,
-		LocalMusicomposeState provides state
+		LocalRippleTheme provides MusicomposeRippleTheme,
+		LocalContentColor provides if (isSystemInDarkTheme) black10 else black01,
+		LocalMusicomposeState provides state,
 	) {
 		Musicompose2(
 			darkTheme = isSystemInDarkTheme,
 			dynamicColor = useDynamicColor
 		) {
-		
+			MusicomposeNavHost()
 		}
 	}
 	
