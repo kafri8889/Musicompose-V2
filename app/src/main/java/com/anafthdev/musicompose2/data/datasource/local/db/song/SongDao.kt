@@ -19,7 +19,7 @@ interface SongDao {
 	@Delete
 	suspend fun delete(vararg song: Song)
 	
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insert(vararg song: Song)
 	
 }
