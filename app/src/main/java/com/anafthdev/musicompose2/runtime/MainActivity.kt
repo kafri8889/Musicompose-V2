@@ -1,24 +1,50 @@
 package com.anafthdev.musicompose2.runtime
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
+import com.anafthdev.musicompose2.BuildConfig
+import com.anafthdev.musicompose2.data.datasource.local.db.song.SongDao
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.feature.musicompose.Musicompose
-import com.anafthdev.musicompose2.feature.theme.Musicompose2
 import com.anafthdev.musicompose2.foundation.localized.LocalizedActivity
+import com.anafthdev.musicompose2.utils.SongUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity: LocalizedActivity() {
 	
 	@Inject lateinit var appDatastore: AppDatastore
+	@Inject lateinit var songDao: SongDao
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		if (BuildConfig.DEBUG) Timber.plant(object : Timber.DebugTree() {
+			override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+				super.log(priority, "DEBUG_$tag", message, t)
+			}
+		})
+		
+		WindowCompat.setDecorFitsSystemWindows(window, false)
+		
 		setContent {
 			Musicompose(appDatastore)
+		}
+	}
+	
+	override fun onResume() {
+		super.onResume()
+		Timber.i("onstar")
+		
+		lifecycleScope.launch {
+			val songs = SongUtil.getSong(this@MainActivity).toTypedArray()
+			songDao.insert(*songs)
+			
+			Timber.i("get song from device: ${songs.contentToString()}")
 		}
 	}
 }
