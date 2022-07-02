@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.feature.album_list.AlbumScreen
+import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
@@ -52,6 +53,7 @@ fun MusicomposeNavHost(
 						when (page) {
 							0 -> HomeScreen()
 							1 -> AlbumScreen()
+							2 -> ArtistListScreen()
 						}
 					}
 				}
