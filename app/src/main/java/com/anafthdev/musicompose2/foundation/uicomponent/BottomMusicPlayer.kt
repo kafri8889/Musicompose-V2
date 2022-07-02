@@ -174,8 +174,8 @@ private fun AlbumImage(
 			Box(
 				modifier = Modifier
 					.size(12.dp)
-					.background(MaterialTheme.colorScheme.primaryContainer)
 					.clip(circle)
+					.background(MaterialTheme.colorScheme.primaryContainer)
 					.border(
 						width = 2.dp,
 						color = MaterialTheme.colorScheme.onSurface,
