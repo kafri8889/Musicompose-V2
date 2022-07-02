@@ -32,6 +32,7 @@ class AlbumListEnvironment @Inject constructor(
 							id = albumID,
 							name = songs[0].album,
 							artist = songs[0].artist,
+							artistID = songs[0].artistID,
 							songs = songs
 						)
 					)

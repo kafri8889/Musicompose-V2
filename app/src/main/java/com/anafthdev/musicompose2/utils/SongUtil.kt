@@ -21,6 +21,7 @@ object SongUtil {
 			MediaStore.Audio.Media.DISPLAY_NAME,
 			MediaStore.Audio.Media.TITLE,
 			MediaStore.Audio.Media.ARTIST,
+			MediaStore.Audio.Media.ARTIST_ID,
 			MediaStore.Audio.Media.ALBUM,
 			MediaStore.Audio.Media.DURATION,
 			MediaStore.Audio.Media.ALBUM_ID,
@@ -31,6 +32,7 @@ object SongUtil {
 		val cursorIndexSongDisplayName: Int
 		val cursorIndexSongTitle: Int
 		val cursorIndexSongArtist: Int
+		val cursorIndexSongArtistID: Int
 		val cursorIndexSongAlbum: Int
 		val cursorIndexSongDuration: Int
 		val cursorIndexSongAlbumID: Int
@@ -49,6 +51,7 @@ object SongUtil {
 			cursorIndexSongDisplayName = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
 			cursorIndexSongTitle = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
 			cursorIndexSongArtist = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
+			cursorIndexSongArtistID = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID)
 			cursorIndexSongAlbum = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
 			cursorIndexSongDuration = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 			cursorIndexSongAlbumID = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
@@ -59,6 +62,7 @@ object SongUtil {
 				val displayName = songCursor.getString(cursorIndexSongDisplayName)
 				val title = songCursor.getString(cursorIndexSongTitle)
 				val artist = songCursor.getString(cursorIndexSongArtist)
+				val artistID = songCursor.getString(cursorIndexSongArtistID)
 				val album = songCursor.getString(cursorIndexSongAlbum)
 				val duration = songCursor.getLong(cursorIndexSongDuration)
 				val albumId = songCursor.getString(cursorIndexSongAlbumID)
@@ -73,6 +77,7 @@ object SongUtil {
 						displayName = displayName,
 						title = title,
 						artist = if (artist.equals("<unknown>", true)) context.getString(R.string.unknown) else artist,
+						artistID = artistID,
 						album = album,
 						albumID = albumId,
 						duration = duration,
