@@ -2,7 +2,6 @@ package com.anafthdev.musicompose2.feature.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,6 @@ fun HomeScreen() {
 	
 	LazyColumn(
 		modifier = Modifier
-			.statusBarsPadding()
 			.fillMaxSize()
 			.background(MaterialTheme.colorScheme.background)
 	) {
