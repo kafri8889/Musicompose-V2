@@ -57,10 +57,7 @@ fun SongItem(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(
-					vertical = 8.dp,
-					horizontal = 8.dp
-				)
+				.padding(8.dp)
 				.height(72.dp)
 		) {
 			
