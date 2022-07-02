@@ -107,7 +107,7 @@ fun BottomMusicPlayer(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun PlayPauseButton(
+private fun PlayPauseButton(
 	isPlaying: Boolean,
 	onClick: () -> Unit
 ) {
@@ -141,7 +141,7 @@ internal fun PlayPauseButton(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AlbumImage(
+private fun AlbumImage(
 	path: String
 ) {
 	
