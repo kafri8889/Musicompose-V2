@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.feature.home.HomeScreen
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
-import com.anafthdev.musicompose2.feature.musicompose.data.LocalSongController
+import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayer
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
