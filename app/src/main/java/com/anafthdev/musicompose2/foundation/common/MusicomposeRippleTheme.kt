@@ -1,4 +1,4 @@
-package com.anafthdev.musicompose2.feature.theme
+package com.anafthdev.musicompose2.foundation.common
 
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
