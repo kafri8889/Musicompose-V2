@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.net.toUri
@@ -74,8 +75,10 @@ fun BottomMusicPlayer(
 				Spacer(modifier = Modifier.height(8.dp))
 				
 				Text(
+					maxLines = 2,
+					overflow = TextOverflow.Ellipsis,
 					text = currentSong.artist,
-					style = MaterialTheme.typography.bodySmall
+					style = MaterialTheme.typography.bodySmall,
 				)
 			}
 			
