@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MusicomposeViewModel @Inject constructor(
 	environment: IMusicomposeEnvironment
-): StatefulViewModel<MusicomposeState, Unit, Unit, IMusicomposeEnvironment>(
+): StatefulViewModel<MusicomposeState, Unit, MusicomposeAction, IMusicomposeEnvironment>(
 	MusicomposeState(),
 	environment
 ) {
@@ -25,8 +25,52 @@ class MusicomposeViewModel @Inject constructor(
 				}
 			}
 		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.getCurrentPlayedSong().collect { song ->
+				setState {
+					copy(
+						currentSongPlayed = song
+					)
+				}
+			}
+		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.getCurrentPlayedSong().collect { song ->
+				setState {
+					copy(
+						currentSongPlayed = song
+					)
+				}
+			}
+		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.isPlaying().collect { isPlaying ->
+				setState {
+					copy(
+						isPlaying = isPlaying
+					)
+				}
+			}
+		}
 	}
 	
-	override fun dispatch(action: Unit) {}
+	override fun dispatch(action: MusicomposeAction) {
+		when (action) {
+			is MusicomposeAction.Play -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.play(action.song)
+				}
+			}
+			is MusicomposeAction.SetPlaying -> {
+				viewModelScope.launch(environment.dispatcher) {
+					if (action.isPlaying) environment.resume()
+					else environment.pause()
+				}
+			}
+		}
+	}
 	
 }

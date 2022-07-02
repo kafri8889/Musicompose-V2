@@ -10,4 +10,14 @@ interface IMusicomposeEnvironment {
 	
 	fun getSongs(): Flow<List<Song>>
 	
+	fun getCurrentPlayedSong(): Flow<Song>
+	
+	fun isPlaying(): Flow<Boolean>
+	
+	suspend fun play(song: Song)
+	
+	suspend fun pause()
+	
+	suspend fun resume()
+	
 }
