@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="unknown">Tidak diketahui</string>
+    <string name="song">Lagu</string>
+    <string name="album">Album</string>
+    <string name="artist">Artis</string>
+    <string name="cancel">Batalkan</string>
     <string name="n_song">%1$s Lagu</string>
+    <string name="unknown">Tidak diketahui</string>
+    <string name="search_placeholder">Lagu, artis, atau album</string>
+
 
 </resources>

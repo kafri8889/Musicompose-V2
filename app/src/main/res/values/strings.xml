@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name" translatable="false">Musicompose 2</string>
 
-    <string name="unknown">Unknown</string>
+    <string name="song">Song</string>
+    <string name="album">Album</string>
+    <string name="artist">Artist</string>
+    <string name="cancel">Cancel</string>
     <string name="n_song">%1$s Song</string>
+    <string name="unknown">Unknown</string>
+    <string name="search_placeholder">Song, artist, or album</string>
 
 </resources>

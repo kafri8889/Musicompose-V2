@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.feature.main.MainScreen
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
+import com.anafthdev.musicompose2.feature.search.SearchScreen
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayer
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -44,7 +45,11 @@ fun MusicomposeNavHost(
 					.fillMaxSize()
 			) {
 				composable(MusicomposeDestination.Main.route) {
-					MainScreen()
+					MainScreen(navController = navController)
+				}
+				
+				composable(MusicomposeDestination.Search.route) {
+					SearchScreen(navController = navController)
 				}
 			}
 			

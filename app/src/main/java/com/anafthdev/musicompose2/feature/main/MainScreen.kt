@@ -11,7 +11,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 import com.anafthdev.musicompose2.R
+import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.feature.album_list.AlbumScreen
 import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
@@ -21,7 +23,9 @@ import com.google.accompanist.pager.HorizontalPager
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+	navController: NavController
+) {
 	
 	Column(
 		modifier = Modifier
@@ -44,7 +48,7 @@ fun MainScreen() {
 			actions = {
 				IconButton(
 					onClick = {
-						// TODO: to SearchScreen
+						navController.navigate(MusicomposeDestination.Search.route)
 					}
 				) {
 					Icon(
