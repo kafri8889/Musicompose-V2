@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -44,7 +45,10 @@ fun BottomMusicPlayer(
 	
 	Card(
 		onClick = onClick,
-		shape = MaterialTheme.shapes.extraLarge,
+		shape = MaterialTheme.shapes.extraLarge.copy(
+			bottomEnd = CornerSize(0.dp),
+			bottomStart = CornerSize(0.dp)
+		),
 		colors = CardDefaults.cardColors(
 			containerColor = MaterialTheme.colorScheme.primaryContainer
 		),
