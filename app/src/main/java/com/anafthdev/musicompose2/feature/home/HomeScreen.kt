@@ -36,6 +36,15 @@ fun HomeScreen() {
 				isMusicPlaying = false,
 				onClick = {
 					songController?.play(song)
+				},
+				onFavoriteClicked = { isFavorite ->
+					viewModel.dispatch(
+						HomeAction.UpdateSong(
+							song.copy(
+								isFavorite = isFavorite
+							)
+						)
+					)
 				}
 			)
 		}

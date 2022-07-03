@@ -34,7 +34,7 @@ fun SongItemPreview() {
 		LocalRippleTheme provides MusicomposeRippleTheme,
 		LocalContentColor provides if (isSystemInDarkTheme()) black10 else black01,
 	) {
-		SongItem(song = Song.default, isMusicPlaying = false, onClick = {})
+		SongItem(song = Song.default, isMusicPlaying = false, onClick = {}, onFavoriteClicked = {})
 	}
 }
 
@@ -44,7 +44,9 @@ fun SongItem(
 	song: Song,
 	isMusicPlaying: Boolean,
 	modifier: Modifier = Modifier,
-	onClick: () -> Unit
+	showFavorite: Boolean = true,
+	onFavoriteClicked: (Boolean) -> Unit = {},
+	onClick: () -> Unit,
 ) {
 	Card(
 		onClick = onClick,
@@ -104,17 +106,19 @@ fun SongItem(
 				)
 			}
 			
-			IconButton(
-				onClick = {
-				
+			if (showFavorite) {
+				IconButton(
+					onClick = {
+						onFavoriteClicked(!song.isFavorite)
+					}
+				) {
+					Icon(
+						painter = painterResource(
+							id = if (song.isFavorite) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_unselected
+						),
+						contentDescription = null
+					)
 				}
-			) {
-				Icon(
-					painter = painterResource(
-						id = if (song.isFavorite) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_unselected
-					),
-					contentDescription = null
-				)
 			}
 		}
 	}

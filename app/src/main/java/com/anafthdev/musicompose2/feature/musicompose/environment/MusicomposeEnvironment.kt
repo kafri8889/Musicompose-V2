@@ -4,9 +4,11 @@ import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -20,6 +22,16 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	private val _isPlaying = MutableStateFlow(false)
 	private val isPlaying: StateFlow<Boolean> = _isPlaying
+	
+	init {
+		CoroutineScope(dispatcher).launch {
+			repository.getSongs().collect { songs ->
+				songs.find { it.audioID == currentPlayedSong.value.audioID }?.let {
+					_currentPlayedSong.emit(it)
+				}
+			}
+		}
+	}
 	
 	override fun getSongs(): Flow<List<Song>> {
 		return repository.getSongs()
@@ -46,6 +58,14 @@ class MusicomposeEnvironment @Inject constructor(
 	override suspend fun resume() {
 		_isPlaying.emit(true)
 		// TODO: resume
+	}
+	
+	override suspend fun setFavorite(favorite: Boolean) {
+		repository.updateLocalSongs(
+			currentPlayedSong.value.copy(
+				isFavorite = favorite
+			)
+		)
 	}
 	
 }

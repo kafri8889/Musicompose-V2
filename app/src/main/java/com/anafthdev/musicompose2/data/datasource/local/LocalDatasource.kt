@@ -13,4 +13,8 @@ class LocalDatasource @Inject constructor(
 		return songDao.getAllSong()
 	}
 	
+	suspend fun updateSongs(vararg song: Song) {
+		songDao.update(*song)
+	}
+	
 }

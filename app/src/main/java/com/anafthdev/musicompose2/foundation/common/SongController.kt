@@ -11,6 +11,8 @@ interface SongController {
 	
 	fun pause()
 	
+	fun setFavorite(favorite: Boolean)
+	
 }
 
 val LocalSongController = compositionLocalOf<SongController?> { null }

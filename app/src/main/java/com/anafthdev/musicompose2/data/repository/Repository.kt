@@ -13,4 +13,8 @@ class Repository @Inject constructor(
 		return localDatasource.getAllSong()
 	}
 	
+	suspend fun updateLocalSongs(vararg song: Song) {
+		localDatasource.updateSongs(*song)
+	}
+	
 }

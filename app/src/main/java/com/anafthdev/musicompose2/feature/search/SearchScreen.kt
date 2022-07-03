@@ -206,6 +206,7 @@ fun SearchScreen(
 			) { song ->
 				SongItem(
 					song = song,
+					showFavorite = false,
 					isMusicPlaying = musicomposeState.currentSongPlayed.audioID == song.audioID,
 					onClick = {
 						songController?.play(song)

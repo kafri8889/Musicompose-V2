@@ -20,4 +20,6 @@ interface IMusicomposeEnvironment {
 	
 	suspend fun resume()
 	
+	suspend fun setFavorite(favorite: Boolean)
+	
 }

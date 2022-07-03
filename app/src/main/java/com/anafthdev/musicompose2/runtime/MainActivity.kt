@@ -46,6 +46,12 @@ class MainActivity: LocalizedActivity() {
 				MusicomposeAction.SetPlaying(false)
 			)
 		}
+		
+		override fun setFavorite(favorite: Boolean) {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.SetFavorite(favorite)
+			)
+		}
 	}
 	
 	override fun onCreate(savedInstanceState: Bundle?) {

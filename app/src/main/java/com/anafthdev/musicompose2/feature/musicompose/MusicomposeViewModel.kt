@@ -70,6 +70,11 @@ class MusicomposeViewModel @Inject constructor(
 					else environment.pause()
 				}
 			}
+			is MusicomposeAction.SetFavorite -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.setFavorite(action.isFavorite)
+				}
+			}
 		}
 	}
 	

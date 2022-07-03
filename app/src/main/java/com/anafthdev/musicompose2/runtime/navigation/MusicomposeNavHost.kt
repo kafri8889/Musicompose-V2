@@ -76,7 +76,7 @@ fun MusicomposeNavHost(
 				
 				},
 				onFavoriteClicked = { isFavorite ->
-				
+					songController?.setFavorite(isFavorite)
 				},
 				onPlayPauseClicked = { isPlaying ->
 					if (isPlaying) songController?.resume()
