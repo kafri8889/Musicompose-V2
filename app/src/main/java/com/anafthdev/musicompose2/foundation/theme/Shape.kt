@@ -1,4 +1,4 @@
-package com.anafthdev.musicompose2.feature.theme
+package com.anafthdev.musicompose2.foundation.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 
