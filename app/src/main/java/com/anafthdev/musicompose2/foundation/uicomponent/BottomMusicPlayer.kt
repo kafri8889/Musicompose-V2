@@ -28,8 +28,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.model.Song
-import com.anafthdev.musicompose2.feature.theme.circle
 import com.anafthdev.musicompose2.foundation.common.ClearRippleTheme
+import com.anafthdev.musicompose2.foundation.theme.circle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

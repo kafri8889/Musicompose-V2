@@ -22,10 +22,10 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.model.Song
-import com.anafthdev.musicompose2.feature.theme.Inter
-import com.anafthdev.musicompose2.feature.theme.black01
-import com.anafthdev.musicompose2.feature.theme.black10
 import com.anafthdev.musicompose2.foundation.common.MusicomposeRippleTheme
+import com.anafthdev.musicompose2.foundation.theme.Inter
+import com.anafthdev.musicompose2.foundation.theme.black01
+import com.anafthdev.musicompose2.foundation.theme.black10
 
 @Preview(showBackground = true)
 @Composable

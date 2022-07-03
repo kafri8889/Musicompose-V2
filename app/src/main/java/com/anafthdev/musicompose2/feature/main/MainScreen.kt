@@ -6,8 +6,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -17,7 +16,6 @@ import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.feature.album_list.AlbumScreen
 import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
-import com.anafthdev.musicompose2.foundation.uicomponent.MusicomposeTopAppBar
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 
@@ -32,11 +30,15 @@ fun MainScreen(
 			.statusBarsPadding()
 			.fillMaxSize()
 	) {
-		MusicomposeTopAppBar(
+		SmallTopAppBar(
+			colors = TopAppBarDefaults.smallTopAppBarColors(
+				containerColor = MaterialTheme.colorScheme.background
+			),
+			title = {},
 			navigationIcon = {
 				IconButton(
 					onClick = {
-						// TODO: to SettingScreen
+						navController.navigate(MusicomposeDestination.Setting.route)
 					}
 				) {
 					Icon(

@@ -16,7 +16,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.model.Album
-import com.anafthdev.musicompose2.feature.theme.Inter
+import com.anafthdev.musicompose2.foundation.theme.Inter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

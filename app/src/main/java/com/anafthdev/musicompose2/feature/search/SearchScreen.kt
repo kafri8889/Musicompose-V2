@@ -33,8 +33,8 @@ import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.model.Album
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
-import com.anafthdev.musicompose2.feature.theme.Inter
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
+import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.uicomponent.AlbumItem
 import com.anafthdev.musicompose2.foundation.uicomponent.SongItem
 
