@@ -2,12 +2,20 @@
 <resources>
 
     <string name="song">Lagu</string>
+    <string name="dark">Gelap</string>
+    <string name="theme">Tema</string>
+    <string name="light">Terang</string>
     <string name="album">Album</string>
     <string name="artist">Artis</string>
     <string name="cancel">Batalkan</string>
     <string name="n_song">%1$s Lagu</string>
+    <string name="setting">Setelan</string>
     <string name="unknown">Tidak diketahui</string>
+    <string name="language">Bahasa</string>
+    <string name="dynamic_dark">Gelap dinamik</string>
+    <string name="dynamic_light">Terang dinamik</string>
+    <string name="language_summary">Pilih bahasa yang kamu gunakan</string>
     <string name="search_placeholder">Lagu, artis, atau album</string>
-
+    <string name="select_your_language">Pilih bahasamu</string>
 
 </resources>

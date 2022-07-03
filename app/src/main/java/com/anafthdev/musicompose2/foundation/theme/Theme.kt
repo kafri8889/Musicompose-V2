@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
-private val DarkColorScheme = darkColorScheme(
+val DarkColorScheme = darkColorScheme(
 	surfaceTint = md_theme_dark_surfaceTint,
 	onErrorContainer = md_theme_dark_onErrorContainer,
 	onError = md_theme_dark_onError,
@@ -41,7 +41,7 @@ private val DarkColorScheme = darkColorScheme(
 	primary = md_theme_dark_primary,
 )
 
-private val LightColorScheme = lightColorScheme(
+val LightColorScheme = lightColorScheme(
 	surfaceTint = md_theme_light_surfaceTint,
 	onErrorContainer = md_theme_light_onErrorContainer,
 	onError = md_theme_light_onError,

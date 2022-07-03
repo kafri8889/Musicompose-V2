@@ -1,6 +1,7 @@
 package com.anafthdev.musicompose2.data.datastore
 
 import android.content.Context
+import androidx.compose.runtime.compositionLocalOf
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -55,3 +56,5 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		
 	}
 }
+
+val LocalAppDatastore = compositionLocalOf<AppDatastore?> { null }
