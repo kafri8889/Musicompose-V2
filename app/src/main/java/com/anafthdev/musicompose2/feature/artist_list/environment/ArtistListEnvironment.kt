@@ -1,5 +1,7 @@
 package com.anafthdev.musicompose2.feature.artist_list.environment
 
+import com.anafthdev.musicompose2.data.SortArtistOption
+import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.data.model.Album
 import com.anafthdev.musicompose2.data.model.Artist
 import com.anafthdev.musicompose2.data.repository.Repository
@@ -9,12 +11,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
 class ArtistListEnvironment @Inject constructor(
 	@Named(DiName.IO) override val dispatcher: CoroutineDispatcher,
+	private val appDatastore: AppDatastore,
 	private val repository: Repository
 ): IArtistListEnvironment {
 	
@@ -23,7 +27,12 @@ class ArtistListEnvironment @Inject constructor(
 	
 	init {
 		CoroutineScope(dispatcher).launch {
-			repository.getSongs().collect { songs ->
+			combine(
+				repository.getSongs(),
+				appDatastore.getSortArtistOption
+			) { songs, sortArtistOption ->
+				songs to sortArtistOption
+			}.collect { (songs, sortArtistOption) ->
 				val artistList = arrayListOf<Artist>()
 				val albumList = arrayListOf<Album>()
 				val groupedSongArtist = songs.groupBy { it.artistID }
@@ -54,7 +63,12 @@ class ArtistListEnvironment @Inject constructor(
 					)
 				}
 				
-				_artists.emit(artistList)
+				_artists.emit(
+					when (sortArtistOption) {
+						SortArtistOption.ARTIST_NAME -> artistList.sortedBy { it.name }
+						SortArtistOption.NUMBER_OF_SONGS -> artistList.sortedByDescending { it.songs.size }
+					}
+				)
 			}
 		}
 	}

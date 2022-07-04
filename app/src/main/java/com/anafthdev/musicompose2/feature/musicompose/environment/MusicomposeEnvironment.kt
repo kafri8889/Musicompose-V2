@@ -1,21 +1,29 @@
 package com.anafthdev.musicompose2.feature.musicompose.environment
 
+import com.anafthdev.musicompose2.data.SortSongOption
+import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
+import com.anafthdev.musicompose2.utils.AppUtil.collator
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
 class MusicomposeEnvironment @Inject constructor(
 	@Named(DiName.IO) override val dispatcher: CoroutineDispatcher,
+	private val appDatastore: AppDatastore,
 	private val repository: Repository
 ): IMusicomposeEnvironment {
+	
+	private val _songs = MutableStateFlow(emptyList<Song>())
+	private val songs: StateFlow<List<Song>> = _songs
 	
 	private val _currentPlayedSong = MutableStateFlow(Song.default)
 	private val currentPlayedSong: StateFlow<Song> = _currentPlayedSong
@@ -28,16 +36,33 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	init {
 		CoroutineScope(dispatcher).launch {
-			repository.getSongs().collect { songs ->
-				songs.find { it.audioID == currentPlayedSong.value.audioID }?.let {
+			combine(
+				repository.getSongs(),
+				appDatastore.getSortSongOption
+			) { mSongs, sortSongOption ->
+				mSongs to sortSongOption
+			}.collect { (mSongs, sortSongOption) ->
+				val sortedSongs = when (sortSongOption) {
+					SortSongOption.SONG_NAME -> mSongs.sortedWith(
+						Comparator { o1, o2 ->
+							return@Comparator collator.compare(o1.title, o2.title)
+						}
+					)
+					SortSongOption.DATE_ADDED -> mSongs.sortedByDescending { it.dateAdded }
+					SortSongOption.ARTIST_NAME -> mSongs.sortedBy { it.artist }
+				}.distinctBy { it.audioID }
+				
+				sortedSongs.find { it.audioID == currentPlayedSong.value.audioID }?.let {
 					_currentPlayedSong.emit(it)
 				}
+				
+				_songs.emit(sortedSongs)
 			}
 		}
 	}
 	
 	override fun getSongs(): Flow<List<Song>> {
-		return repository.getSongs()
+		return songs
 	}
 	
 	override fun getCurrentPlayedSong(): Flow<Song> {

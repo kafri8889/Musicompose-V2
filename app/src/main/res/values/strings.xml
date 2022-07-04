@@ -9,11 +9,17 @@
     <string name="artist">Artist</string>
     <string name="cancel">Cancel</string>
     <string name="n_song">%1$s Song</string>
+    <string name="sort_by">Sort by</string>
     <string name="setting">Setting</string>
     <string name="unknown">Unknown</string>
     <string name="language">Language</string>
+    <string name="song_name">Song name</string>
+    <string name="date_added">Date added</string>
+    <string name="album_name">Album name</string>
+    <string name="artist_name">Artist name</string>
     <string name="dynamic_dark">Dynamic dark</string>
     <string name="dynamic_light">Dynamic light</string>
+    <string name="number_of_songs">Number of songs</string>
     <string name="language_summary">Select the language you use</string>
     <string name="search_placeholder">Song, artist, or album</string>
     <string name="select_your_language">Select your language</string>

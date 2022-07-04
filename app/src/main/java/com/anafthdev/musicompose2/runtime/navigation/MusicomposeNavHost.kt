@@ -8,28 +8,32 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.anafthdev.musicompose2.data.MusicomposeDestination
+import com.anafthdev.musicompose2.data.SortType
 import com.anafthdev.musicompose2.feature.language.LanguageScreen
 import com.anafthdev.musicompose2.feature.main.MainScreen
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.feature.search.SearchScreen
 import com.anafthdev.musicompose2.feature.setting.SettingScreen
+import com.anafthdev.musicompose2.feature.sort_sheet.SortSheetScreen
 import com.anafthdev.musicompose2.feature.theme.ThemeScreen
+import com.anafthdev.musicompose2.foundation.common.BottomSheetLayoutConfig
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayer
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -47,6 +51,8 @@ fun MusicomposeNavHost(
 	val scope = rememberCoroutineScope()
 	val bottomSheetNavigator = rememberBottomSheetNavigator()
 	val navController = rememberNavController(bottomSheetNavigator)
+	
+	var bottomSheetLayoutConfig by remember { mutableStateOf(BottomSheetLayoutConfig()) }
 	
 	DisposableEffect(lifeCycleOwner) {
 		val observer = LifecycleEventObserver { _, event ->
@@ -68,6 +74,7 @@ fun MusicomposeNavHost(
 	}
 	
 	ModalBottomSheetLayout(
+		sheetBackgroundColor = bottomSheetLayoutConfig.sheetBackgroundColor,
 		bottomSheetNavigator = bottomSheetNavigator,
 		sheetShape = MaterialTheme.shapes.large,
 		modifier = modifier
@@ -97,6 +104,28 @@ fun MusicomposeNavHost(
 				
 				composable(MusicomposeDestination.Theme.route) {
 					ThemeScreen(navController = navController)
+				}
+				
+				bottomSheet(
+					route = MusicomposeDestination.BottomSheet.Sort.route,
+					arguments = listOf(
+						navArgument(
+							name = "type"
+						) {
+							type = NavType.IntType
+						}
+					)
+				) { entry ->
+					val sortType = SortType.values()[entry.arguments?.getInt("type") ?: 0]
+					
+					bottomSheetLayoutConfig = bottomSheetLayoutConfig.copy(
+						sheetBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
+					)
+					
+					SortSheetScreen(
+						sortType = sortType,
+						navController = navController
+					)
 				}
 			}
 			

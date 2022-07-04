@@ -9,11 +9,17 @@
     <string name="artist">Artis</string>
     <string name="cancel">Batalkan</string>
     <string name="n_song">%1$s Lagu</string>
+    <string name="sort_by">Sortir menurut</string>
     <string name="setting">Setelan</string>
     <string name="unknown">Tidak diketahui</string>
     <string name="language">Bahasa</string>
+    <string name="song_name">Nama Lagu</string>
+    <string name="date_added">Tanggal ditambahkan</string>
+    <string name="album_name">Nama album</string>
+    <string name="artist_name">Nama artis</string>
     <string name="dynamic_dark">Gelap dinamik</string>
     <string name="dynamic_light">Terang dinamik</string>
+    <string name="number_of_songs">Jumlah lagu</string>
     <string name="language_summary">Pilih bahasa yang kamu gunakan</string>
     <string name="search_placeholder">Lagu, artis, atau album</string>
     <string name="select_your_language">Pilih bahasamu</string>
