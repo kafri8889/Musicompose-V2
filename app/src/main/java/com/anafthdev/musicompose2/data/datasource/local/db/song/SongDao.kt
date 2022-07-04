@@ -13,6 +13,9 @@ interface SongDao {
 	@Query("SELECT * FROM song_table WHERE isFavorite=1")
 	fun getFavoriteSong(): Flow<List<Song>>
 	
+	@Query("SELECT * FROM song_table WHERE audioID LIKE :mAudioID")
+	fun get(mAudioID: Long): Song?
+	
 	@Update
 	suspend fun update(vararg song: Song)
 	

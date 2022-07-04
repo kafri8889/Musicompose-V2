@@ -8,10 +8,7 @@ import com.anafthdev.musicompose2.foundation.di.DiName
 import com.anafthdev.musicompose2.utils.AppUtil.collator
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -79,6 +76,7 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override suspend fun play(song: Song) {
 		_currentPlayedSong.emit(song)
+		appDatastore.setLastSongPlayed(song.audioID)
 		// TODO: play song
 	}
 	
@@ -102,6 +100,14 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override suspend fun setShowBottomMusicPlayer(show: Boolean) {
 		_isBottomMusicPlayerShowed.emit(show)
+	}
+	
+	override suspend fun playLastSongPlayed() {
+		appDatastore.getLastSongPlayed.firstOrNull()?.let { audioID ->
+			repository.getLocalSong(audioID)?.let { song ->
+				_currentPlayedSong.emit(song)
+			}
+		}
 	}
 	
 }

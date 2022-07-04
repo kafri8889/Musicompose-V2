@@ -6,10 +6,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.anafthdev.musicompose2.data.SortAlbumOption
 import com.anafthdev.musicompose2.data.SortArtistOption
 import com.anafthdev.musicompose2.data.SortSongOption
+import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.preference.Language
 import com.anafthdev.musicompose2.data.preference.Preference
 import com.anafthdev.musicompose2.foundation.uimode.data.UiMode
@@ -49,6 +51,12 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		}
 	}
 	
+	suspend fun setLastSongPlayed(audioID: Long) {
+		context.datastore.edit { preferences ->
+			preferences[lastSongPlayed] = audioID
+		}
+	}
+	
 	val getLanguage: Flow<Language> = context.datastore.data.map { preferences ->
 		Language.values()[preferences[language] ?: Language.INDONESIAN.ordinal]
 	}
@@ -69,6 +77,10 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		SortArtistOption.values()[preferences[sortArtistOption] ?: SortArtistOption.ARTIST_NAME.ordinal]
 	}
 	
+	val getLastSongPlayed: Flow<Long> = context.datastore.data.map { preferences ->
+		preferences[lastSongPlayed] ?: Song.default.audioID
+	}
+	
 	companion object {
 		val Context.datastore: DataStore<Preferences> by preferencesDataStore("app_datastore")
 		
@@ -77,6 +89,7 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		val sortSongOption = intPreferencesKey(Preference.SORT_SONG_OPTION)
 		val sortAlbumOption = intPreferencesKey(Preference.SORT_ALBUM_OPTION)
 		val sortArtistOption = intPreferencesKey(Preference.SORT_ARTIST_OPTION)
+		val lastSongPlayed = longPreferencesKey(Preference.LAST_SONG_PLAYED)
 		
 	}
 }

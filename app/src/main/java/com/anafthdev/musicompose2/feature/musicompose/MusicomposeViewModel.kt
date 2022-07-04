@@ -90,6 +90,11 @@ class MusicomposeViewModel @Inject constructor(
 					environment.setShowBottomMusicPlayer(action.isShowed)
 				}
 			}
+			is MusicomposeAction.PlayLastSongPlayed -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.playLastSongPlayed()
+				}
+			}
 		}
 	}
 	

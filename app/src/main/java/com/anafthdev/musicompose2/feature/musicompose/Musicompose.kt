@@ -11,7 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.data.datastore.LocalAppDatastore
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
@@ -27,6 +30,8 @@ import com.anafthdev.musicompose2.foundation.uimode.UiModeViewModel
 import com.anafthdev.musicompose2.foundation.uimode.data.LocalUiMode
 import com.anafthdev.musicompose2.runtime.navigation.MusicomposeNavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -36,6 +41,8 @@ fun Musicompose(
 	viewModel: MusicomposeViewModel,
 ) {
 	
+	val lifeCycleOwner = LocalLifecycleOwner.current
+	
 	val uiModeViewModel = hiltViewModel<UiModeViewModel>()
 	
 	val state by viewModel.state.collectAsState()
@@ -44,7 +51,28 @@ fun Musicompose(
 	val useDynamicColor = uiModeState.uiMode.isDynamicDark() or uiModeState.uiMode.isDynamicLight()
 	val isSystemInDarkTheme = uiModeState.uiMode.isDark() or uiModeState.uiMode.isDynamicDark()
 	
+	val scope = rememberCoroutineScope()
 	val systemUiController = rememberSystemUiController()
+	
+	DisposableEffect(lifeCycleOwner) {
+		val observer = LifecycleEventObserver { _, event ->
+			when (event) {
+				Lifecycle.Event.ON_CREATE -> {
+					viewModel.dispatch(MusicomposeAction.PlayLastSongPlayed)
+					scope.launch {
+						delay(800)
+						songController.showBottomMusicPlayer()
+					}
+				}
+				else -> {}
+			}
+		}
+		
+		lifeCycleOwner.lifecycle.addObserver(observer)
+		onDispose {
+			lifeCycleOwner.lifecycle.removeObserver(observer)
+		}
+	}
 	
 	CompositionLocalProvider(
 		LocalUiMode provides uiModeState.uiMode,

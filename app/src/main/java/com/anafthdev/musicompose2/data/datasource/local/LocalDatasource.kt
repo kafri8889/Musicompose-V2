@@ -13,6 +13,10 @@ class LocalDatasource @Inject constructor(
 		return songDao.getAllSong()
 	}
 	
+	fun getSong(audioID: Long): Song? {
+		return songDao.get(audioID)
+	}
+	
 	suspend fun updateSongs(vararg song: Song) {
 		songDao.update(*song)
 	}

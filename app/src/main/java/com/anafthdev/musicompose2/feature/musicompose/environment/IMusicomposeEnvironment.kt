@@ -26,4 +26,6 @@ interface IMusicomposeEnvironment {
 	
 	suspend fun setShowBottomMusicPlayer(show: Boolean)
 	
+	suspend fun playLastSongPlayed()
+	
 }

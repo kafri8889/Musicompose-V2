@@ -13,6 +13,10 @@ class Repository @Inject constructor(
 		return localDatasource.getAllSong()
 	}
 	
+	fun getLocalSong(audioID: Long): Song? {
+		return localDatasource.getSong(audioID)
+	}
+	
 	suspend fun updateLocalSongs(vararg song: Song) {
 		localDatasource.updateSongs(*song)
 	}

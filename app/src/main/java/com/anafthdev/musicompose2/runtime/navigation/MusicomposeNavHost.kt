@@ -11,9 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -35,8 +32,6 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
@@ -44,34 +39,13 @@ fun MusicomposeNavHost(
 	modifier: Modifier = Modifier
 ) {
 	
-	val lifeCycleOwner = LocalLifecycleOwner.current
 	val songController = LocalSongController.current
 	val musicomposeState = LocalMusicomposeState.current
 	
-	val scope = rememberCoroutineScope()
 	val bottomSheetNavigator = rememberBottomSheetNavigator()
 	val navController = rememberNavController(bottomSheetNavigator)
 	
 	var bottomSheetLayoutConfig by remember { mutableStateOf(BottomSheetLayoutConfig()) }
-	
-	DisposableEffect(lifeCycleOwner) {
-		val observer = LifecycleEventObserver { _, event ->
-			when (event) {
-				Lifecycle.Event.ON_CREATE -> {
-					scope.launch {
-						delay(600)
-						songController?.showBottomMusicPlayer()
-					}
-				}
-				else -> {}
-			}
-		}
-		
-		lifeCycleOwner.lifecycle.addObserver(observer)
-		onDispose {
-			lifeCycleOwner.lifecycle.removeObserver(observer)
-		}
-	}
 	
 	ModalBottomSheetLayout(
 		sheetBackgroundColor = bottomSheetLayoutConfig.sheetBackgroundColor,
