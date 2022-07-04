@@ -1,17 +1,16 @@
 package com.anafthdev.musicompose2.feature.main
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,30 +22,42 @@ import com.anafthdev.musicompose2.data.SortType
 import com.anafthdev.musicompose2.feature.album_list.AlbumScreen
 import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
+import com.anafthdev.musicompose2.foundation.extension.isInDarkTheme
+import com.anafthdev.musicompose2.foundation.theme.black01
+import com.anafthdev.musicompose2.foundation.theme.black10
+import com.anafthdev.musicompose2.foundation.theme.circle
 import com.anafthdev.musicompose2.foundation.uicomponent.MoreOptionPopup
+import com.anafthdev.musicompose2.foundation.uimode.data.LocalUiMode
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class,
-	ExperimentalAnimationApi::class
-)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
 	navController: NavController
 ) {
+	
+	val tabPages = listOf(
+		stringResource(id = R.string.song),
+		stringResource(id = R.string.album),
+		stringResource(id = R.string.artist),
+	)
 	
 	val scope = rememberCoroutineScope()
 	val pagerState = rememberPagerState()
 	
 	var isMoreOptionPopupShowed by remember { mutableStateOf(false) }
 	
+	val scrollToPage: (Int) -> Unit = { page ->
+		scope.launch { pagerState.animateScrollToPage(page) }
+		Unit
+	}
+	
 	BackHandler {
 		when {
-			pagerState.currentPage != 0 -> scope.launch {
-				pagerState.animateScrollToPage(0)
-			}
+			pagerState.currentPage != 0 -> scrollToPage(0)
 			else -> navController.popBackStack()
 		}
 	}
@@ -126,6 +137,41 @@ fun MainScreen(
 				}
 			}
 		)
+		
+		TabRow(
+			selectedTabIndex = pagerState.currentPage,
+			indicator = { tabPositions ->
+				Box(
+					modifier = Modifier
+						.tabIndicatorOffset(tabPositions[pagerState.currentPage])
+						.height(4.dp)
+						.clip(circle)
+						.background(MaterialTheme.colorScheme.primary)
+				)
+			}
+		) {
+			tabPages.forEachIndexed { i, title ->
+				val selected = pagerState.currentPage == i
+				
+				Tab(
+					selected = selected,
+					text = {
+						Text(
+							text = title,
+							style = LocalTextStyle.current.copy(
+								color = if (selected) MaterialTheme.colorScheme.primary
+								else {
+									if (LocalUiMode.current.isInDarkTheme()) black10 else black01
+								}
+							)
+						)
+					},
+					onClick = {
+						scrollToPage(i)
+					}
+				)
+			}
+		}
 		
 		HorizontalPager(
 			count = 4,
