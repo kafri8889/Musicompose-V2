@@ -70,7 +70,9 @@ fun BottomMusicPlayer(
 					.weight(1f)
 			) {
 				Text(
+					maxLines = 2,
 					text = currentSong.title,
+					overflow = TextOverflow.Ellipsis,
 					style = MaterialTheme.typography.titleSmall.copy(
 						fontWeight = FontWeight.SemiBold
 					)
@@ -91,7 +93,7 @@ fun BottomMusicPlayer(
 					onFavoriteClicked(!currentSong.isFavorite)
 				}
 			) {
-				Icon(
+				Image(
 					painter = painterResource(
 						id = if (currentSong.isFavorite) R.drawable.ic_favorite_selected
 						else R.drawable.ic_favorite_unselected
