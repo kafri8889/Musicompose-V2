@@ -14,6 +14,8 @@ interface IMusicomposeEnvironment {
 	
 	fun isPlaying(): Flow<Boolean>
 	
+	fun isBottomMusicPlayerShowed(): Flow<Boolean>
+	
 	suspend fun play(song: Song)
 	
 	suspend fun pause()
@@ -21,5 +23,7 @@ interface IMusicomposeEnvironment {
 	suspend fun resume()
 	
 	suspend fun setFavorite(favorite: Boolean)
+	
+	suspend fun setShowBottomMusicPlayer(show: Boolean)
 	
 }

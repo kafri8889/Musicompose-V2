@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -39,7 +40,9 @@ fun LanguageScreen(
 			title = {
 				Text(
 					text = stringResource(id = R.string.language),
-					style = MaterialTheme.typography.titleLarge,
+					style = MaterialTheme.typography.titleLarge.copy(
+						fontWeight = FontWeight.Bold
+					),
 				)
 			},
 			navigationIcon = {

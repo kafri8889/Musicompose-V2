@@ -3,13 +3,13 @@ package com.anafthdev.musicompose2.feature.setting
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.anafthdev.musicompose2.R
@@ -26,6 +26,8 @@ fun SettingScreen(
 ) {
 	
 	val uiMode = LocalUiMode.current
+	
+	val settingString = stringResource(id = R.string.setting)
 	
 	val preferences = listOf(
 		BasicPreference(
@@ -52,16 +54,15 @@ fun SettingScreen(
 	Column(
 		modifier = Modifier
 			.statusBarsPadding()
-			.fillMaxSize()
 			.background(MaterialTheme.colorScheme.background)
 	) {
 		SmallTopAppBar(
 			colors = TopAppBarDefaults.smallTopAppBarColors(
-				containerColor = MaterialTheme.colorScheme.background
+				containerColor = Color.Transparent
 			),
 			title = {
 				Text(
-					text = stringResource(id = R.string.setting),
+					text = settingString,
 					style = MaterialTheme.typography.titleLarge,
 				)
 			},

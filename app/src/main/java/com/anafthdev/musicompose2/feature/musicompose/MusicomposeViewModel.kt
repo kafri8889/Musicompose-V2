@@ -55,6 +55,16 @@ class MusicomposeViewModel @Inject constructor(
 				}
 			}
 		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.isBottomMusicPlayerShowed().collect { isShowed ->
+				setState {
+					copy(
+						isBottomMusicPlayerShowed = isShowed
+					)
+				}
+			}
+		}
 	}
 	
 	override fun dispatch(action: MusicomposeAction) {
@@ -73,6 +83,11 @@ class MusicomposeViewModel @Inject constructor(
 			is MusicomposeAction.SetFavorite -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.setFavorite(action.isFavorite)
+				}
+			}
+			is MusicomposeAction.SetShowBottomMusicPlayer -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.setShowBottomMusicPlayer(action.isShowed)
 				}
 			}
 		}

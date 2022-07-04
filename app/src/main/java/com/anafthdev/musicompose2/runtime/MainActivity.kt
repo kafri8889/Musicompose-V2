@@ -52,6 +52,18 @@ class MainActivity: LocalizedActivity() {
 				MusicomposeAction.SetFavorite(favorite)
 			)
 		}
+		
+		override fun hideBottomMusicPlayer() {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.SetShowBottomMusicPlayer(false)
+			)
+		}
+		
+		override fun showBottomMusicPlayer() {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.SetShowBottomMusicPlayer(true)
+			)
+		}
 	}
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +87,6 @@ class MainActivity: LocalizedActivity() {
 	
 	override fun onResume() {
 		super.onResume()
-		Timber.i("onstar")
 		
 		lifecycleScope.launch {
 			val songs = SongUtil.getSong(this@MainActivity).toTypedArray()

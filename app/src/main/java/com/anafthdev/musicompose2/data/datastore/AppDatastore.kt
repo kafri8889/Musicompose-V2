@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.runtime.compositionLocalOf
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -16,12 +15,6 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AppDatastore @Inject constructor(private val context: Context) {
-	
-	suspend fun useDynamicColor(use: Boolean) {
-		context.datastore.edit { preferences ->
-			preferences[dynamicColor] = use
-		}
-	}
 	
 	suspend fun setLanguage(lang: Language) {
 		context.datastore.edit { preferences ->
@@ -35,12 +28,8 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		}
 	}
 	
-	val isUseDynamicColor: Flow<Boolean> = context.datastore.data.map { preferences ->
-		preferences[dynamicColor] ?: false
-	}
-	
 	val getLanguage: Flow<Language> = context.datastore.data.map { preferences ->
-		Language.values()[preferences[language] ?: Language.ENGLISH.ordinal]
+		Language.values()[preferences[language] ?: Language.INDONESIAN.ordinal]
 	}
 	
 	val getUiMode: Flow<UiMode> = context.datastore.data.map { preferences ->
@@ -50,7 +39,6 @@ class AppDatastore @Inject constructor(private val context: Context) {
 	companion object {
 		val Context.datastore: DataStore<Preferences> by preferencesDataStore("app_datastore")
 		
-		val dynamicColor = booleanPreferencesKey(Preference.DYNAMIC_COLOR)
 		val language = intPreferencesKey(Preference.LANGUAGE)
 		val uiMode = intPreferencesKey(Preference.UI_MODE)
 		

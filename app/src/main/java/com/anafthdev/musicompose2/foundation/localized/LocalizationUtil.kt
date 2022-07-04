@@ -14,7 +14,6 @@ object LocalizationUtil {
 		
 		return try {
 			setupLocale(locale)
-			
 			val resources = context.resources
 			val configuration = getOverridingConfig(locale, resources)
 			

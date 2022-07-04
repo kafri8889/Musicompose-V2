@@ -3,7 +3,6 @@ package com.anafthdev.musicompose2.feature.musicompose
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.LocalContentColor
@@ -69,13 +68,11 @@ fun Musicompose(
 				)
 			}
 			
-			Column {
-				MusicomposeNavHost(
-					modifier = Modifier
-						.fillMaxSize()
-						.background(MaterialTheme.colorScheme.background)
-				)
-			}
+			MusicomposeNavHost(
+				modifier = Modifier
+					.fillMaxSize()
+					.background(MaterialTheme.colorScheme.background)
+			)
 		}
 	}
 	

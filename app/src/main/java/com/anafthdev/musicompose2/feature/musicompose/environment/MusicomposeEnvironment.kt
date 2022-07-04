@@ -23,6 +23,9 @@ class MusicomposeEnvironment @Inject constructor(
 	private val _isPlaying = MutableStateFlow(false)
 	private val isPlaying: StateFlow<Boolean> = _isPlaying
 	
+	private val _isBottomMusicPlayerShowed = MutableStateFlow(false)
+	private val isBottomMusicPlayerShowed: StateFlow<Boolean> = _isBottomMusicPlayerShowed
+	
 	init {
 		CoroutineScope(dispatcher).launch {
 			repository.getSongs().collect { songs ->
@@ -43,6 +46,10 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override fun isPlaying(): Flow<Boolean> {
 		return isPlaying
+	}
+	
+	override fun isBottomMusicPlayerShowed(): Flow<Boolean> {
+		return isBottomMusicPlayerShowed
 	}
 	
 	override suspend fun play(song: Song) {
@@ -66,6 +73,10 @@ class MusicomposeEnvironment @Inject constructor(
 				isFavorite = favorite
 			)
 		)
+	}
+	
+	override suspend fun setShowBottomMusicPlayer(show: Boolean) {
+		_isBottomMusicPlayerShowed.emit(show)
 	}
 	
 }

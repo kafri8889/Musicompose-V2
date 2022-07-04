@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Musicompose2" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Theme.Musicompose2" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_drawable</item>
+        <item name="android:statusBarColor">@color/md_light_primary_container</item>
+    </style>
+
 </resources>

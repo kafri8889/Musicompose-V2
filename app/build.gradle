@@ -104,6 +104,7 @@ dependencies {
     kapt 'com.google.dagger:hilt-android-compiler:2.39.1'
 
     // Accompanist
+    implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
     implementation "com.google.accompanist:accompanist-navigation-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"

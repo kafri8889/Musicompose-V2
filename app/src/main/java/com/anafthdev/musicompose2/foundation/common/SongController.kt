@@ -13,6 +13,10 @@ interface SongController {
 	
 	fun setFavorite(favorite: Boolean)
 	
+	fun hideBottomMusicPlayer()
+	
+	fun showBottomMusicPlayer()
+	
 }
 
 val LocalSongController = compositionLocalOf<SongController?> { null }
