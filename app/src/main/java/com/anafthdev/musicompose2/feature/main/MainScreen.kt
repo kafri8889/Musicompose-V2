@@ -1,5 +1,6 @@
 package com.anafthdev.musicompose2.feature.main
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,7 @@ import com.anafthdev.musicompose2.foundation.uicomponent.MoreOptionPopup
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class,
 	ExperimentalAnimationApi::class
@@ -35,9 +37,19 @@ fun MainScreen(
 	navController: NavController
 ) {
 	
+	val scope = rememberCoroutineScope()
 	val pagerState = rememberPagerState()
 	
 	var isMoreOptionPopupShowed by remember { mutableStateOf(false) }
+	
+	BackHandler {
+		when {
+			pagerState.currentPage != 0 -> scope.launch {
+				pagerState.animateScrollToPage(0)
+			}
+			else -> navController.popBackStack()
+		}
+	}
 	
 	Column(
 		modifier = Modifier
