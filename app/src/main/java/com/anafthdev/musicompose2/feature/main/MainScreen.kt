@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.*
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +22,7 @@ import com.anafthdev.musicompose2.feature.album_list.AlbumScreen
 import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
 import com.anafthdev.musicompose2.foundation.extension.isInDarkTheme
+import com.anafthdev.musicompose2.foundation.extension.pagerTabIndicatorOffset
 import com.anafthdev.musicompose2.foundation.theme.black01
 import com.anafthdev.musicompose2.foundation.theme.black10
 import com.anafthdev.musicompose2.foundation.theme.circle
@@ -143,7 +143,10 @@ fun MainScreen(
 			indicator = { tabPositions ->
 				Box(
 					modifier = Modifier
-						.tabIndicatorOffset(tabPositions[pagerState.currentPage])
+						.pagerTabIndicatorOffset(
+							pagerState = pagerState,
+							tabPositions = tabPositions
+						)
 						.height(4.dp)
 						.clip(circle)
 						.background(MaterialTheme.colorScheme.primary)
