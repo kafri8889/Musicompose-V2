@@ -16,10 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.anafthdev.musicompose2.R
-import com.anafthdev.musicompose2.data.SortAlbumOption
-import com.anafthdev.musicompose2.data.SortArtistOption
-import com.anafthdev.musicompose2.data.SortSongOption
-import com.anafthdev.musicompose2.data.SortType
+import com.anafthdev.musicompose2.data.*
 import com.anafthdev.musicompose2.foundation.extension.optionToString
 import com.anafthdev.musicompose2.foundation.uicomponent.SortItem
 
@@ -87,6 +84,20 @@ fun SortSheetScreen(
 							navController.popBackStack()
 							viewModel.dispatch(
 								SortSheetAction.SetSortArtistOption(option)
+							)
+						}
+					)
+				}
+			}
+			SortType.PLAYLIST -> {
+				SortPlaylistOption.values().forEach { option ->
+					SortItem(
+						text = option.optionToString(),
+						selected = state.sortPlaylistOption == option,
+						onClick = {
+							navController.popBackStack()
+							viewModel.dispatch(
+								SortSheetAction.SetSortPlaylistOption(option)
 							)
 						}
 					)

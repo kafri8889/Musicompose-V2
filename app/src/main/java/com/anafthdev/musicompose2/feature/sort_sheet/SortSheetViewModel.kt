@@ -45,6 +45,16 @@ class SortSheetViewModel @Inject constructor(
 				}
 			}
 		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.getSortPlaylistOption().collect { option ->
+				setState {
+					copy(
+						sortPlaylistOption = option
+					)
+				}
+			}
+		}
 	}
 	
 	override fun dispatch(action: SortSheetAction) {
@@ -62,6 +72,11 @@ class SortSheetViewModel @Inject constructor(
 			is SortSheetAction.SetSortArtistOption -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.setSortArtistOption(action.option)
+				}
+			}
+			is SortSheetAction.SetSortPlaylistOption -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.setSortPlaylistOption(action.option)
 				}
 			}
 		}

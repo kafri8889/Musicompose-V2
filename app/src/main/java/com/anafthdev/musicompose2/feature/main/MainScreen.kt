@@ -134,6 +134,7 @@ fun MainScreen(
 													0 -> SortType.SONG
 													1 -> SortType.ALBUM
 													2 -> SortType.ARTIST
+													3 -> SortType.PLAYLIST
 													else -> SortType.SONG
 												}
 											)

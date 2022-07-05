@@ -2,6 +2,7 @@ package com.anafthdev.musicompose2.feature.sort_sheet.environment
 
 import com.anafthdev.musicompose2.data.SortAlbumOption
 import com.anafthdev.musicompose2.data.SortArtistOption
+import com.anafthdev.musicompose2.data.SortPlaylistOption
 import com.anafthdev.musicompose2.data.SortSongOption
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.foundation.di.DiName
@@ -27,6 +28,10 @@ class SortSheetEnvironment @Inject constructor(
 		return appDatastore.getSortArtistOption
 	}
 	
+	override fun getSortPlaylistOption(): Flow<SortPlaylistOption> {
+		return appDatastore.getSortPlaylistOption
+	}
+	
 	override suspend fun setSortSongOption(option: SortSongOption) {
 		appDatastore.setSortSongOption(option)
 	}
@@ -37,5 +42,9 @@ class SortSheetEnvironment @Inject constructor(
 	
 	override suspend fun setSortArtistOption(option: SortArtistOption) {
 		appDatastore.setSortArtistOption(option)
+	}
+	
+	override suspend fun setSortPlaylistOption(option: SortPlaylistOption) {
+		appDatastore.setSortPlaylisttOption(option)
 	}
 }

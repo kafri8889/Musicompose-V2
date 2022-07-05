@@ -23,6 +23,7 @@
     <string name="new_playlist">Daftar putar baru</string>
     <string name="dynamic_dark">Gelap dinamik</string>
     <string name="dynamic_light">Terang dinamik</string>
+    <string name="playlist_name">Nama daftar putar</string>
     <string name="rename_playlist">Ubah nama daftar putar</string>
     <string name="number_of_songs">Jumlah lagu</string>
     <string name="language_summary">Pilih bahasa yang kamu gunakan</string>

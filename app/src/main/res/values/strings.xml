@@ -23,6 +23,7 @@
     <string name="new_playlist">New playlist</string>
     <string name="dynamic_dark">Dynamic dark</string>
     <string name="dynamic_light">Dynamic light</string>
+    <string name="playlist_name">Playlist name</string>
     <string name="rename_playlist">Rename playlist</string>
     <string name="number_of_songs">Number of songs</string>
     <string name="language_summary">Select the language you use</string>
