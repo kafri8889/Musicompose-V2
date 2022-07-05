@@ -35,10 +35,10 @@ fun PlaylistItem(
 	
 	val playlistThumb = remember(playlist, albumThumbIndex) {
 		when {
-			playlist.icon == R.drawable.ic_music_unknown && playlist.songs.isNotEmpty() -> {
+			playlist.icon == R.drawable.ic_playlist_unknown && playlist.songs.isNotEmpty() -> {
 				playlist.songs[albumThumbIndex].albumPath.toUri()
 			}
-			else -> "android.resource://${context.packageName}/${R.drawable.ic_music_unknown}".toUri()
+			else -> "android.resource://${context.packageName}/${R.drawable.ic_playlist_unknown}".toUri()
 		}
 	}
 	
@@ -62,11 +62,11 @@ fun PlaylistItem(
 				painter = rememberAsyncImagePainter(
 					with(ImageRequest.Builder(context)) {
 						data(
-							data = if (playlist.icon != R.drawable.ic_music_unknown) playlist.icon
+							data = if (playlist.icon != R.drawable.ic_playlist_unknown) playlist.icon
 							else playlistThumb
 						)
-						error(R.drawable.ic_music_unknown)
-						placeholder(R.drawable.ic_music_unknown)
+						error(R.drawable.ic_playlist_unknown)
+						placeholder(R.drawable.ic_playlist_unknown)
 						listener(
 							onError = { _, _ ->
 								if (albumThumbIndex < playlist.songs.lastIndex) {

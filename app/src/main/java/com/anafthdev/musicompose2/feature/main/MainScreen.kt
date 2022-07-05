@@ -17,11 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.MusicomposeDestination
+import com.anafthdev.musicompose2.data.PlaylistOption
 import com.anafthdev.musicompose2.data.SortType
 import com.anafthdev.musicompose2.feature.album_list.AlbumScreen
 import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
 import com.anafthdev.musicompose2.feature.playlist_list.PlaylistListScreen
+import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.extension.isInDarkTheme
 import com.anafthdev.musicompose2.foundation.extension.pagerTabIndicatorOffset
 import com.anafthdev.musicompose2.foundation.theme.black01
@@ -32,6 +34,7 @@ import com.anafthdev.musicompose2.foundation.uimode.data.LocalUiMode
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -46,6 +49,8 @@ fun MainScreen(
 		stringResource(id = R.string.artist),
 		stringResource(id = R.string.playlist)
 	)
+	
+	val songController = LocalSongController.current
 	
 	val scope = rememberCoroutineScope()
 	val pagerState = rememberPagerState()
@@ -120,16 +125,20 @@ fun MainScreen(
 						onClick = { i ->
 							when (i) {
 								0 -> {
-									navController.navigate(
-										MusicomposeDestination.BottomSheet.Sort.createRoute(
-											type = when (pagerState.currentPage) {
-												0 -> SortType.SONG
-												1 -> SortType.ALBUM
-												2 -> SortType.ARTIST
-												else -> SortType.SONG
-											}
+									scope.launch {
+										songController?.hideBottomMusicPlayer()
+										delay(800)
+										navController.navigate(
+											MusicomposeDestination.BottomSheet.Sort.createRoute(
+												type = when (pagerState.currentPage) {
+													0 -> SortType.SONG
+													1 -> SortType.ALBUM
+													2 -> SortType.ARTIST
+													else -> SortType.SONG
+												}
+											)
 										)
-									)
+									}
 								}
 							}
 						},
@@ -186,7 +195,19 @@ fun MainScreen(
 				0 -> HomeScreen()
 				1 -> AlbumScreen()
 				2 -> ArtistListScreen()
-				3 -> PlaylistListScreen()
+				3 -> PlaylistListScreen(
+					onNewPlaylist = {
+						scope.launch {
+							songController?.hideBottomMusicPlayer()
+							delay(800)
+							navController.navigate(
+								MusicomposeDestination.BottomSheet.Playlist.createRoute(
+									option = PlaylistOption.NEW
+								)
+							)
+						}
+					}
+				)
 			}
 		}
 	}

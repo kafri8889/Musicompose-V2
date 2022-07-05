@@ -1,7 +1,9 @@
 package com.anafthdev.musicompose2.feature.album_list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anafthdev.musicompose2.data.model.Album
 import com.anafthdev.musicompose2.foundation.uicomponent.AlbumItem
+import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
 
 @Composable
 fun AlbumScreen() {
@@ -36,6 +39,11 @@ fun AlbumScreen() {
 				
 				}
 			)
+		}
+		
+		// BottomMusicPlayer padding
+		item {
+			Spacer(modifier = Modifier.height(BottomMusicPlayerDefault.Height))
 		}
 	}
 	

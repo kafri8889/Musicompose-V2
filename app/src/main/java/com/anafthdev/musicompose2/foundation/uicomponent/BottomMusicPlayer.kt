@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -31,6 +30,7 @@ import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.foundation.common.ClearRippleTheme
 import com.anafthdev.musicompose2.foundation.theme.circle
+import com.anafthdev.musicompose2.foundation.theme.no_shape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,10 +45,7 @@ fun BottomMusicPlayer(
 	
 	Card(
 		onClick = onClick,
-		shape = MaterialTheme.shapes.extraLarge.copy(
-			bottomEnd = CornerSize(0.dp),
-			bottomStart = CornerSize(0.dp)
-		),
+		shape = no_shape,
 		colors = CardDefaults.cardColors(
 			containerColor = MaterialTheme.colorScheme.primaryContainer
 		),

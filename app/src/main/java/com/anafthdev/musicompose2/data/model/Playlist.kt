@@ -12,7 +12,7 @@ data class Playlist(
 	@ColumnInfo(name = "icon") @DrawableRes var icon: Int,
 	@ColumnInfo(name = "name") var name: String,
 	@ColumnInfo(name = "songs") var songs: List<Song>,
-	@ColumnInfo(name = "defaultPlaylist") var isDefault: Boolean
+	@ColumnInfo(name = "defaultPlaylist") var isDefault: Boolean = false
 ) {
 	
 	companion object {
@@ -21,8 +21,7 @@ data class Playlist(
 			id = -1,
 			icon = R.drawable.ic_music_unknown,
 			name = "-",
-			songs = listOf(Song.default),
-			isDefault = false
+			songs = listOf(Song.default)
 		)
 		
 		val favorite = Playlist(

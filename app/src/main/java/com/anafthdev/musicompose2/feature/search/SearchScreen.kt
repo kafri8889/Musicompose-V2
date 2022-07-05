@@ -36,6 +36,7 @@ import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.uicomponent.AlbumItem
+import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
 import com.anafthdev.musicompose2.foundation.uicomponent.SongItem
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -164,10 +165,7 @@ fun SearchScreen(
 				.fillMaxWidth()
 		)
 		
-		LazyColumn(
-			modifier = Modifier
-				.padding(bottom = 64.dp)
-		) {
+		LazyColumn {
 			
 			item {
 				if (state.songs.isNotEmpty()) {
@@ -342,14 +340,10 @@ fun SearchScreen(
 				)
 			}
 			
+			// BottomMusicPlayer padding
 			item {
-				Spacer(
-					modifier = Modifier
-						.fillMaxWidth()
-						.height(32.dp)
-				)
+				Spacer(modifier = Modifier.height(BottomMusicPlayerDefault.Height))
 			}
-			
 		}
 	}
 	
