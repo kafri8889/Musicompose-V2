@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.data.datastore.AppDatastore.Companion.datastore
 import com.anafthdev.musicompose2.data.preference.Language
+import com.anafthdev.musicompose2.foundation.localized.data.OnLocaleChangedListener
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
@@ -18,6 +19,8 @@ abstract class LocalizedActivity: AppCompatActivity() {
 	private val localizedViewModel: LocalizedViewModel by viewModels()
 	private var currentLocale: Locale? = null
 	
+	private var listener: OnLocaleChangedListener? = null
+	
 	init {
 		lifecycleScope.launchWhenCreated {
 			localizedViewModel.effect.collect {
@@ -28,6 +31,8 @@ abstract class LocalizedActivity: AppCompatActivity() {
 							context = this@LocalizedActivity,
 							locale = this@LocalizedActivity.getLocale()
 						)
+						
+						listener?.onChanged()
 					}
 				}
 			}
@@ -64,6 +69,10 @@ abstract class LocalizedActivity: AppCompatActivity() {
 		}
 		
 		return currentLocale!!
+	}
+	
+	fun setListener(mListener: OnLocaleChangedListener) {
+		this.listener = mListener
 	}
 	
 }

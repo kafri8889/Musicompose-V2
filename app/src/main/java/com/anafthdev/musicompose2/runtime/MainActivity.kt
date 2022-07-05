@@ -6,14 +6,17 @@ import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.anafthdev.musicompose2.BuildConfig
-import com.anafthdev.musicompose2.data.datasource.local.db.song.SongDao
+import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
+import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.data.model.Song
+import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.feature.musicompose.Musicompose
 import com.anafthdev.musicompose2.feature.musicompose.MusicomposeAction
 import com.anafthdev.musicompose2.feature.musicompose.MusicomposeViewModel
 import com.anafthdev.musicompose2.foundation.common.SongController
 import com.anafthdev.musicompose2.foundation.localized.LocalizedActivity
+import com.anafthdev.musicompose2.foundation.localized.data.OnLocaleChangedListener
 import com.anafthdev.musicompose2.utils.SongUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,7 +27,7 @@ import javax.inject.Inject
 class MainActivity: LocalizedActivity() {
 	
 	@Inject lateinit var appDatastore: AppDatastore
-	@Inject lateinit var songDao: SongDao
+	@Inject lateinit var repository: Repository
 	
 	private val musicomposeViewModel: MusicomposeViewModel by viewModels()
 	
@@ -76,6 +79,21 @@ class MainActivity: LocalizedActivity() {
 		
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		
+		this.setListener(object: OnLocaleChangedListener {
+			override fun onChanged() {
+				lifecycleScope.launch {
+					repository.updatePlaylists(
+						Playlist.favorite.copy(
+							name = getString(R.string.favorite)
+						),
+						Playlist.justPlayed.copy(
+							name = getString(R.string.just_played)
+						)
+					)
+				}
+			}
+		})
+		
 		setContent {
 			Musicompose(
 				appDatastore = appDatastore,
@@ -90,9 +108,22 @@ class MainActivity: LocalizedActivity() {
 		
 		lifecycleScope.launch {
 			val songs = SongUtil.getSong(this@MainActivity).toTypedArray()
-			songDao.insert(*songs)
 			
-			Timber.i("get song from device: ${songs.contentToString()}")
+			repository.insertSongs(*songs)
+			repository.insertPlaylists(
+				Playlist.favorite,
+				Playlist.justPlayed
+			)
+			
+			repository.updatePlaylists(
+				Playlist.favorite.copy(
+					name = getString(R.string.favorite)
+				),
+				Playlist.justPlayed.copy(
+					name = getString(R.string.just_played)
+				)
+			)
 		}
 	}
+	
 }
