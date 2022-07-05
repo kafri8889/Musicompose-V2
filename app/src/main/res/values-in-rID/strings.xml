@@ -12,11 +12,14 @@
     <string name="sort_by">Sortir menurut</string>
     <string name="setting">Setelan</string>
     <string name="unknown">Tidak diketahui</string>
+    <string name="favorite">Favorit</string>
+    <string name="playlist">Daftar putar</string>
     <string name="language">Bahasa</string>
     <string name="song_name">Nama Lagu</string>
     <string name="date_added">Tanggal ditambahkan</string>
     <string name="album_name">Nama album</string>
     <string name="artist_name">Nama artis</string>
+    <string name="just_played">Baru saja dimainkan</string>
     <string name="dynamic_dark">Gelap dinamik</string>
     <string name="dynamic_light">Terang dinamik</string>
     <string name="number_of_songs">Jumlah lagu</string>

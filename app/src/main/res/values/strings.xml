@@ -12,11 +12,14 @@
     <string name="sort_by">Sort by</string>
     <string name="setting">Setting</string>
     <string name="unknown">Unknown</string>
+    <string name="favorite">Favorite</string>
+    <string name="playlist">Playlist</string>
     <string name="language">Language</string>
     <string name="song_name">Song name</string>
     <string name="date_added">Date added</string>
     <string name="album_name">Album name</string>
     <string name="artist_name">Artist name</string>
+    <string name="just_played">Just played</string>
     <string name="dynamic_dark">Dynamic dark</string>
     <string name="dynamic_light">Dynamic light</string>
     <string name="number_of_songs">Number of songs</string>
