@@ -1,13 +1,20 @@
 package com.anafthdev.musicompose2.feature.musicompose
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -26,6 +33,7 @@ import com.anafthdev.musicompose2.foundation.extension.isDynamicLight
 import com.anafthdev.musicompose2.foundation.theme.Musicompose2
 import com.anafthdev.musicompose2.foundation.theme.black01
 import com.anafthdev.musicompose2.foundation.theme.black10
+import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayer
 import com.anafthdev.musicompose2.foundation.uimode.UiModeViewModel
 import com.anafthdev.musicompose2.foundation.uimode.data.LocalUiMode
 import com.anafthdev.musicompose2.runtime.navigation.MusicomposeNavHost
@@ -96,11 +104,42 @@ fun Musicompose(
 				)
 			}
 			
-			MusicomposeNavHost(
-				modifier = Modifier
-					.fillMaxSize()
-					.background(MaterialTheme.colorScheme.background)
-			)
+			Box {
+				MusicomposeNavHost(
+					modifier = Modifier
+						.fillMaxSize()
+						.background(MaterialTheme.colorScheme.background)
+				)
+				
+				AnimatedVisibility(
+					visible = state.isBottomMusicPlayerShowed,
+					enter = slideInVertically(
+						initialOffsetY = { it }
+					),
+					exit = slideOutVertically(
+						targetOffsetY = { it }
+					),
+					modifier = Modifier
+						.navigationBarsPadding()
+						.fillMaxWidth()
+						.align(Alignment.BottomCenter)
+				) {
+					BottomMusicPlayer(
+						isPlaying = state.isPlaying,
+						currentSong = state.currentSongPlayed,
+						onClick = {
+						
+						},
+						onFavoriteClicked = { isFavorite ->
+							songController.setFavorite(isFavorite)
+						},
+						onPlayPauseClicked = { isPlaying ->
+							if (isPlaying) songController.resume()
+							else songController.pause()
+						}
+					)
+				}
+			}
 		}
 	}
 	
