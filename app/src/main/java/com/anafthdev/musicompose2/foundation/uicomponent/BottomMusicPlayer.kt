@@ -53,7 +53,7 @@ fun BottomMusicPlayer(
 			containerColor = MaterialTheme.colorScheme.primaryContainer
 		),
 		modifier = modifier
-	
+			.height(BottomMusicPlayerDefault.Height)
 	) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
@@ -208,4 +208,10 @@ private fun AlbumImage(
 			)
 		}
 	}
+}
+
+object BottomMusicPlayerDefault {
+	
+	val Height = 96.dp
+	
 }

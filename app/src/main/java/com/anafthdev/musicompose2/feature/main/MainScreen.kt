@@ -21,6 +21,7 @@ import com.anafthdev.musicompose2.data.SortType
 import com.anafthdev.musicompose2.feature.album_list.AlbumScreen
 import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
+import com.anafthdev.musicompose2.feature.playlist_list.PlaylistListScreen
 import com.anafthdev.musicompose2.foundation.extension.isInDarkTheme
 import com.anafthdev.musicompose2.foundation.extension.pagerTabIndicatorOffset
 import com.anafthdev.musicompose2.foundation.theme.black01
@@ -184,9 +185,7 @@ fun MainScreen(
 				0 -> HomeScreen()
 				1 -> AlbumScreen()
 				2 -> ArtistListScreen()
-				3 -> {
-					// TODO: PlaylistScreen
-				}
+				3 -> PlaylistListScreen()
 			}
 		}
 	}
