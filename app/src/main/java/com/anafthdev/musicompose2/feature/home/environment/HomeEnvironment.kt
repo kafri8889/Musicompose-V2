@@ -13,7 +13,7 @@ class HomeEnvironment @Inject constructor(
 ): IHomeEnvironment {
 	
 	override suspend fun updateSong(song: Song) {
-		repository.updateLocalSongs(song)
+		repository.updateSongs(song)
 	}
 	
 }

@@ -44,6 +44,7 @@ fun MainScreen(
 		stringResource(id = R.string.song),
 		stringResource(id = R.string.album),
 		stringResource(id = R.string.artist),
+		stringResource(id = R.string.playlist)
 	)
 	
 	val scope = rememberCoroutineScope()

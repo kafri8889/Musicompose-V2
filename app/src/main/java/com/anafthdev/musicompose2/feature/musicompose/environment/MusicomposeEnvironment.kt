@@ -91,7 +91,7 @@ class MusicomposeEnvironment @Inject constructor(
 	}
 	
 	override suspend fun setFavorite(favorite: Boolean) {
-		repository.updateLocalSongs(
+		repository.updateSongs(
 			currentPlayedSong.value.copy(
 				isFavorite = favorite
 			)
