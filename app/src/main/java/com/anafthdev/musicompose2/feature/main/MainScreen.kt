@@ -19,10 +19,10 @@ import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.PlaylistOption
 import com.anafthdev.musicompose2.data.SortType
-import com.anafthdev.musicompose2.feature.album_list.AlbumListScreen
-import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
+import com.anafthdev.musicompose2.feature.album.album_list.AlbumListScreen
+import com.anafthdev.musicompose2.feature.artist.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
-import com.anafthdev.musicompose2.feature.playlist_list.PlaylistListScreen
+import com.anafthdev.musicompose2.feature.playlist.playlist_list.PlaylistListScreen
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.extension.isInDarkTheme
 import com.anafthdev.musicompose2.foundation.extension.pagerTabIndicatorOffset
