@@ -14,7 +14,9 @@ import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.PlaylistOption
 import com.anafthdev.musicompose2.data.SortType
 import com.anafthdev.musicompose2.data.model.Album
+import com.anafthdev.musicompose2.data.model.Artist
 import com.anafthdev.musicompose2.feature.album.AlbumScreen
+import com.anafthdev.musicompose2.feature.artist.ArtistScreen
 import com.anafthdev.musicompose2.feature.language.LanguageScreen
 import com.anafthdev.musicompose2.feature.main.MainScreen
 import com.anafthdev.musicompose2.feature.playlist_sheet.PlaylistSheetScreen
@@ -95,6 +97,24 @@ fun MusicomposeNavHost(
 				
 				AlbumScreen(
 					albumID = albumID,
+					navController = navController
+				)
+			}
+			
+			composable(
+				route = MusicomposeDestination.Artist.route,
+				arguments = listOf(
+					navArgument(
+						name = "artistID"
+					) {
+						type = NavType.StringType
+					}
+				)
+			) { entry ->
+				val artistID = entry.arguments?.getString("artistID") ?: Artist.default.id
+				
+				ArtistScreen(
+					artistID = artistID,
 					navController = navController
 				)
 			}

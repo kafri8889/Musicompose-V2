@@ -195,7 +195,7 @@ fun MainScreen(
 			when (page) {
 				0 -> HomeScreen()
 				1 -> AlbumListScreen(navController = navController)
-				2 -> ArtistListScreen()
+				2 -> ArtistListScreen(navController = navController)
 				3 -> PlaylistListScreen(
 					onNewPlaylist = {
 						scope.launch {
