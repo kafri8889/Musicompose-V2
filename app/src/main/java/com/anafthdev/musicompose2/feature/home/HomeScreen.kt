@@ -13,6 +13,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
+import com.anafthdev.musicompose2.foundation.extension.isPlaying
+import com.anafthdev.musicompose2.foundation.extension.isSelected
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
 import com.anafthdev.musicompose2.foundation.uicomponent.SongItem
 
@@ -36,7 +38,8 @@ fun HomeScreen() {
 		) { song ->
 			SongItem(
 				song = song,
-				isMusicPlaying = musicomposeState.currentSongPlayed.audioID == song.audioID,
+				selected = song.isSelected(),
+				isMusicPlaying = song.isPlaying(),
 				onClick = {
 					songController?.play(song)
 				},

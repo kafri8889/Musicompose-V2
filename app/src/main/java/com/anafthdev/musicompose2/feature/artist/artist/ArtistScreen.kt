@@ -19,6 +19,8 @@ import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.foundation.common.ClearRippleTheme
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
+import com.anafthdev.musicompose2.foundation.extension.isPlaying
+import com.anafthdev.musicompose2.foundation.extension.isSelected
 import com.anafthdev.musicompose2.foundation.uicomponent.ArtistItem
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
 import com.anafthdev.musicompose2.foundation.uicomponent.SongItem
@@ -101,7 +103,8 @@ fun ArtistScreen(
 			SongItem(
 				song = song,
 				showAlbumImage = false,
-				isMusicPlaying = musicomposeState.currentSongPlayed.audioID == song.audioID,
+				selected = song.isSelected(),
+				isMusicPlaying = song.isPlaying(),
 				onClick = {
 					songController?.play(song)
 				},

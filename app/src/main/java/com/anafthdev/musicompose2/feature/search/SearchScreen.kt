@@ -34,6 +34,8 @@ import com.anafthdev.musicompose2.data.model.Album
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
+import com.anafthdev.musicompose2.foundation.extension.isPlaying
+import com.anafthdev.musicompose2.foundation.extension.isSelected
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.uicomponent.AlbumItem
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
@@ -205,7 +207,8 @@ fun SearchScreen(
 				SongItem(
 					song = song,
 					showFavorite = false,
-					isMusicPlaying = musicomposeState.currentSongPlayed.audioID == song.audioID,
+					selected = song.isSelected(),
+					isMusicPlaying = song.isPlaying(),
 					onClick = {
 						songController?.play(song)
 					},

@@ -35,6 +35,8 @@ import com.anafthdev.musicompose2.data.PlaylistOption
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
+import com.anafthdev.musicompose2.foundation.extension.isPlaying
+import com.anafthdev.musicompose2.foundation.extension.isSelected
 import com.anafthdev.musicompose2.foundation.extension.toDp
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
@@ -278,7 +280,8 @@ fun PlaylistScreen(
 			SongItem(
 				song = song,
 				showAlbumImage = false,
-				isMusicPlaying = musicomposeState.currentSongPlayed.audioID == song.audioID,
+				selected = song.isSelected(),
+				isMusicPlaying = song.isPlaying(),
 				onClick = {
 					songController?.play(song)
 				},
