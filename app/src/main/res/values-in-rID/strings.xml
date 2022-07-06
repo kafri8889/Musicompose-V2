@@ -18,6 +18,8 @@
     <string name="favorite">Favorit</string>
     <string name="playlist">Daftar putar</string>
     <string name="language">Bahasa</string>
+    <string name="add_song">Tambahkan lagu</string>
+    <string name="play_song">Putar lagu</string>
     <string name="song_name">Nama Lagu</string>
     <string name="date_added">Tanggal ditambahkan</string>
     <string name="album_name">Nama album</string>
@@ -32,6 +34,7 @@
     <string name="rename_playlist">Ubah nama daftar putar</string>
     <string name="number_of_songs">Jumlah lagu</string>
     <string name="language_summary">Pilih bahasa yang kamu gunakan</string>
+    <string name="add_favorite_song">Tambahkan lagu favorit</string>
     <string name="search_placeholder">Lagu, artis, atau album</string>
     <string name="enter_playlist_name">Masukkan nama daftar putar</string>
     <string name="select_your_language">Pilih bahasamu</string>
