@@ -44,6 +44,7 @@ fun SongItem(
 	song: Song,
 	isMusicPlaying: Boolean,
 	modifier: Modifier = Modifier,
+	showAlbumImage: Boolean = true,
 	showFavorite: Boolean = true,
 	onFavoriteClicked: (Boolean) -> Unit = {},
 	onClick: () -> Unit,
@@ -63,26 +64,28 @@ fun SongItem(
 				.height(72.dp)
 		) {
 			
-			Image(
-				painter = rememberAsyncImagePainter(
-					ImageRequest.Builder(LocalContext.current)
-						.data(song.albumPath.toUri())
-						.error(R.drawable.ic_music_unknown)
-						.placeholder(R.drawable.ic_music_unknown)
-						.build()
-				),
-				contentDescription = null,
-				modifier = Modifier
-					.padding(8.dp)
-					.fillMaxHeight()
-					.aspectRatio(1f)
-					.clip(MaterialTheme.shapes.medium)
-			)
+			if (showAlbumImage) {
+				Image(
+					painter = rememberAsyncImagePainter(
+						ImageRequest.Builder(LocalContext.current)
+							.data(song.albumPath.toUri())
+							.error(R.drawable.ic_music_unknown)
+							.placeholder(R.drawable.ic_music_unknown)
+							.build()
+					),
+					contentDescription = null,
+					modifier = Modifier
+						.padding(8.dp)
+						.fillMaxHeight()
+						.aspectRatio(1f)
+						.clip(MaterialTheme.shapes.medium)
+				)
+			}
 			
 			Column(
 				verticalArrangement = Arrangement.SpaceEvenly,
 				modifier = Modifier
-					.padding(end = 8.dp)
+					.padding(horizontal = 8.dp)
 					.weight(1f)
 			) {
 				Text(
