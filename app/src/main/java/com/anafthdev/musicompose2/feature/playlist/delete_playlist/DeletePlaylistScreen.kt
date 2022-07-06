@@ -4,14 +4,16 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,7 +23,6 @@ import androidx.navigation.NavController
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.foundation.theme.Inter
-import com.anafthdev.musicompose2.foundation.theme.circle
 
 @Composable
 fun DeletePlaylistScreen(
@@ -48,15 +49,6 @@ fun DeletePlaylistScreen(
 		modifier = Modifier
 			.fillMaxWidth()
 	) {
-		Divider(
-			thickness = 4.dp,
-			modifier = Modifier
-				.padding(8.dp)
-				.fillMaxWidth(0.2f)
-				.clip(circle)
-				.align(Alignment.CenterHorizontally)
-		)
-		
 		Text(
 			maxLines = 1,
 			text = stringResource(id = R.string.delete),
@@ -65,13 +57,7 @@ fun DeletePlaylistScreen(
 				fontWeight = FontWeight.Bold
 			),
 			modifier = Modifier
-				.padding(8.dp)
-		)
-		
-		Divider(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(vertical = 8.dp)
+				.padding(16.dp)
 		)
 		
 		Button(

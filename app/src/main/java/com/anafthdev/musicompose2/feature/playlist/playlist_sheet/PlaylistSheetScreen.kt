@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -86,22 +85,9 @@ fun PlaylistSheetScreen(
 		modifier = Modifier
 			.fillMaxWidth()
 	) {
-		Divider(
-			thickness = 4.dp,
-			modifier = Modifier
-				.padding(8.dp)
-				.fillMaxWidth(0.2f)
-				.clip(circle)
-				.align(Alignment.CenterHorizontally)
-		)
-		
 		Box(
 			modifier = Modifier
-				.padding(
-					top = 16.dp,
-					start = 16.dp,
-					end = 16.dp
-				)
+				.padding(16.dp)
 				.fillMaxWidth()
 		) {
 			IconButton(
@@ -172,12 +158,6 @@ fun PlaylistSheetScreen(
 				}
 			}
 		}
-		
-		Divider(
-			modifier = Modifier
-				.padding(vertical = 8.dp)
-				.fillMaxWidth()
-		)
 		
 		OutlinedTextField(
 			singleLine = true,
