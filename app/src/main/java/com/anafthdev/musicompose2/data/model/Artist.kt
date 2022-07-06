@@ -5,4 +5,13 @@ data class Artist(
 	val name: String,
 	val songs: List<Song>,
 	val albums: List<Album>
-)
+) {
+	companion object {
+		val default = Artist(
+			id = "-1",
+			name = "-",
+			songs = emptyList(),
+			albums = emptyList()
+		)
+	}
+}
