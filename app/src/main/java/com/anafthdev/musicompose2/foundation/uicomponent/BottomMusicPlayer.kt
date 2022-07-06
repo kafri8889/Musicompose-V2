@@ -9,10 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +55,10 @@ fun BottomMusicPlayer(
 				.padding(16.dp)
 				.fillMaxWidth()
 		) {
-			AlbumImage(path = currentSong.albumPath)
+			AlbumImage(
+				isPlaying = isPlaying,
+				path = currentSong.albumPath
+			)
 			
 			Column(
 				verticalArrangement = Arrangement.SpaceEvenly,
@@ -136,7 +136,7 @@ private fun PlayPauseButton(
 			) {
 				Icon(
 					painter = painterResource(
-						id = if (isPlaying) R.drawable.ic_pause_filled_rounded else R.drawable.ic_play_filled_rounded
+						id = if (isPlaying) R.drawable.ic_play_filled_rounded else R.drawable.ic_pause_filled_rounded
 					),
 					contentDescription = null
 				)
@@ -148,6 +148,7 @@ private fun PlayPauseButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AlbumImage(
+	isPlaying: Boolean,
 	path: String
 ) {
 	
@@ -163,6 +164,14 @@ private fun AlbumImage(
 		)
 	)
 	
+	var currentAngle by remember { mutableStateOf(0f) }
+
+	LaunchedEffect(angle, isPlaying) {
+		if (!isPlaying) {
+			currentAngle = angle
+		}
+	}
+	
 	Card(
 		shape = circle,
 		border = BorderStroke(
@@ -174,7 +183,7 @@ private fun AlbumImage(
 		),
 		modifier = Modifier
 			.size(56.dp)
-			.rotate(angle)
+			.rotate(currentAngle)
 	) {
 		Box(modifier = Modifier.fillMaxSize()) {
 			Box(
