@@ -17,6 +17,16 @@ class PlaylistSheetViewModel @Inject constructor(
 	
 	init {
 		viewModelScope.launch(environment.dispatcher) {
+			environment.getPlaylist().collect { playlist ->
+				setState {
+					copy(
+						playlist = playlist
+					)
+				}
+			}
+		}
+		
+		viewModelScope.launch(environment.dispatcher) {
 			environment.getPlaylistName().collect { name ->
 				setState {
 					copy(
@@ -37,6 +47,16 @@ class PlaylistSheetViewModel @Inject constructor(
 			is PlaylistSheetAction.CreatePlaylist -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.createPlaylist()
+				}
+			}
+			is PlaylistSheetAction.GetPlaylist -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.setPlaylist(action.playlistID)
+				}
+			}
+			is PlaylistSheetAction.UpdatePlaylist -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.updatePlaylist(action.playlist)
 				}
 			}
 		}

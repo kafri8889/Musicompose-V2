@@ -17,11 +17,28 @@ class PlaylistSheetEnvironment @Inject constructor(
 	private val repository: Repository
 ): IPlaylistSheetEnvironment {
 	
+	private val _playlist = MutableStateFlow(Playlist.default)
+	private val playlist: StateFlow<Playlist> = _playlist
+	
 	private val _playlistName = MutableStateFlow("")
 	private val playlistName: StateFlow<String> = _playlistName
 	
+	override fun getPlaylist(): Flow<Playlist> {
+		return playlist
+	}
+	
 	override fun getPlaylistName(): Flow<String> {
 		return playlistName
+	}
+	
+	override suspend fun setPlaylist(playlistID: Int) {
+		_playlist.emit(
+			repository.getPlaylist(playlistID) ?: Playlist.default
+		)
+	}
+	
+	override suspend fun updatePlaylist(playlist: Playlist) {
+		repository.updatePlaylists(playlist)
 	}
 	
 	override suspend fun setPlaylistName(name: String) {

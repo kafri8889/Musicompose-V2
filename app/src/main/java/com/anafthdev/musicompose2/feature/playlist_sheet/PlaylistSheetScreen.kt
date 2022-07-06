@@ -4,9 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -20,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -33,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.PlaylistOption
+import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.theme.circle
 
@@ -42,10 +41,12 @@ import com.anafthdev.musicompose2.foundation.theme.circle
 )
 @Composable
 fun PlaylistSheetScreen(
+	playlistID: Int,
 	option: PlaylistOption,
 	navController: NavController
 ) {
 	
+	val context = LocalContext.current
 	val focusManager = LocalFocusManager.current
 	val keyboardController = LocalSoftwareKeyboardController.current
 	
@@ -56,28 +57,51 @@ fun PlaylistSheetScreen(
 	val playlistNameFocusRequester = remember { FocusRequester() }
 	
 	LaunchedEffect(Unit) {
-		viewModel.dispatch(PlaylistSheetAction.ChangePlaylistName("dps"))
+		viewModel.dispatch(
+			PlaylistSheetAction.ChangePlaylistName(
+				context.getString(R.string.my_playlist)
+			)
+		)
+		
 		playlistNameFocusRequester.requestFocus()
+	}
+	
+	LaunchedEffect(playlistID) {
+		if (option == PlaylistOption.EDIT) {
+			viewModel.dispatch(
+				PlaylistSheetAction.GetPlaylist(playlistID)
+			)
+		}
+	}
+	
+	LaunchedEffect(state.playlist.id) {
+		if (state.playlist.id != Playlist.default.id) {
+			viewModel.dispatch(
+				PlaylistSheetAction.ChangePlaylistName(state.playlist.name)
+			)
+		}
 	}
 	
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 16.dp)
 	) {
-		Box(
+		Divider(
+			thickness = 4.dp,
 			modifier = Modifier
-				.padding(vertical = 8.dp)
+				.padding(8.dp)
 				.fillMaxWidth(0.2f)
-				.height(2.dp)
-				.clip(RoundedCornerShape(100))
-				.background(Color.White.copy(alpha = 0.2f))
+				.clip(circle)
 				.align(Alignment.CenterHorizontally)
 		)
 		
 		Box(
 			modifier = Modifier
-				.padding(top = 24.dp)
+				.padding(
+					top = 16.dp,
+					start = 16.dp,
+					end = 16.dp
+				)
 				.fillMaxWidth()
 		) {
 			IconButton(
@@ -103,7 +127,7 @@ fun PlaylistSheetScreen(
 				maxLines = 1,
 				overflow = TextOverflow.Ellipsis,
 				textAlign = TextAlign.Center,
-				style = MaterialTheme.typography.titleSmall.copy(
+				style = MaterialTheme.typography.titleMedium.copy(
 					fontWeight = FontWeight.Bold
 				),
 				modifier = Modifier
@@ -124,9 +148,19 @@ fun PlaylistSheetScreen(
 			) {
 				IconButton(
 					onClick = {
-						viewModel.dispatch(
-							PlaylistSheetAction.CreatePlaylist
-						)
+						if (option == PlaylistOption.NEW) {
+							viewModel.dispatch(
+								PlaylistSheetAction.CreatePlaylist
+							)
+						} else {
+							viewModel.dispatch(
+								PlaylistSheetAction.UpdatePlaylist(
+									state.playlist.copy(
+										name = state.playlistName
+									)
+								)
+							)
+						}
 						
 						navController.popBackStack()
 					}
@@ -138,6 +172,12 @@ fun PlaylistSheetScreen(
 				}
 			}
 		}
+		
+		Divider(
+			modifier = Modifier
+				.padding(vertical = 8.dp)
+				.fillMaxWidth()
+		)
 		
 		OutlinedTextField(
 			singleLine = true,
@@ -168,7 +208,7 @@ fun PlaylistSheetScreen(
 			},
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(vertical = 16.dp)
+				.padding(16.dp)
 				.focusRequester(playlistNameFocusRequester)
 		)
 		
