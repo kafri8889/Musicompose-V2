@@ -34,11 +34,6 @@ class AlbumViewModel @Inject constructor(
 					environment.setAlbum(action.id)
 				}
 			}
-			is AlbumAction.UpdateSong -> {
-				viewModelScope.launch(environment.dispatcher) {
-					environment.updateSong(action.song)
-				}
-			}
 		}
 	}
 }

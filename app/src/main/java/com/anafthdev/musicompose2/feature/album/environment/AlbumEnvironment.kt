@@ -1,7 +1,6 @@
 package com.anafthdev.musicompose2.feature.album.environment
 
 import com.anafthdev.musicompose2.data.model.Album
-import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
 import kotlinx.coroutines.CoroutineDispatcher
@@ -61,10 +60,6 @@ class AlbumEnvironment @Inject constructor(
 	
 	override suspend fun setAlbum(albumID: String) {
 		_albumID.emit(albumID)
-	}
-	
-	override suspend fun updateSong(song: Song) {
-		repository.updateSongs(song)
 	}
 	
 }

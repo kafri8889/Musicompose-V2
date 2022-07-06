@@ -106,11 +106,9 @@ fun AlbumScreen(
 					songController?.play(song)
 				},
 				onFavoriteClicked = { isFavorite ->
-					viewModel.dispatch(
-						AlbumAction.UpdateSong(
-							song.copy(
-								isFavorite = isFavorite
-							)
+					songController?.updateSong(
+						song.copy(
+							isFavorite = isFavorite
 						)
 					)
 				}
