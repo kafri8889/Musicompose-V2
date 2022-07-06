@@ -2,6 +2,7 @@ package com.anafthdev.musicompose2.feature.musicompose.environment
 
 import com.anafthdev.musicompose2.data.SortSongOption
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
+import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
@@ -92,6 +93,18 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override suspend fun updateSong(song: Song) {
 		repository.updateSongs(song)
+		
+		val favoritePlaylist = repository.getPlaylist(Playlist.favorite.id)
+		favoritePlaylist?.let { playlist ->
+			repository.updatePlaylists(
+				playlist.copy(
+					songs = playlist.songs.toMutableList().apply {
+						if (song.isFavorite) add(song)
+						else removeIf { it.audioID == song.audioID }
+					}
+				)
+			)
+		}
 	}
 	
 	override suspend fun setShowBottomMusicPlayer(show: Boolean) {
