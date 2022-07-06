@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -23,12 +24,13 @@ import com.anafthdev.musicompose2.foundation.theme.Inter
 fun AlbumItem(
 	album: Album,
 	modifier: Modifier = Modifier,
+	containerColor: Color = MaterialTheme.colorScheme.background,
 	onClick: () -> Unit
 ) {
 
 	Card(
 		colors = CardDefaults.cardColors(
-			containerColor = MaterialTheme.colorScheme.background
+			containerColor = containerColor
 		),
 		onClick = onClick,
 		modifier = modifier
@@ -43,7 +45,10 @@ fun AlbumItem(
 			Image(
 				painter = rememberAsyncImagePainter(
 					ImageRequest.Builder(LocalContext.current)
-						.data(album.songs[0].albumPath.toUri())
+						.data(
+							if (album.songs.isNotEmpty()) album.songs[0].albumPath.toUri()
+							else R.drawable.ic_music_unknown
+						)
 						.error(R.drawable.ic_music_unknown)
 						.placeholder(R.drawable.ic_music_unknown)
 						.build()
