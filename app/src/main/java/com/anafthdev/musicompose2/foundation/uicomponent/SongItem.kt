@@ -1,5 +1,9 @@
 package com.anafthdev.musicompose2.foundation.uicomponent
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -34,14 +38,15 @@ fun SongItemPreview() {
 		LocalRippleTheme provides MusicomposeRippleTheme,
 		LocalContentColor provides if (isSystemInDarkTheme()) black10 else black01,
 	) {
-		SongItem(song = Song.default, isMusicPlaying = false, onClick = {}, onFavoriteClicked = {})
+		SongItem(song = Song.default, selected = true, isMusicPlaying = false, onClick = {}, onFavoriteClicked = {})
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun SongItem(
 	song: Song,
+	selected: Boolean,
 	isMusicPlaying: Boolean,
 	modifier: Modifier = Modifier,
 	showAlbumImage: Boolean = true,
@@ -93,7 +98,7 @@ fun SongItem(
 					maxLines = 1,
 					overflow = TextOverflow.Ellipsis,
 					style = MaterialTheme.typography.bodyMedium.copy(
-						color = if (isMusicPlaying) MaterialTheme.colorScheme.primary
+						color = if (selected) MaterialTheme.colorScheme.primary
 						else LocalContentColor.current,
 						fontWeight = FontWeight.Bold
 					)
@@ -104,11 +109,19 @@ fun SongItem(
 					maxLines = 1,
 					overflow = TextOverflow.Ellipsis,
 					style = MaterialTheme.typography.bodySmall.copy(
-						color = if (isMusicPlaying) MaterialTheme.colorScheme.primary
+						color = if (selected) MaterialTheme.colorScheme.primary
 						else LocalContentColor.current.copy(alpha = 0.7f),
 						fontFamily = Inter
 					)
 				)
+			}
+			
+			AnimatedVisibility(
+				visible = selected,
+				enter = scaleIn(),
+				exit = scaleOut()
+			) {
+				AudioWave(isMusicPlaying = isMusicPlaying)
 			}
 			
 			if (showFavorite) {
