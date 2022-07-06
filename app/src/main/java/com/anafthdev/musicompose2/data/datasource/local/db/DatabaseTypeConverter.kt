@@ -10,6 +10,8 @@ object DatabaseTypeConverter {
 	fun songsToJson(songs: List<Song>) = Gson().toJson(songs)!!
 	
 	@TypeConverter
-	fun songsFromJson(json: String) = Gson().fromJson(json, Array<Song>::class.java).toList()
+	fun songsFromJson(json: String): List<Song> {
+		return (Gson().fromJson(json, Array<Song>::class.java) ?: emptyArray()).toList()
+	}
 	
 }
