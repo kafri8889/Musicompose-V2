@@ -36,7 +36,7 @@ fun HomeScreen() {
 		) { song ->
 			SongItem(
 				song = song,
-				isMusicPlaying = false,
+				isMusicPlaying = musicomposeState.currentSongPlayed.audioID == song.audioID,
 				onClick = {
 					songController?.play(song)
 				},

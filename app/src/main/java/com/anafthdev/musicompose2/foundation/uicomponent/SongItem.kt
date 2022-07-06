@@ -93,7 +93,8 @@ fun SongItem(
 					maxLines = 1,
 					overflow = TextOverflow.Ellipsis,
 					style = MaterialTheme.typography.bodyMedium.copy(
-						color = if (isMusicPlaying) Color.Gray else LocalContentColor.current,
+						color = if (isMusicPlaying) MaterialTheme.colorScheme.primary
+						else LocalContentColor.current,
 						fontWeight = FontWeight.Bold
 					)
 				)
@@ -103,7 +104,8 @@ fun SongItem(
 					maxLines = 1,
 					overflow = TextOverflow.Ellipsis,
 					style = MaterialTheme.typography.bodySmall.copy(
-						color = if (isMusicPlaying) Color.Gray else LocalContentColor.current.copy(alpha = 0.7f),
+						color = if (isMusicPlaying) MaterialTheme.colorScheme.primary
+						else LocalContentColor.current.copy(alpha = 0.7f),
 						fontFamily = Inter
 					)
 				)
