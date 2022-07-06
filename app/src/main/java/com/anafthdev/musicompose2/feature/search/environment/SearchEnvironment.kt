@@ -82,7 +82,9 @@ class SearchEnvironment @Inject constructor(
 			query.collect { q ->
 				val filteredArtists = artistList.filter { it.name.contains(q, true) }
 				val filteredAlbums = albumList.filter { it.name.contains(q, true) }
-				val filteredSongs = songList.filter { it.displayName.contains(q, true) }
+				val filteredSongs = songList.filter {
+					it.displayName.contains(q, true) or it.title.contains(q, true)
+				}
 				
 				_artists.emit(filteredArtists)
 				_albums.emit(filteredAlbums)
