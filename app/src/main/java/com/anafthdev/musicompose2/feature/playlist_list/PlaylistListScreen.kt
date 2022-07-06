@@ -15,12 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
 import com.anafthdev.musicompose2.foundation.uicomponent.PlaylistItem
 
 @Composable
 fun PlaylistListScreen(
+	navController: NavController,
 	onNewPlaylist: () -> Unit
 ) {
 	
@@ -55,7 +58,11 @@ fun PlaylistListScreen(
 				PlaylistItem(
 					playlist = playlist,
 					onClick = {
-					
+						navController.navigate(
+							MusicomposeDestination.Playlist.createRoute(
+								playlistID = playlist.id
+							)
+						)
 					}
 				)
 			}
