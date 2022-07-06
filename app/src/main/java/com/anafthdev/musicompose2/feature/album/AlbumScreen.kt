@@ -59,7 +59,7 @@ fun AlbumScreen(
 				title = {
 					Text(
 						text = state.album.name,
-						style = MaterialTheme.typography.titleLarge.copy(
+						style = MaterialTheme.typography.titleMedium.copy(
 							fontWeight = FontWeight.Bold
 						)
 					)
