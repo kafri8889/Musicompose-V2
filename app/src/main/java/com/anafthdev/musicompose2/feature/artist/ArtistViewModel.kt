@@ -34,11 +34,6 @@ class ArtistViewModel @Inject constructor(
 					environment.setArtist(action.artistID)
 				}
 			}
-			is ArtistAction.UpdateSong -> {
-				viewModelScope.launch(environment.dispatcher) {
-					environment.updateSong(action.song)
-				}
-			}
 		}
 	}
 	

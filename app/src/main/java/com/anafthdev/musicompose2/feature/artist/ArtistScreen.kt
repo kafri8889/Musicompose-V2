@@ -106,11 +106,9 @@ fun ArtistScreen(
 					songController?.play(song)
 				},
 				onFavoriteClicked = { isFavorite ->
-					viewModel.dispatch(
-						ArtistAction.UpdateSong(
-							song.copy(
-								isFavorite = isFavorite
-							)
+					songController?.updateSong(
+						song.copy(
+							isFavorite = isFavorite
 						)
 					)
 				}

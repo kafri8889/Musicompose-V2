@@ -2,7 +2,6 @@ package com.anafthdev.musicompose2.feature.artist.environment
 
 import com.anafthdev.musicompose2.data.model.Album
 import com.anafthdev.musicompose2.data.model.Artist
-import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
 import kotlinx.coroutines.CoroutineDispatcher
@@ -77,10 +76,6 @@ class ArtistEnvironment @Inject constructor(
 	
 	override suspend fun setArtist(artistID: String) {
 		_artistID.emit(artistID)
-	}
-	
-	override suspend fun updateSong(song: Song) {
-		repository.updateSongs(song)
 	}
 	
 }
