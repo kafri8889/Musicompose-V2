@@ -76,8 +76,31 @@ class MusicomposeEnvironment @Inject constructor(
 	}
 	
 	override suspend fun play(song: Song) {
+		val justPlayedPlaylist = repository.getPlaylist(Playlist.justPlayed.id)
+		justPlayedPlaylist?.let { playlist ->
+			repository.updatePlaylists(
+				playlist.copy(
+					songs = playlist.songs.toMutableList().apply {
+						val contain = playlist.songs.find {
+							it.audioID == song.audioID
+						} != null
+						
+						if (contain) removeIf { it.audioID == song.audioID }
+						
+						if (playlist.songs.size < 10) add(song)
+						else {
+							removeAt(0)
+							add(song)
+						}
+					}
+				)
+			)
+		}
+		
 		_currentPlayedSong.emit(song)
+		
 		appDatastore.setLastSongPlayed(song.audioID)
+		
 		// TODO: play song
 	}
 	
@@ -101,6 +124,21 @@ class MusicomposeEnvironment @Inject constructor(
 					songs = playlist.songs.toMutableList().apply {
 						if (song.isFavorite) add(song)
 						else removeIf { it.audioID == song.audioID }
+					}
+				)
+			)
+		}
+		
+		val justPlayedPlaylist = repository.getPlaylist(Playlist.justPlayed.id)
+		justPlayedPlaylist?.let { playlist ->
+			repository.updatePlaylists(
+				playlist.copy(
+					songs = playlist.songs.toMutableList().apply {
+						// update song in justPlayed playlist
+						
+						val songIndex = indexOfFirst { it.audioID == song.audioID }
+						
+						if (songIndex != -1) set(songIndex, song)
 					}
 				)
 			)

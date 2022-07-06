@@ -32,9 +32,15 @@ class PlaylistEnvironment @Inject constructor(
 			) { mPlaylistID, playlists ->
 				mPlaylistID to playlists
 			}.collect { (mPlaylistID, playlists) ->
-				_playlist.emit(
-					playlists.find { it.id == mPlaylistID } ?: Playlist.default
-				)
+				var mPlaylist = playlists.find { it.id == mPlaylistID } ?: Playlist.default
+				
+				if (mPlaylist.id == Playlist.justPlayed.id) {
+					mPlaylist = mPlaylist.copy(
+						songs = mPlaylist.songs.reversed()
+					)
+				}
+				
+				_playlist.emit(mPlaylist)
 			}
 		}
 	}

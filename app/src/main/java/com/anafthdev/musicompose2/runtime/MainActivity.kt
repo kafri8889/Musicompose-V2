@@ -82,14 +82,8 @@ class MainActivity: LocalizedActivity() {
 		this.setListener(object: OnLocaleChangedListener {
 			override fun onChanged() {
 				lifecycleScope.launch {
-					repository.updatePlaylists(
-						Playlist.favorite.copy(
-							name = getString(R.string.favorite)
-						),
-						Playlist.justPlayed.copy(
-							name = getString(R.string.just_played)
-						)
-					)
+					repository.updatePlaylist(Playlist.favorite.id, getString(R.string.favorite))
+					repository.updatePlaylist(Playlist.justPlayed.id, getString(R.string.just_played))
 				}
 			}
 		})
@@ -115,14 +109,8 @@ class MainActivity: LocalizedActivity() {
 				Playlist.justPlayed
 			)
 			
-			repository.updatePlaylists(
-				Playlist.favorite.copy(
-					name = getString(R.string.favorite)
-				),
-				Playlist.justPlayed.copy(
-					name = getString(R.string.just_played)
-				)
-			)
+			repository.updatePlaylist(Playlist.favorite.id, getString(R.string.favorite))
+			repository.updatePlaylist(Playlist.justPlayed.id, getString(R.string.just_played))
 		}
 	}
 	

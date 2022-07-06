@@ -36,6 +36,10 @@ class Repository @Inject constructor(
 		return localDatasource.getPlaylist(id)
 	}
 	
+	suspend fun updatePlaylist(id: Int, name: String) {
+		localDatasource.updatePlaylist(id, name)
+	}
+	
 	suspend fun deletePlaylists(vararg playlist: Playlist) {
 		localDatasource.deletePlaylists(*playlist)
 	}

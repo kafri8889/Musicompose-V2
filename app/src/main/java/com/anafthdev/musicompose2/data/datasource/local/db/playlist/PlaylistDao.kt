@@ -13,6 +13,9 @@ interface PlaylistDao {
 	@Query("SELECT * FROM playlist_table WHERE id LIKE :mID")
 	fun get(mID: Int): Playlist?
 	
+	@Query("UPDATE playlist_table SET name= :mName WHERE id LIKE :mID")
+	suspend fun update(mID: Int, mName: String)
+	
 	@Update
 	suspend fun update(vararg playlist: Playlist)
 	

@@ -38,6 +38,10 @@ class LocalDatasource @Inject constructor(
 		return playlistDao.get(id)
 	}
 	
+	suspend fun updatePlaylist(id: Int, name: String) {
+		playlistDao.update(id, name)
+	}
+	
 	suspend fun deletePlaylists(vararg playlist: Playlist) {
 		playlistDao.delete(*playlist)
 	}
