@@ -28,7 +28,7 @@ class PlaylistListEnvironment @Inject constructor(
 	init {
 		CoroutineScope(dispatcher).launch {
 			combine(
-				repository.getAllPlaylist(),
+				repository.getPlaylists(),
 				appDatastore.getSortPlaylistOption
 			) { mPlaylists, sortPlaylistOption ->
 				mPlaylists to sortPlaylistOption

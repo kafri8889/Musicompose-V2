@@ -28,7 +28,7 @@ class Repository @Inject constructor(
 	
 	
 	
-	fun getAllPlaylist(): Flow<List<Playlist>> {
+	fun getPlaylists(): Flow<List<Playlist>> {
 		return localDatasource.getAllPlaylist()
 	}
 	
