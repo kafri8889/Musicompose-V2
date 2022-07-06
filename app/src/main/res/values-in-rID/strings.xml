@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="ok">Ok</string>
     <string name="song">Lagu</string>
     <string name="dark">Gelap</string>
+    <string name="edit">Edit</string>
     <string name="theme">Tema</string>
     <string name="light">Terang</string>
     <string name="album">Album</string>
+    <string name="delete">Hapus</string>
     <string name="artist">Artis</string>
     <string name="cancel">Batalkan</string>
     <string name="n_song">%1$s Lagu</string>
@@ -18,6 +21,8 @@
     <string name="song_name">Nama Lagu</string>
     <string name="date_added">Tanggal ditambahkan</string>
     <string name="album_name">Nama album</string>
+    <string name="my_playlist">Daftar putar saya</string>
+    <string name="change_name">Ganti nama</string>
     <string name="artist_name">Nama artis</string>
     <string name="just_played">Baru saja dimainkan</string>
     <string name="new_playlist">Daftar putar baru</string>
