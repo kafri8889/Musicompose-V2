@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.PlaylistOption
+import com.anafthdev.musicompose2.data.SongSelectorType
 import com.anafthdev.musicompose2.data.SortType
 import com.anafthdev.musicompose2.data.model.Album
 import com.anafthdev.musicompose2.data.model.Artist
@@ -25,6 +26,7 @@ import com.anafthdev.musicompose2.feature.playlist.playlist.PlaylistScreen
 import com.anafthdev.musicompose2.feature.playlist.playlist_sheet.PlaylistSheetScreen
 import com.anafthdev.musicompose2.feature.search.SearchScreen
 import com.anafthdev.musicompose2.feature.setting.SettingScreen
+import com.anafthdev.musicompose2.feature.song_selector.SongSelectorScreen
 import com.anafthdev.musicompose2.feature.sort_sheet.SortSheetScreen
 import com.anafthdev.musicompose2.feature.theme.ThemeScreen
 import com.anafthdev.musicompose2.foundation.common.BottomSheetLayoutConfig
@@ -135,6 +137,31 @@ fun MusicomposeNavHost(
 				val playlistID = entry.arguments?.getInt("playlistID") ?: Playlist.default.id
 				
 				PlaylistScreen(
+					playlistID = playlistID,
+					navController = navController
+				)
+			}
+			
+			composable(
+				route = MusicomposeDestination.SongSelector.route,
+				arguments = listOf(
+					navArgument(
+						name = "type"
+					) {
+						type = NavType.IntType
+					},
+					navArgument(
+						name = "playlistID"
+					) {
+						type = NavType.IntType
+					}
+				)
+			) { entry ->
+				val type = SongSelectorType.values()[entry.arguments?.getInt("type") ?: SongSelectorType.ADD_SONG.ordinal]
+				val playlistID = entry.arguments?.getInt("playlistID") ?: Playlist.default.id
+				
+				SongSelectorScreen(
+					type = type,
 					playlistID = playlistID,
 					navController = navController
 				)

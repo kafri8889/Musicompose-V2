@@ -14,4 +14,12 @@ object DatabaseTypeConverter {
 		return (Gson().fromJson(json, Array<Song>::class.java) ?: emptyArray()).toList()
 	}
 	
+	@TypeConverter
+	fun longListToJson(songIDs: List<Long>) = Gson().toJson(songIDs)!!
+	
+	@TypeConverter
+	fun longListFromJson(json: String): List<Long> {
+		return (Gson().fromJson(json, Array<Long>::class.java) ?: emptyArray()).toList()
+	}
+	
 }

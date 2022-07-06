@@ -25,6 +25,16 @@ class PlaylistViewModel @Inject constructor(
 				}
 			}
 		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.getSongs().collect { songs ->
+				setState {
+					copy(
+						songs = songs
+					)
+				}
+			}
+		}
 	}
 	
 	override fun dispatch(action: PlaylistAction) {
@@ -32,6 +42,11 @@ class PlaylistViewModel @Inject constructor(
 			is PlaylistAction.GetPlaylist -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.setPlaylist(action.playlistID)
+				}
+			}
+			is PlaylistAction.UpdatePlaylist -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.updatePlaylist(action.playlist)
 				}
 			}
 		}

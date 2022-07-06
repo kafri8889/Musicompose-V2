@@ -19,6 +19,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.model.Playlist
+import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.theme.no_shape
 
@@ -26,6 +27,7 @@ import com.anafthdev.musicompose2.foundation.theme.no_shape
 @Composable
 fun PlaylistItem(
 	playlist: Playlist,
+	songs: List<Song>,
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit
 ) {
@@ -35,8 +37,8 @@ fun PlaylistItem(
 	
 	val playlistThumb = remember(playlist, albumThumbIndex) {
 		when {
-			playlist.icon == R.drawable.ic_playlist_unknown && playlist.songs.isNotEmpty() -> {
-				playlist.songs[albumThumbIndex].albumPath.toUri()
+			playlist.icon == R.drawable.ic_playlist_unknown && songs.isNotEmpty() -> {
+				songs[albumThumbIndex].albumPath.toUri()
 			}
 			else -> "android.resource://${context.packageName}/${R.drawable.ic_playlist_unknown}".toUri()
 		}
@@ -69,7 +71,7 @@ fun PlaylistItem(
 						placeholder(R.drawable.ic_playlist_unknown)
 						listener(
 							onError = { _, _ ->
-								if (albumThumbIndex < playlist.songs.lastIndex) {
+								if (albumThumbIndex < songs.lastIndex) {
 									albumThumbIndex += 1
 									data(playlistThumb)
 								}
@@ -101,7 +103,7 @@ fun PlaylistItem(
 				)
 				
 				Text(
-					text = "${playlist.songs.size} ${stringResource(id = R.string.song)}",
+					text = "${songs.size} ${stringResource(id = R.string.song)}",
 					maxLines = 1,
 					overflow = TextOverflow.Ellipsis,
 					style = MaterialTheme.typography.bodySmall.copy(

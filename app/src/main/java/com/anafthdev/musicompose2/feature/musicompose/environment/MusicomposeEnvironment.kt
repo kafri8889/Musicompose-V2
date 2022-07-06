@@ -82,15 +82,15 @@ class MusicomposeEnvironment @Inject constructor(
 				playlist.copy(
 					songs = playlist.songs.toMutableList().apply {
 						val contain = playlist.songs.find {
-							it.audioID == song.audioID
+							it == song.audioID
 						} != null
 						
-						if (contain) removeIf { it.audioID == song.audioID }
+						if (contain) removeIf { it == song.audioID }
 						
-						if (playlist.songs.size < 10) add(song)
+						if (playlist.songs.size < 10) add(song.audioID)
 						else {
 							removeAt(0)
-							add(song)
+							add(song.audioID)
 						}
 					}
 				)
@@ -122,8 +122,8 @@ class MusicomposeEnvironment @Inject constructor(
 			repository.updatePlaylists(
 				playlist.copy(
 					songs = playlist.songs.toMutableList().apply {
-						if (song.isFavorite) add(song)
-						else removeIf { it.audioID == song.audioID }
+						if (song.isFavorite) add(song.audioID)
+						else removeIf { it == song.audioID }
 					}
 				)
 			)
@@ -136,9 +136,9 @@ class MusicomposeEnvironment @Inject constructor(
 					songs = playlist.songs.toMutableList().apply {
 						// update song in justPlayed playlist
 						
-						val songIndex = indexOfFirst { it.audioID == song.audioID }
+						val songIndex = indexOfFirst { it == song.audioID }
 						
-						if (songIndex != -1) set(songIndex, song)
+						if (songIndex != -1) set(songIndex, song.audioID)
 					}
 				)
 			)

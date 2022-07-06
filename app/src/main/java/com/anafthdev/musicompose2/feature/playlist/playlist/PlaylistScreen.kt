@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,8 +33,9 @@ import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.PlaylistOption
+import com.anafthdev.musicompose2.data.SongSelectorType
+import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.data.model.Song
-import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.extension.isPlaying
 import com.anafthdev.musicompose2.foundation.extension.isSelected
@@ -53,7 +55,6 @@ fun PlaylistScreen(
 	val context = LocalContext.current
 	val density = LocalDensity.current
 	val songController = LocalSongController.current
-	val musicomposeState = LocalMusicomposeState.current
 	
 	val viewModel = hiltViewModel<PlaylistViewModel>()
 	
@@ -67,7 +68,7 @@ fun PlaylistScreen(
 	val playlistThumb = remember(state.playlist, albumThumbIndex) {
 		when {
 			state.playlist.icon == R.drawable.ic_playlist_unknown && state.playlist.songs.isNotEmpty() -> {
-				state.playlist.songs[albumThumbIndex].albumPath.toUri()
+				state.songs[albumThumbIndex].albumPath.toUri()
 			}
 			else -> "android.resource://${context.packageName}/${R.drawable.ic_playlist_unknown}".toUri()
 		}
@@ -274,7 +275,7 @@ fun PlaylistScreen(
 		}
 		
 		items(
-			items = state.playlist.songs,
+			items = state.songs,
 			key = { song: Song -> song.hashCode() }
 		) { song ->
 			SongItem(
@@ -293,6 +294,105 @@ fun PlaylistScreen(
 					)
 				}
 			)
+		}
+		
+		if (state.playlist.songs.isNotEmpty() && state.playlist.id != Playlist.justPlayed.id) {
+			item {
+				FilledTonalButton(
+					onClick = {
+						when (state.playlist.id) {
+							Playlist.favorite.id -> navController.navigate(
+								MusicomposeDestination.SongSelector.createRoute(
+									type = SongSelectorType.ADD_FAVORITE_SONG,
+									playlistID = state.playlist.id
+								)
+							)
+							else -> navController.navigate(
+								MusicomposeDestination.SongSelector.createRoute(
+									type = SongSelectorType.ADD_SONG,
+									playlistID = state.playlist.id
+								)
+							)
+						}
+					},
+					modifier = Modifier
+						.padding(
+							vertical = 8.dp,
+							horizontal = 16.dp
+						)
+						.fillParentMaxWidth()
+				) {
+					Text(
+						text = stringResource(
+							id = when (state.playlist.id) {
+								Playlist.favorite.id -> R.string.add_favorite_song
+								else -> R.string.add_song
+							}
+						),
+						style = LocalTextStyle.current.copy(
+							fontFamily = Inter,
+							fontWeight = FontWeight.Medium
+						)
+					)
+				}
+			}
+		}
+		
+		if (state.playlist.songs.isEmpty()) {
+			item {
+				Column(
+					horizontalAlignment = Alignment.CenterHorizontally,
+					verticalArrangement = Arrangement.Center,
+					modifier = Modifier
+						.padding(16.dp)
+						.fillParentMaxWidth()
+				) {
+					Icon(
+						painter = painterResource(id = R.drawable.ic_musicnote),
+						contentDescription = null,
+						tint = Color.Gray,
+						modifier = Modifier
+							.fillMaxWidth(0.5f)
+							.aspectRatio(1f)
+					)
+					
+					FilledTonalButton(
+						onClick = {
+							when (state.playlist.id) {
+								Playlist.justPlayed.id -> R.string.play_song
+								Playlist.favorite.id -> navController.navigate(
+									MusicomposeDestination.SongSelector.createRoute(
+										type = SongSelectorType.ADD_FAVORITE_SONG,
+										playlistID = state.playlist.id
+									)
+								)
+								else -> navController.navigate(
+									MusicomposeDestination.SongSelector.createRoute(
+										type = SongSelectorType.ADD_SONG,
+										playlistID = state.playlist.id
+									)
+								)
+							}
+						},
+						modifier = Modifier
+							.padding(16.dp)
+					) {
+						Text(
+							text = stringResource(
+								id = when (state.playlist.id) {
+									Playlist.favorite.id -> R.string.add_favorite_song
+									Playlist.justPlayed.id -> R.string.play_song
+									else -> R.string.add_song
+								}
+							),
+							style = LocalTextStyle.current.copy(
+								fontFamily = Inter,
+								fontWeight = FontWeight.Medium
+							)
+						)
+					}
+				}
+			}
 		}
 		
 		// BottomMusicPlayer padding

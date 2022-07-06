@@ -30,6 +30,12 @@ sealed class MusicomposeDestination(open val route: String) {
 		}
 	}
 	
+	object SongSelector: MusicomposeDestination("song-selector/{type}/{playlistID}") {
+		fun createRoute(type: SongSelectorType, playlistID: Int): String {
+			return "song-selector/${type.ordinal}/$playlistID"
+		}
+	}
+	
 	class BottomSheet {
 		object Sort: MusicomposeDestination("bottom-sheet/sort/{type}") {
 			fun createRoute(type: SortType): String {
