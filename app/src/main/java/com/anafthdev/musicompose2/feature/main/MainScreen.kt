@@ -197,6 +197,7 @@ fun MainScreen(
 				1 -> AlbumListScreen(navController = navController)
 				2 -> ArtistListScreen(navController = navController)
 				3 -> PlaylistListScreen(
+					navController = navController,
 					onNewPlaylist = {
 						scope.launch {
 							songController?.hideBottomMusicPlayer()
