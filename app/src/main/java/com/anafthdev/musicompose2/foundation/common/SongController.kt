@@ -11,7 +11,7 @@ interface SongController {
 	
 	fun pause()
 	
-	fun setFavorite(favorite: Boolean)
+	fun updateSong(song: Song)
 	
 	fun hideBottomMusicPlayer()
 	

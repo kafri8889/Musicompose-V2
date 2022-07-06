@@ -134,7 +134,11 @@ fun Musicompose(
 						
 						},
 						onFavoriteClicked = { isFavorite ->
-							songController.setFavorite(isFavorite)
+							songController.updateSong(
+								state.currentSongPlayed.copy(
+									isFavorite = isFavorite
+								)
+							)
 						},
 						onPlayPauseClicked = { isPlaying ->
 							if (isPlaying) songController.resume()

@@ -80,9 +80,9 @@ class MusicomposeViewModel @Inject constructor(
 					else environment.pause()
 				}
 			}
-			is MusicomposeAction.SetFavorite -> {
+			is MusicomposeAction.UpdateSong -> {
 				viewModelScope.launch(environment.dispatcher) {
-					environment.setFavorite(action.isFavorite)
+					environment.updateSong(action.song)
 				}
 			}
 			is MusicomposeAction.SetShowBottomMusicPlayer -> {

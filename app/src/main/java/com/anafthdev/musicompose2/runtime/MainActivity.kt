@@ -50,9 +50,9 @@ class MainActivity: LocalizedActivity() {
 			)
 		}
 		
-		override fun setFavorite(favorite: Boolean) {
+		override fun updateSong(song: Song) {
 			musicomposeViewModel.dispatch(
-				MusicomposeAction.SetFavorite(favorite)
+				MusicomposeAction.UpdateSong(song)
 			)
 		}
 		

@@ -22,7 +22,7 @@ interface IMusicomposeEnvironment {
 	
 	suspend fun resume()
 	
-	suspend fun setFavorite(favorite: Boolean)
+	suspend fun updateSong(song: Song)
 	
 	suspend fun setShowBottomMusicPlayer(show: Boolean)
 	
