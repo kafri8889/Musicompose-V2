@@ -13,6 +13,8 @@ import androidx.navigation.navArgument
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.PlaylistOption
 import com.anafthdev.musicompose2.data.SortType
+import com.anafthdev.musicompose2.data.model.Album
+import com.anafthdev.musicompose2.feature.album.AlbumScreen
 import com.anafthdev.musicompose2.feature.language.LanguageScreen
 import com.anafthdev.musicompose2.feature.main.MainScreen
 import com.anafthdev.musicompose2.feature.playlist_sheet.PlaylistSheetScreen
@@ -77,6 +79,24 @@ fun MusicomposeNavHost(
 			
 			composable(MusicomposeDestination.Theme.route) {
 				ThemeScreen(navController = navController)
+			}
+			
+			composable(
+				route = MusicomposeDestination.Album.route,
+				arguments = listOf(
+					navArgument(
+						name = "albumID"
+					) {
+						type = NavType.StringType
+					}
+				)
+			) { entry ->
+				val albumID = entry.arguments?.getString("albumID") ?: Album.default.id
+				
+				AlbumScreen(
+					albumID = albumID,
+					navController = navController
+				)
 			}
 			
 			bottomSheet(

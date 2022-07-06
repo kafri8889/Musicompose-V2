@@ -19,7 +19,7 @@ import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.PlaylistOption
 import com.anafthdev.musicompose2.data.SortType
-import com.anafthdev.musicompose2.feature.album_list.AlbumScreen
+import com.anafthdev.musicompose2.feature.album_list.AlbumListScreen
 import com.anafthdev.musicompose2.feature.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
 import com.anafthdev.musicompose2.feature.playlist_list.PlaylistListScreen
@@ -194,7 +194,7 @@ fun MainScreen(
 		) { page ->
 			when (page) {
 				0 -> HomeScreen()
-				1 -> AlbumScreen()
+				1 -> AlbumListScreen(navController = navController)
 				2 -> ArtistListScreen()
 				3 -> PlaylistListScreen(
 					onNewPlaylist = {

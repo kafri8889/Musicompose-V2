@@ -12,12 +12,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.model.Album
 import com.anafthdev.musicompose2.foundation.uicomponent.AlbumItem
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
 
 @Composable
-fun AlbumScreen() {
+fun AlbumListScreen(
+	navController: NavController
+) {
 	
 	val viewModel = hiltViewModel<AlbumListViewModel>()
 	
@@ -36,7 +40,9 @@ fun AlbumScreen() {
 			AlbumItem(
 				album = album,
 				onClick = {
-				
+					navController.navigate(
+						MusicomposeDestination.Album.createRoute(album.id)
+					)
 				}
 			)
 		}
