@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,12 +26,13 @@ import com.anafthdev.musicompose2.foundation.theme.Inter
 fun ArtistItem(
 	artist: Artist,
 	modifier: Modifier = Modifier,
+	containerColor: Color = MaterialTheme.colorScheme.background,
 	onClick: () -> Unit
 ) {
 
 	Card(
 		colors = CardDefaults.cardColors(
-			containerColor = MaterialTheme.colorScheme.background
+			containerColor = containerColor
 		),
 		onClick = onClick,
 		modifier = modifier
