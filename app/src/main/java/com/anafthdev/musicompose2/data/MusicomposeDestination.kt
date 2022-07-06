@@ -24,6 +24,12 @@ sealed class MusicomposeDestination(open val route: String) {
 		}
 	}
 	
+	object Playlist: MusicomposeDestination("playlist/{playlistID}") {
+		fun createRoute(playlistID: Int): String {
+			return "playlist/$playlistID"
+		}
+	}
+	
 	class BottomSheet {
 		object Sort: MusicomposeDestination("bottom-sheet/sort/{type}") {
 			fun createRoute(type: SortType): String {
@@ -31,9 +37,18 @@ sealed class MusicomposeDestination(open val route: String) {
 			}
 		}
 		
-		object Playlist: MusicomposeDestination("bottom-sheet/playlist/{option}") {
-			fun createRoute(option: PlaylistOption): String {
-				return "bottom-sheet/playlist/${option.ordinal}"
+		object Playlist: MusicomposeDestination("bottom-sheet/playlist/{option}/{playlistID}") {
+			fun createRoute(
+				option: PlaylistOption,
+				playlistID: Int = com.anafthdev.musicompose2.data.model.Playlist.default.id
+			): String {
+				return "bottom-sheet/playlist/${option.ordinal}/$playlistID"
+			}
+		}
+		
+		object DeletePlaylist: MusicomposeDestination("delete-playlist/{playlistID}") {
+			fun createRoute(playlistID: Int): String {
+				return "delete-playlist/$playlistID"
 			}
 		}
 	}

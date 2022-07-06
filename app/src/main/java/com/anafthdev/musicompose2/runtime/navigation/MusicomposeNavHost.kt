@@ -15,10 +15,13 @@ import com.anafthdev.musicompose2.data.PlaylistOption
 import com.anafthdev.musicompose2.data.SortType
 import com.anafthdev.musicompose2.data.model.Album
 import com.anafthdev.musicompose2.data.model.Artist
+import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.feature.album.AlbumScreen
 import com.anafthdev.musicompose2.feature.artist.ArtistScreen
+import com.anafthdev.musicompose2.feature.delete_playlist.DeletePlaylistScreen
 import com.anafthdev.musicompose2.feature.language.LanguageScreen
 import com.anafthdev.musicompose2.feature.main.MainScreen
+import com.anafthdev.musicompose2.feature.playlist.PlaylistScreen
 import com.anafthdev.musicompose2.feature.playlist_sheet.PlaylistSheetScreen
 import com.anafthdev.musicompose2.feature.search.SearchScreen
 import com.anafthdev.musicompose2.feature.setting.SettingScreen
@@ -119,6 +122,24 @@ fun MusicomposeNavHost(
 				)
 			}
 			
+			composable(
+				route = MusicomposeDestination.Playlist.route,
+				arguments = listOf(
+					navArgument(
+						name = "playlistID"
+					) {
+						type = NavType.IntType
+					}
+				)
+			) { entry ->
+				val playlistID = entry.arguments?.getInt("playlistID") ?: Playlist.default.id
+				
+				PlaylistScreen(
+					playlistID = playlistID,
+					navController = navController
+				)
+			}
+			
 			bottomSheet(
 				route = MusicomposeDestination.BottomSheet.Sort.route,
 				arguments = listOf(
@@ -148,17 +169,46 @@ fun MusicomposeNavHost(
 						name = "option"
 					) {
 						type = NavType.IntType
+					},
+					navArgument(
+						name = "playlistID"
+					) {
+						type = NavType.IntType
 					}
 				)
 			) { entry ->
 				val playlistOption = PlaylistOption.values()[entry.arguments?.getInt("option") ?: 0]
+				val playlistID = entry.arguments?.getInt("playlistID") ?: Playlist.default.id
 				
 				bottomSheetLayoutConfig = bottomSheetLayoutConfig.copy(
 					sheetBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
 				)
 				
 				PlaylistSheetScreen(
+					playlistID = playlistID,
 					option = playlistOption,
+					navController = navController
+				)
+			}
+			
+			bottomSheet(
+				route = MusicomposeDestination.BottomSheet.DeletePlaylist.route,
+				arguments = listOf(
+					navArgument(
+						name = "playlistID"
+					) {
+						type = NavType.IntType
+					}
+				)
+			) { entry ->
+				val playlistID = entry.arguments?.getInt("playlistID") ?: Playlist.default.id
+				
+				bottomSheetLayoutConfig = bottomSheetLayoutConfig.copy(
+					sheetBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
+				)
+				
+				DeletePlaylistScreen(
+					playlistID = playlistID,
 					navController = navController
 				)
 			}
