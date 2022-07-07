@@ -26,6 +26,9 @@ class MusicomposeEnvironment @Inject constructor(
 	private val _currentPlayedSong = MutableStateFlow(Song.default)
 	private val currentPlayedSong: StateFlow<Song> = _currentPlayedSong
 	
+	private val _currentDuration = MutableStateFlow(0L)
+	private val currentDuration: StateFlow<Long> = _currentDuration
+	
 	private val _isPlaying = MutableStateFlow(false)
 	private val isPlaying: StateFlow<Boolean> = _isPlaying
 	
@@ -71,6 +74,10 @@ class MusicomposeEnvironment @Inject constructor(
 		return isPlaying
 	}
 	
+	override fun getCurrentDuration(): Flow<Long> {
+		return currentDuration
+	}
+	
 	override fun isBottomMusicPlayerShowed(): Flow<Boolean> {
 		return isBottomMusicPlayerShowed
 	}
@@ -112,6 +119,19 @@ class MusicomposeEnvironment @Inject constructor(
 	override suspend fun resume() {
 		_isPlaying.emit(true)
 		// TODO: resume
+	}
+	
+	override suspend fun previous() {
+		// TODO: previous 
+	}
+	
+	override suspend fun next() {
+		// TODO: next 
+	}
+	
+	override suspend fun snapTo(duration: Long) {
+		_currentDuration.emit(duration)
+		// TODO: snap to duration
 	}
 	
 	override suspend fun updateSong(song: Song) {

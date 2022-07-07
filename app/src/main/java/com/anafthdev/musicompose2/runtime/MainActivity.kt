@@ -50,6 +50,26 @@ class MainActivity: LocalizedActivity() {
 			)
 		}
 		
+		override fun previous() {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.Previous
+			)
+		}
+		
+		override fun next() {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.Next
+			)
+		}
+		
+		override fun snapTo(duration: Long) {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.SnapTo(
+					duration = duration
+				)
+			)
+		}
+		
 		override fun updateSong(song: Song) {
 			musicomposeViewModel.dispatch(
 				MusicomposeAction.UpdateSong(song)

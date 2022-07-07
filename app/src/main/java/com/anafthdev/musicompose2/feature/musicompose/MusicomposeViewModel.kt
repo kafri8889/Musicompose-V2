@@ -37,10 +37,10 @@ class MusicomposeViewModel @Inject constructor(
 		}
 		
 		viewModelScope.launch(environment.dispatcher) {
-			environment.getCurrentPlayedSong().collect { song ->
+			environment.getCurrentDuration().collect { duration ->
 				setState {
 					copy(
-						currentSongPlayed = song
+						currentDuration = duration
 					)
 				}
 			}
@@ -74,6 +74,11 @@ class MusicomposeViewModel @Inject constructor(
 					environment.play(action.song)
 				}
 			}
+			is MusicomposeAction.SnapTo -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.snapTo(action.duration)
+				}
+			}
 			is MusicomposeAction.SetPlaying -> {
 				viewModelScope.launch(environment.dispatcher) {
 					if (action.isPlaying) environment.resume()
@@ -93,6 +98,16 @@ class MusicomposeViewModel @Inject constructor(
 			is MusicomposeAction.PlayLastSongPlayed -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.playLastSongPlayed()
+				}
+			}
+			is MusicomposeAction.Previous -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.previous()
+				}
+			}
+			is MusicomposeAction.Next -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.next()
 				}
 			}
 		}

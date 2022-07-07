@@ -10,9 +10,11 @@ interface IMusicomposeEnvironment {
 	
 	fun getSongs(): Flow<List<Song>>
 	
-	fun getCurrentPlayedSong(): Flow<Song>
-	
 	fun isPlaying(): Flow<Boolean>
+	
+	fun getCurrentDuration(): Flow<Long>
+	
+	fun getCurrentPlayedSong(): Flow<Song>
 	
 	fun isBottomMusicPlayerShowed(): Flow<Boolean>
 	
@@ -21,6 +23,12 @@ interface IMusicomposeEnvironment {
 	suspend fun pause()
 	
 	suspend fun resume()
+	
+	suspend fun previous()
+	
+	suspend fun next()
+	
+	suspend fun snapTo(duration: Long)
 	
 	suspend fun updateSong(song: Song)
 	

@@ -11,6 +11,12 @@ interface SongController {
 	
 	fun pause()
 	
+	fun previous()
+	
+	fun next()
+	
+	fun snapTo(duration: Long)
+	
 	fun updateSong(song: Song)
 	
 	fun hideBottomMusicPlayer()
