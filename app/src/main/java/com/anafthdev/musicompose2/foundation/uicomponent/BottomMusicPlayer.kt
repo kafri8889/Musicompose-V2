@@ -1,6 +1,5 @@
 package com.anafthdev.musicompose2.foundation.uicomponent
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -152,17 +151,7 @@ private fun AlbumImage(
 	path: String
 ) {
 	
-	val infiniteTransition = rememberInfiniteTransition()
-	val angle by infiniteTransition.animateFloat(
-		initialValue = 0f,
-		targetValue = 360f,
-		animationSpec = infiniteRepeatable(
-			animation = tween(
-				durationMillis = 5000,
-				easing = FastOutSlowInEasing
-			)
-		)
-	)
+	val angle = LocalBottomMusicPlayerAlbumImageAngle.current
 	
 	var currentAngle by remember { mutableStateOf(0f) }
 
@@ -221,3 +210,5 @@ object BottomMusicPlayerDefault {
 	val Height = 96.dp
 	
 }
+
+val LocalBottomMusicPlayerAlbumImageAngle = compositionLocalOf { 0f }

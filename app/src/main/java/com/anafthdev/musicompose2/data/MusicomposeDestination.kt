@@ -37,6 +37,8 @@ sealed class MusicomposeDestination(open val route: String) {
 	}
 	
 	class BottomSheet {
+		object MusicPlayer: MusicomposeDestination("music-player")
+		
 		object Sort: MusicomposeDestination("bottom-sheet/sort/{type}") {
 			fun createRoute(type: SortType): String {
 				return "bottom-sheet/sort/${type.ordinal}"

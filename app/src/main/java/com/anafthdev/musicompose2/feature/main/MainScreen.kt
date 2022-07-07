@@ -22,6 +22,7 @@ import com.anafthdev.musicompose2.data.SortType
 import com.anafthdev.musicompose2.feature.album.album_list.AlbumListScreen
 import com.anafthdev.musicompose2.feature.artist.artist_list.ArtistListScreen
 import com.anafthdev.musicompose2.feature.home.HomeScreen
+import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.feature.playlist.playlist_list.PlaylistListScreen
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.extension.isInDarkTheme
@@ -29,6 +30,7 @@ import com.anafthdev.musicompose2.foundation.extension.pagerTabIndicatorOffset
 import com.anafthdev.musicompose2.foundation.theme.black01
 import com.anafthdev.musicompose2.foundation.theme.black10
 import com.anafthdev.musicompose2.foundation.theme.circle
+import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerImpl
 import com.anafthdev.musicompose2.foundation.uicomponent.MoreOptionPopup
 import com.anafthdev.musicompose2.foundation.uimode.data.LocalUiMode
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -51,6 +53,7 @@ fun MainScreen(
 	)
 	
 	val songController = LocalSongController.current
+	val musicomposeState = LocalMusicomposeState.current
 	
 	val scope = rememberCoroutineScope()
 	val pagerState = rememberPagerState()
@@ -69,148 +72,153 @@ fun MainScreen(
 		}
 	}
 	
-	Column(
+	Box(
 		modifier = Modifier
 			.statusBarsPadding()
 			.fillMaxSize()
 	) {
-		SmallTopAppBar(
-			colors = TopAppBarDefaults.smallTopAppBarColors(
-				containerColor = Color.Transparent
-			),
-			title = {},
-			navigationIcon = {
-				IconButton(
-					onClick = {
-						navController.navigate(MusicomposeDestination.Setting.route)
+		Column {
+			SmallTopAppBar(
+				colors = TopAppBarDefaults.smallTopAppBarColors(
+					containerColor = Color.Transparent
+				),
+				title = {},
+				navigationIcon = {
+					IconButton(
+						onClick = {
+							navController.navigate(MusicomposeDestination.Setting.route)
+						}
+					) {
+						Icon(
+							painter = painterResource(id = R.drawable.ic_setting),
+							contentDescription = null
+						)
 					}
-				) {
-					Icon(
-						painter = painterResource(id = R.drawable.ic_setting),
-						contentDescription = null
-					)
-				}
-			},
-			actions = {
-				IconButton(
-					onClick = {
-						navController.navigate(MusicomposeDestination.Search.route)
+				},
+				actions = {
+					IconButton(
+						onClick = {
+							navController.navigate(MusicomposeDestination.Search.route)
+						}
+					) {
+						Icon(
+							imageVector = Icons.Rounded.Search,
+							contentDescription = null
+						)
 					}
-				) {
-					Icon(
-						imageVector = Icons.Rounded.Search,
-						contentDescription = null
-					)
-				}
-				
-				IconButton(
-					onClick = {
-						isMoreOptionPopupShowed = !isMoreOptionPopupShowed
+					
+					IconButton(
+						onClick = {
+							isMoreOptionPopupShowed = !isMoreOptionPopupShowed
+						}
+					) {
+						Icon(
+							imageVector = Icons.Rounded.MoreVert,
+							contentDescription = null
+						)
 					}
-				) {
-					Icon(
-						imageVector = Icons.Rounded.MoreVert,
-						contentDescription = null
-					)
-				}
-				
-				if (isMoreOptionPopupShowed) {
-					MoreOptionPopup(
-						options = listOf(
-							stringResource(id = R.string.sort_by)
-						),
-						onDismissRequest = {
-							isMoreOptionPopupShowed = false
-						},
-						onClick = { i ->
-							when (i) {
-								0 -> {
-									scope.launch {
-										songController?.hideBottomMusicPlayer()
-										delay(800)
-										navController.navigate(
-											MusicomposeDestination.BottomSheet.Sort.createRoute(
-												type = when (pagerState.currentPage) {
-													0 -> SortType.SONG
-													1 -> SortType.ALBUM
-													2 -> SortType.ARTIST
-													3 -> SortType.PLAYLIST
-													else -> SortType.SONG
-												}
+					
+					if (isMoreOptionPopupShowed) {
+						MoreOptionPopup(
+							options = listOf(
+								stringResource(id = R.string.sort_by)
+							),
+							onDismissRequest = {
+								isMoreOptionPopupShowed = false
+							},
+							onClick = { i ->
+								when (i) {
+									0 -> {
+										scope.launch {
+											songController?.hideBottomMusicPlayer()
+											delay(800)
+											navController.navigate(
+												MusicomposeDestination.BottomSheet.Sort.createRoute(
+													type = when (pagerState.currentPage) {
+														0 -> SortType.SONG
+														1 -> SortType.ALBUM
+														2 -> SortType.ARTIST
+														3 -> SortType.PLAYLIST
+														else -> SortType.SONG
+													}
+												)
 											)
-										)
+										}
 									}
 								}
-							}
-						},
+							},
+							modifier = Modifier
+								.padding(8.dp)
+						)
+					}
+				}
+			)
+			
+			TabRow(
+				selectedTabIndex = pagerState.currentPage,
+				indicator = { tabPositions ->
+					Box(
 						modifier = Modifier
-							.padding(8.dp)
+							.pagerTabIndicatorOffset(
+								pagerState = pagerState,
+								tabPositions = tabPositions
+							)
+							.height(4.dp)
+							.clip(circle)
+							.background(MaterialTheme.colorScheme.primary)
+					)
+				}
+			) {
+				tabPages.forEachIndexed { i, title ->
+					val selected = pagerState.currentPage == i
+					
+					Tab(
+						selected = selected,
+						text = {
+							Text(
+								text = title,
+								style = LocalTextStyle.current.copy(
+									color = if (selected) MaterialTheme.colorScheme.primary
+									else {
+										if (LocalUiMode.current.isInDarkTheme()) black10 else black01
+									}
+								)
+							)
+						},
+						onClick = {
+							scrollToPage(i)
+						}
 					)
 				}
 			}
-		)
-		
-		TabRow(
-			selectedTabIndex = pagerState.currentPage,
-			indicator = { tabPositions ->
-				Box(
-					modifier = Modifier
-						.pagerTabIndicatorOffset(
-							pagerState = pagerState,
-							tabPositions = tabPositions
-						)
-						.height(4.dp)
-						.clip(circle)
-						.background(MaterialTheme.colorScheme.primary)
-				)
-			}
-		) {
-			tabPages.forEachIndexed { i, title ->
-				val selected = pagerState.currentPage == i
-				
-				Tab(
-					selected = selected,
-					text = {
-						Text(
-							text = title,
-							style = LocalTextStyle.current.copy(
-								color = if (selected) MaterialTheme.colorScheme.primary
-								else {
-									if (LocalUiMode.current.isInDarkTheme()) black10 else black01
-								}
-							)
-						)
-					},
-					onClick = {
-						scrollToPage(i)
-					}
-				)
-			}
-		}
-		
-		HorizontalPager(
-			count = 4,
-			state = pagerState
-		) { page ->
-			when (page) {
-				0 -> HomeScreen()
-				1 -> AlbumListScreen(navController = navController)
-				2 -> ArtistListScreen(navController = navController)
-				3 -> PlaylistListScreen(
-					navController = navController,
-					onNewPlaylist = {
-						scope.launch {
-							songController?.hideBottomMusicPlayer()
-							delay(800)
-							navController.navigate(
-								MusicomposeDestination.BottomSheet.Playlist.createRoute(
-									option = PlaylistOption.NEW
+			
+			HorizontalPager(
+				count = 4,
+				state = pagerState
+			) { page ->
+				when (page) {
+					0 -> HomeScreen()
+					1 -> AlbumListScreen(navController = navController)
+					2 -> ArtistListScreen(navController = navController)
+					3 -> PlaylistListScreen(
+						navController = navController,
+						onNewPlaylist = {
+							scope.launch {
+								songController?.hideBottomMusicPlayer()
+								delay(800)
+								navController.navigate(
+									MusicomposeDestination.BottomSheet.Playlist.createRoute(
+										option = PlaylistOption.NEW
+									)
 								)
-							)
+							}
 						}
-					}
-				)
+					)
+				}
 			}
 		}
+		
+		BottomMusicPlayerImpl(navController = navController)
 	}
+	
 }

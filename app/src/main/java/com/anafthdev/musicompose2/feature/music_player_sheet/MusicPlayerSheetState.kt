@@ -1,0 +1,3 @@
+package com.anafthdev.musicompose2.feature.music_player_sheet
+
+object MusicPlayerSheetState

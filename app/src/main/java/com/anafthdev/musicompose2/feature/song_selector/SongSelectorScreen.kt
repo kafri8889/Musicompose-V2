@@ -29,6 +29,7 @@ import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.foundation.extension.isSelected
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
+import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerImpl
 import com.anafthdev.musicompose2.foundation.uicomponent.SongSelectorItem
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -60,132 +61,136 @@ fun SongSelectorScreen(
 		)
 	}
 	
-	Column(
+	Box(
 		modifier = Modifier
 			.statusBarsPadding()
 			.fillMaxSize()
 	) {
-		Row(
-			verticalAlignment = Alignment.CenterVertically,
-			modifier = Modifier
-				.fillMaxWidth()
-		) {
-			TextField(
-				value = state.query,
-				singleLine = true,
-				onValueChange = { s ->
-					viewModel.dispatch(
-						SongSelectorAction.Search(s)
-					)
-				},
-				trailingIcon = {
-					if (state.query.isNotBlank()) {
-						IconButton(
-							onClick = {
-								viewModel.dispatch(
-									SongSelectorAction.Search("")
+		Column {
+			Row(
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier
+					.fillMaxWidth()
+			) {
+				TextField(
+					value = state.query,
+					singleLine = true,
+					onValueChange = { s ->
+						viewModel.dispatch(
+							SongSelectorAction.Search(s)
+						)
+					},
+					trailingIcon = {
+						if (state.query.isNotBlank()) {
+							IconButton(
+								onClick = {
+									viewModel.dispatch(
+										SongSelectorAction.Search("")
+									)
+								}
+							) {
+								Image(
+									painter = painterResource(id = R.drawable.x_mark_outlined_filled),
+									contentDescription = null,
+									modifier = Modifier
+										.size(16.dp)
 								)
 							}
-						) {
-							Image(
-								painter = painterResource(id = R.drawable.x_mark_outlined_filled),
-								contentDescription = null,
-								modifier = Modifier
-									.size(16.dp)
-							)
 						}
-					}
-				},
-				placeholder = {
+					},
+					placeholder = {
+						Text(
+							text = stringResource(id = R.string.search_placeholder),
+							style = LocalTextStyle.current.copy(
+								fontFamily = Inter
+							)
+						)
+					},
+					keyboardOptions = KeyboardOptions(
+						imeAction = ImeAction.Done
+					),
+					keyboardActions = KeyboardActions(
+						onDone = {
+							keyboardController?.hide()
+							focusManager.clearFocus()
+						}
+					),
+					colors = TextFieldDefaults.textFieldColors(
+						containerColor = Color.Transparent,
+						focusedIndicatorColor = Color.Transparent,
+						unfocusedIndicatorColor = Color.Transparent
+					),
+					modifier = Modifier
+						.weight(0.5f)
+						.padding(end = 8.dp)
+						.focusRequester(searchTextFieldFocusRequester)
+				)
+				
+				Divider(
+					color = MaterialTheme.colorScheme.onBackground,
+					modifier = Modifier
+						.weight(0.01f, fill = false)
+						.size(1.dp, 16.dp)
+				)
+				
+				TextButton(
+					onClick = {
+						navController.popBackStack()
+					},
+					modifier = Modifier
+						.weight(0.18f)
+						.padding(start = 8.dp)
+				) {
 					Text(
-						text = stringResource(id = R.string.search_placeholder),
-						style = LocalTextStyle.current.copy(
-							fontFamily = Inter
+						text = stringResource(id = R.string.cancel),
+						style = MaterialTheme.typography.bodySmall.copy(
+							fontFamily = Inter,
+							fontWeight = FontWeight.Bold
 						)
 					)
-				},
-				keyboardOptions = KeyboardOptions(
-					imeAction = ImeAction.Done
-				),
-				keyboardActions = KeyboardActions(
-					onDone = {
-						keyboardController?.hide()
-						focusManager.clearFocus()
-					}
-				),
-				colors = TextFieldDefaults.textFieldColors(
-					containerColor = Color.Transparent,
-					focusedIndicatorColor = Color.Transparent,
-					unfocusedIndicatorColor = Color.Transparent
-				),
-				modifier = Modifier
-					.weight(0.5f)
-					.padding(end = 8.dp)
-					.focusRequester(searchTextFieldFocusRequester)
-			)
+				}
+			}
 			
 			Divider(
 				color = MaterialTheme.colorScheme.onBackground,
+				thickness = 1.dp,
 				modifier = Modifier
-					.weight(0.01f, fill = false)
-					.size(1.dp, 16.dp)
+					.fillMaxWidth()
 			)
 			
-			TextButton(
-				onClick = {
-					navController.popBackStack()
-				},
-				modifier = Modifier
-					.weight(0.18f)
-					.padding(start = 8.dp)
-			) {
-				Text(
-					text = stringResource(id = R.string.cancel),
-					style = MaterialTheme.typography.bodySmall.copy(
-						fontFamily = Inter,
-						fontWeight = FontWeight.Bold
-					)
-				)
-			}
-		}
-		
-		Divider(
-			color = MaterialTheme.colorScheme.onBackground,
-			thickness = 1.dp,
-			modifier = Modifier
-				.fillMaxWidth()
-		)
-		
-		LazyColumn {
-			
-			items(
-				items = state.songs,
-				key = { song: Song -> song.audioID }
-			) { song ->
+			LazyColumn {
 				
-				val contain = remember(song, state.selectedSong, state.songs) {
-					song in state.selectedSong
+				items(
+					items = state.songs,
+					key = { song: Song -> song.audioID }
+				) { song ->
+					
+					val contain = remember(song, state.selectedSong, state.songs) {
+						song in state.selectedSong
+					}
+					
+					SongSelectorItem(
+						song = song,
+						contain = contain,
+						selected = song.isSelected(),
+						type = type,
+						onClick = {
+							viewModel.dispatch(
+								if (contain) SongSelectorAction.RemoveSong(song)
+								else SongSelectorAction.AddSong(song)
+							)
+						}
+					)
 				}
 				
-				SongSelectorItem(
-					song = song,
-					contain = contain,
-					selected = song.isSelected(),
-					type = type,
-					onClick = {
-						viewModel.dispatch(
-							if (contain) SongSelectorAction.RemoveSong(song)
-							else SongSelectorAction.AddSong(song)
-						)
-					}
-				)
-			}
-			
-			// BottomMusicPlayer padding
-			item {
-				Spacer(modifier = Modifier.height(BottomMusicPlayerDefault.Height))
+				// BottomMusicPlayer padding
+				item {
+					Spacer(modifier = Modifier.height(BottomMusicPlayerDefault.Height))
+				}
 			}
 		}
+		
+		BottomMusicPlayerImpl(navController = navController)
 	}
 	
 }

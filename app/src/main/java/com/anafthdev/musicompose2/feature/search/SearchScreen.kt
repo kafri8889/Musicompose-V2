@@ -39,6 +39,7 @@ import com.anafthdev.musicompose2.foundation.extension.isSelected
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.uicomponent.AlbumItem
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
+import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerImpl
 import com.anafthdev.musicompose2.foundation.uicomponent.SongItem
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -70,284 +71,288 @@ fun SearchScreen(
 		navController.popBackStack()
 	}
 	
-	Column(
+	Box(
 		modifier = Modifier
 			.systemBarsPadding()
 			.fillMaxSize()
 			.background(MaterialTheme.colorScheme.background)
 	) {
-		Row(
-			verticalAlignment = Alignment.CenterVertically,
-			modifier = Modifier
-				.fillMaxWidth()
-		) {
-			TextField(
-				value = state.query,
-				singleLine = true,
-				onValueChange = { s ->
-					viewModel.dispatch(
-						SearchAction.Search(s)
-					)
-				},
-				trailingIcon = {
-					if (state.query.isNotBlank()) {
-						IconButton(
-							onClick = {
-								viewModel.dispatch(
-									SearchAction.Search("")
+		Column {
+			Row(
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier
+					.fillMaxWidth()
+			) {
+				TextField(
+					value = state.query,
+					singleLine = true,
+					onValueChange = { s ->
+						viewModel.dispatch(
+							SearchAction.Search(s)
+						)
+					},
+					trailingIcon = {
+						if (state.query.isNotBlank()) {
+							IconButton(
+								onClick = {
+									viewModel.dispatch(
+										SearchAction.Search("")
+									)
+								}
+							) {
+								Image(
+									painter = painterResource(id = R.drawable.x_mark_outlined_filled),
+									contentDescription = null,
+									modifier = Modifier
+										.size(16.dp)
 								)
 							}
-						) {
-							Image(
-								painter = painterResource(id = R.drawable.x_mark_outlined_filled),
-								contentDescription = null,
-								modifier = Modifier
-									.size(16.dp)
-							)
 						}
-					}
-				},
-				placeholder = {
+					},
+					placeholder = {
+						Text(
+							text = stringResource(id = R.string.search_placeholder),
+							style = LocalTextStyle.current.copy(
+								fontFamily = Inter
+							)
+						)
+					},
+					keyboardOptions = KeyboardOptions(
+						imeAction = ImeAction.Done
+					),
+					keyboardActions = KeyboardActions(
+						onDone = {
+							keyboardController?.hide()
+							focusManager.clearFocus()
+						}
+					),
+					colors = TextFieldDefaults.textFieldColors(
+						containerColor = Color.Transparent,
+						focusedIndicatorColor = Color.Transparent,
+						unfocusedIndicatorColor = Color.Transparent
+					),
+					modifier = Modifier
+						.weight(0.5f)
+						.padding(end = 8.dp)
+						.focusRequester(searchTextFieldFocusRequester)
+				)
+				
+				Divider(
+					color = MaterialTheme.colorScheme.onBackground,
+					modifier = Modifier
+						.weight(0.01f, fill = false)
+						.size(1.dp, 16.dp)
+				)
+				
+				TextButton(
+					onClick = {
+						navController.popBackStack()
+					},
+					modifier = Modifier
+						.weight(0.18f)
+						.padding(start = 8.dp)
+				) {
 					Text(
-						text = stringResource(id = R.string.search_placeholder),
-						style = LocalTextStyle.current.copy(
-							fontFamily = Inter
+						text = stringResource(id = R.string.cancel),
+						style = MaterialTheme.typography.bodySmall.copy(
+							fontFamily = Inter,
+							fontWeight = FontWeight.Bold
 						)
 					)
-				},
-				keyboardOptions = KeyboardOptions(
-					imeAction = ImeAction.Done
-				),
-				keyboardActions = KeyboardActions(
-					onDone = {
-						keyboardController?.hide()
-						focusManager.clearFocus()
-					}
-				),
-				colors = TextFieldDefaults.textFieldColors(
-					containerColor = Color.Transparent,
-					focusedIndicatorColor = Color.Transparent,
-					unfocusedIndicatorColor = Color.Transparent
-				),
-				modifier = Modifier
-					.weight(0.5f)
-					.padding(end = 8.dp)
-					.focusRequester(searchTextFieldFocusRequester)
-			)
+				}
+			}
 			
 			Divider(
 				color = MaterialTheme.colorScheme.onBackground,
+				thickness = 1.dp,
 				modifier = Modifier
-					.weight(0.01f, fill = false)
-					.size(1.dp, 16.dp)
+					.fillMaxWidth()
 			)
 			
-			TextButton(
-				onClick = {
-					navController.popBackStack()
-				},
-				modifier = Modifier
-					.weight(0.18f)
-					.padding(start = 8.dp)
-			) {
-				Text(
-					text = stringResource(id = R.string.cancel),
-					style = MaterialTheme.typography.bodySmall.copy(
-						fontFamily = Inter,
-						fontWeight = FontWeight.Bold
-					)
-				)
-			}
-		}
-		
-		Divider(
-			color = MaterialTheme.colorScheme.onBackground,
-			thickness = 1.dp,
-			modifier = Modifier
-				.fillMaxWidth()
-		)
-		
-		LazyColumn {
-			
-			item {
-				if (state.songs.isNotEmpty()) {
-					Box(
-						modifier = Modifier
-							.fillMaxWidth()
-					) {
-						Text(
-							text = stringResource(id = R.string.song),
-							style = MaterialTheme.typography.bodyLarge.copy(
-								fontFamily = Inter,
-								fontWeight = FontWeight.Bold,
-							),
-							modifier = Modifier
-								.align(Alignment.CenterStart)
-								.padding(start = 14.dp, top = 16.dp, bottom = 8.dp)
-						)
-						
-						Text(
-							text = "(${state.songs.size})",
-							style = MaterialTheme.typography.bodyMedium.copy(
-								color = LocalContentColor.current.copy(alpha = 0.6f),
-								fontFamily = Inter
-							),
-							modifier = Modifier
-								.align(Alignment.CenterEnd)
-								.padding(end = 14.dp, top = 16.dp, bottom = 16.dp)
-						)
-					}
-				}
-			}
-			
-			items(
-				items = state.songs,
-				key = { song: Song -> song.audioID }
-			) { song ->
-				SongItem(
-					song = song,
-					showFavorite = false,
-					selected = song.isSelected(),
-					isMusicPlaying = song.isPlaying(),
-					onClick = {
-						songController?.play(song)
-					},
-					modifier = Modifier
-						.padding(vertical = 4.dp)
-				)
-			}
-			
-			item {
-				if (state.artists.isNotEmpty()) {
+			LazyColumn {
+				
+				item {
 					if (state.songs.isNotEmpty()) {
-						Divider(
-							color = MaterialTheme.colorScheme.onBackground,
-							thickness = 1.dp,
+						Box(
 							modifier = Modifier
 								.fillMaxWidth()
-								.padding(vertical = 24.dp)
-						)
-					}
-					
-					Box(
-						modifier = Modifier
-							.fillMaxWidth()
-					) {
-						Text(
-							text = stringResource(id = R.string.artist),
-							style = MaterialTheme.typography.bodyLarge.copy(
-								fontFamily = Inter,
-								fontWeight = FontWeight.Bold,
-							),
-							modifier = Modifier
-								.align(Alignment.CenterStart)
-								.padding(start = 14.dp, top = 16.dp, bottom = 8.dp)
-						)
-						
-						Text(
-							text = "(${state.artists.size})",
-							style = MaterialTheme.typography.bodyMedium.copy(
-								color = LocalContentColor.current.copy(alpha = 0.6f),
-								fontFamily = Inter
-							),
-							modifier = Modifier
-								.align(Alignment.CenterEnd)
-								.padding(end = 14.dp, top = 16.dp, bottom = 16.dp)
-						)
-					}
-				}
-			}
-			
-			items(state.artists) { artist ->
-				Row(
-					verticalAlignment = Alignment.CenterVertically,
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(16.dp)
-				) {
-					Text(
-						maxLines = 1,
-						text = artist.name,
-						overflow = TextOverflow.Ellipsis,
-						style = MaterialTheme.typography.bodyLarge.copy(
-							fontWeight = FontWeight.SemiBold
-						),
-						modifier = Modifier
-							.padding(end = 8.dp)
-							.weight(1f)
-					)
-					
-					IconButton(
-						onClick = {
-							// TODO: to ArtistScreen
+						) {
+							Text(
+								text = stringResource(id = R.string.song),
+								style = MaterialTheme.typography.bodyLarge.copy(
+									fontFamily = Inter,
+									fontWeight = FontWeight.Bold,
+								),
+								modifier = Modifier
+									.align(Alignment.CenterStart)
+									.padding(start = 14.dp, top = 16.dp, bottom = 8.dp)
+							)
+							
+							Text(
+								text = "(${state.songs.size})",
+								style = MaterialTheme.typography.bodyMedium.copy(
+									color = LocalContentColor.current.copy(alpha = 0.6f),
+									fontFamily = Inter
+								),
+								modifier = Modifier
+									.align(Alignment.CenterEnd)
+									.padding(end = 14.dp, top = 16.dp, bottom = 16.dp)
+							)
 						}
-					) {
-						Icon(
-							imageVector = Icons.Rounded.KeyboardArrowRight,
-							contentDescription = null
-						)
 					}
 				}
-			}
-			
-			item {
-				if (state.albums.isNotEmpty()) {
-					if (state.songs.isNotEmpty() and state.artists.isNotEmpty()) {
-						Divider(
-							color = MaterialTheme.colorScheme.onBackground,
-							thickness = 1.dp,
+				
+				items(
+					items = state.songs,
+					key = { song: Song -> song.audioID }
+				) { song ->
+					SongItem(
+						song = song,
+						showFavorite = false,
+						selected = song.isSelected(),
+						isMusicPlaying = song.isPlaying(),
+						onClick = {
+							songController?.play(song)
+						},
+						modifier = Modifier
+							.padding(vertical = 4.dp)
+					)
+				}
+				
+				item {
+					if (state.artists.isNotEmpty()) {
+						if (state.songs.isNotEmpty()) {
+							Divider(
+								color = MaterialTheme.colorScheme.onBackground,
+								thickness = 1.dp,
+								modifier = Modifier
+									.fillMaxWidth()
+									.padding(vertical = 24.dp)
+							)
+						}
+						
+						Box(
 							modifier = Modifier
 								.fillMaxWidth()
-								.padding(vertical = 24.dp)
-						)
-					}
-					
-					Box(
-						modifier = Modifier
-							.fillMaxWidth()
-					) {
-						Text(
-							text = stringResource(id = R.string.album),
-							style = MaterialTheme.typography.bodyLarge.copy(
-								fontFamily = Inter,
-								fontWeight = FontWeight.Bold,
-							),
-							modifier = Modifier
-								.align(Alignment.CenterStart)
-								.padding(start = 14.dp, top = 16.dp, bottom = 8.dp)
-						)
-						
-						Text(
-							text = "(${state.albums.size})",
-							style = MaterialTheme.typography.bodyMedium.copy(
-								color = LocalContentColor.current.copy(alpha = 0.6f),
-								fontFamily = Inter
-							),
-							modifier = Modifier
-								.align(Alignment.CenterEnd)
-								.padding(end = 14.dp, top = 16.dp, bottom = 16.dp)
-						)
+						) {
+							Text(
+								text = stringResource(id = R.string.artist),
+								style = MaterialTheme.typography.bodyLarge.copy(
+									fontFamily = Inter,
+									fontWeight = FontWeight.Bold,
+								),
+								modifier = Modifier
+									.align(Alignment.CenterStart)
+									.padding(start = 14.dp, top = 16.dp, bottom = 8.dp)
+							)
+							
+							Text(
+								text = "(${state.artists.size})",
+								style = MaterialTheme.typography.bodyMedium.copy(
+									color = LocalContentColor.current.copy(alpha = 0.6f),
+									fontFamily = Inter
+								),
+								modifier = Modifier
+									.align(Alignment.CenterEnd)
+									.padding(end = 14.dp, top = 16.dp, bottom = 16.dp)
+							)
+						}
 					}
 				}
-			}
-			
-			items(
-				items = state.albums,
-				key = { album: Album -> album.id }
-			) { album ->
-				AlbumItem(
-					album = album,
-					onClick = {
-						// TODO: to AlbumScreen
+				
+				items(state.artists) { artist ->
+					Row(
+						verticalAlignment = Alignment.CenterVertically,
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(16.dp)
+					) {
+						Text(
+							maxLines = 1,
+							text = artist.name,
+							overflow = TextOverflow.Ellipsis,
+							style = MaterialTheme.typography.bodyLarge.copy(
+								fontWeight = FontWeight.SemiBold
+							),
+							modifier = Modifier
+								.padding(end = 8.dp)
+								.weight(1f)
+						)
+						
+						IconButton(
+							onClick = {
+								// TODO: to ArtistScreen
+							}
+						) {
+							Icon(
+								imageVector = Icons.Rounded.KeyboardArrowRight,
+								contentDescription = null
+							)
+						}
 					}
-				)
-			}
-			
-			// BottomMusicPlayer padding
-			item {
-				Spacer(modifier = Modifier.height(BottomMusicPlayerDefault.Height))
+				}
+				
+				item {
+					if (state.albums.isNotEmpty()) {
+						if (state.songs.isNotEmpty() and state.artists.isNotEmpty()) {
+							Divider(
+								color = MaterialTheme.colorScheme.onBackground,
+								thickness = 1.dp,
+								modifier = Modifier
+									.fillMaxWidth()
+									.padding(vertical = 24.dp)
+							)
+						}
+						
+						Box(
+							modifier = Modifier
+								.fillMaxWidth()
+						) {
+							Text(
+								text = stringResource(id = R.string.album),
+								style = MaterialTheme.typography.bodyLarge.copy(
+									fontFamily = Inter,
+									fontWeight = FontWeight.Bold,
+								),
+								modifier = Modifier
+									.align(Alignment.CenterStart)
+									.padding(start = 14.dp, top = 16.dp, bottom = 8.dp)
+							)
+							
+							Text(
+								text = "(${state.albums.size})",
+								style = MaterialTheme.typography.bodyMedium.copy(
+									color = LocalContentColor.current.copy(alpha = 0.6f),
+									fontFamily = Inter
+								),
+								modifier = Modifier
+									.align(Alignment.CenterEnd)
+									.padding(end = 14.dp, top = 16.dp, bottom = 16.dp)
+							)
+						}
+					}
+				}
+				
+				items(
+					items = state.albums,
+					key = { album: Album -> album.id }
+				) { album ->
+					AlbumItem(
+						album = album,
+						onClick = {
+							// TODO: to AlbumScreen
+						}
+					)
+				}
+				
+				// BottomMusicPlayer padding
+				item {
+					Spacer(modifier = Modifier.height(BottomMusicPlayerDefault.Height))
+				}
 			}
 		}
+		
+		BottomMusicPlayerImpl(navController = navController)
 	}
 	
 }

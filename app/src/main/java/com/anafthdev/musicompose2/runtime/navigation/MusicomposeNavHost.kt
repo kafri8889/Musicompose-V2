@@ -2,6 +2,10 @@ package com.anafthdev.musicompose2.runtime.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.SwipeableDefaults
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,6 +25,7 @@ import com.anafthdev.musicompose2.feature.album.album.AlbumScreen
 import com.anafthdev.musicompose2.feature.artist.artist.ArtistScreen
 import com.anafthdev.musicompose2.feature.language.LanguageScreen
 import com.anafthdev.musicompose2.feature.main.MainScreen
+import com.anafthdev.musicompose2.feature.music_player_sheet.MusicPlayerSheetScreen
 import com.anafthdev.musicompose2.feature.playlist.delete_playlist.DeletePlaylistScreen
 import com.anafthdev.musicompose2.feature.playlist.playlist.PlaylistScreen
 import com.anafthdev.musicompose2.feature.playlist.playlist_sheet.PlaylistSheetScreen
@@ -31,12 +36,12 @@ import com.anafthdev.musicompose2.feature.sort_sheet.SortSheetScreen
 import com.anafthdev.musicompose2.feature.theme.ThemeScreen
 import com.anafthdev.musicompose2.foundation.common.BottomSheetLayoutConfig
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
+import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.bottomSheet
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
+@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MusicomposeNavHost(
 	modifier: Modifier = Modifier
@@ -44,7 +49,16 @@ fun MusicomposeNavHost(
 	
 	val songController = LocalSongController.current
 	
-	val bottomSheetNavigator = rememberBottomSheetNavigator()
+	val sheetState = rememberModalBottomSheetState(
+		initialValue = ModalBottomSheetValue.Hidden,
+		animationSpec = SwipeableDefaults.AnimationSpec,
+		skipHalfExpanded = true
+	)
+	
+	val bottomSheetNavigator = remember(sheetState) {
+		BottomSheetNavigator(sheetState = sheetState)
+	}
+	
 	val navController = rememberNavController(bottomSheetNavigator)
 	
 	var bottomSheetLayoutConfig by remember { mutableStateOf(BottomSheetLayoutConfig()) }
@@ -165,6 +179,15 @@ fun MusicomposeNavHost(
 					playlistID = playlistID,
 					navController = navController
 				)
+			}
+			
+			bottomSheet(MusicomposeDestination.BottomSheet.MusicPlayer.route) {
+				
+				bottomSheetLayoutConfig = bottomSheetLayoutConfig.copy(
+					sheetBackgroundColor = MaterialTheme.colorScheme.background
+				)
+				
+				MusicPlayerSheetScreen(navController = navController)
 			}
 			
 			bottomSheet(
