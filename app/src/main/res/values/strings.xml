@@ -27,6 +27,7 @@
     <string name="change_name">Change name</string>
     <string name="artist_name">Artist name</string>
     <string name="just_played">Just played</string>
+    <string name="now_playing">Now playing</string>
     <string name="new_playlist">New playlist</string>
     <string name="dynamic_dark">Dynamic dark</string>
     <string name="dynamic_light">Dynamic light</string>
