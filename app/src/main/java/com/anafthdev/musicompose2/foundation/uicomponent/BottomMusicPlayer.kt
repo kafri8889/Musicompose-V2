@@ -32,12 +32,17 @@ import com.anafthdev.musicompose2.foundation.theme.no_shape
 @Composable
 fun BottomMusicPlayer(
 	currentSong: Song,
+	currentDuration: Long,
 	isPlaying: Boolean,
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit,
 	onFavoriteClicked: (Boolean) -> Unit,
 	onPlayPauseClicked: (Boolean) -> Unit
 ) {
+	
+	val progress = remember(currentDuration, currentSong.duration) {
+		currentDuration.toFloat() / currentSong.duration.toFloat()
+	}
 	
 	Card(
 		onClick = onClick,
@@ -101,7 +106,7 @@ fun BottomMusicPlayer(
 			Spacer(modifier = Modifier.width(8.dp))
 			
 			PlayPauseButton(
-				progress = 0.5f, // TODO: song duration progress
+				progress = progress,
 				isPlaying = isPlaying,
 				onClick = {
 					onPlayPauseClicked(!isPlaying)
@@ -128,7 +133,7 @@ private fun PlayPauseButton(
 		
 		Icon(
 			painter = painterResource(
-				id = if (isPlaying) R.drawable.ic_play_filled_rounded else R.drawable.ic_pause_filled_rounded
+				id = if (!isPlaying) R.drawable.ic_play_filled_rounded else R.drawable.ic_pause_filled_rounded
 			),
 			contentDescription = null
 		)
@@ -195,7 +200,7 @@ private fun AlbumImage(
 	var currentAngle by remember { mutableStateOf(0f) }
 
 	LaunchedEffect(angle, isPlaying) {
-		if (!isPlaying) {
+		if (isPlaying) {
 			currentAngle = angle
 		}
 	}

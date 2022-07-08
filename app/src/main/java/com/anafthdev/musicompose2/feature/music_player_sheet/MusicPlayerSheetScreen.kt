@@ -292,7 +292,7 @@ fun SongControlButtons(
 			) {
 				Icon(
 					painter = painterResource(
-						id = if (isPlaying) R.drawable.ic_play_filled_rounded else R.drawable.ic_pause_filled_rounded
+						id = if (!isPlaying) R.drawable.ic_play_filled_rounded else R.drawable.ic_pause_filled_rounded
 					),
 					contentDescription = null
 				)

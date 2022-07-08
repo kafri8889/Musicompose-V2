@@ -70,7 +70,7 @@ fun AudioWave(
 		Box(
 			modifier = Modifier
 				.width(4.dp)
-				.fillMaxHeight(if (isMusicPlaying) 0.3f else fraction1)
+				.fillMaxHeight(if (!isMusicPlaying) 0.3f else fraction1)
 				.clip(circle)
 				.background(MaterialTheme.colorScheme.primary)
 		)
@@ -78,7 +78,7 @@ fun AudioWave(
 		Box(
 			modifier = Modifier
 				.width(4.dp)
-				.fillMaxHeight(if (isMusicPlaying) 0.5f else fraction2)
+				.fillMaxHeight(if (!isMusicPlaying) 0.5f else fraction2)
 				.clip(circle)
 				.background(MaterialTheme.colorScheme.primary)
 		)
@@ -86,7 +86,7 @@ fun AudioWave(
 		Box(
 			modifier = Modifier
 				.width(4.dp)
-				.fillMaxHeight(if (isMusicPlaying) 0.3f else fraction3)
+				.fillMaxHeight(if (!isMusicPlaying) 0.3f else fraction3)
 				.clip(circle)
 				.background(MaterialTheme.colorScheme.primary)
 		)

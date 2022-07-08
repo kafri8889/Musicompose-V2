@@ -28,7 +28,7 @@ interface IMusicomposeEnvironment {
 	
 	suspend fun next()
 	
-	suspend fun snapTo(duration: Long)
+	fun snapTo(duration: Long, fromUser: Boolean = true)
 	
 	suspend fun updateSong(song: Song)
 	
