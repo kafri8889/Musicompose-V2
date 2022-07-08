@@ -103,6 +103,9 @@ dependencies {
     kapt 'com.google.dagger:hilt-compiler:2.39.1'
     kapt 'com.google.dagger:hilt-android-compiler:2.39.1'
 
+    // Constraint layout compose
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
     // Accompanist
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
     implementation "com.google.accompanist:accompanist-navigation-material:$accompanist_version"
