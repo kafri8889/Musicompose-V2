@@ -1,0 +1,68 @@
+{
+  ConstraintSets: {
+    start: {
+      top_bar: {
+        height: 64,
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        top: ['parent', 'top']
+      },
+      album_image:{
+        width: "spread",
+        height: 256,
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        top: ['top_bar', 'bottom'],
+      },
+      column_title_artist: {
+        width: "spread",
+        start: ['parent', 'start', 8],
+        end: ['parent', 'end', 8],
+        top: ['album_image', 'bottom', 8]
+      },
+      row_buttons: {
+        end: ['parent', 'end'],
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
+        visibility: 'gone',
+      },
+      column_other: {
+        visibility: 'visible',
+        width: 'spread',
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        top: ['column_title_artist', 'bottom'],
+      }
+    },
+    end: {
+      album_image:{
+        width: 56,
+        height: 56,
+        start: ['parent', 'start', 8],
+        top: ['parent', 'top', 4],
+        bottom: ['parent', 'bottom']
+      },
+      column_title_artist: {
+        width: 'spread',
+        height: 'spread',
+        centerVertically: 'parent',
+        start: ['album_image', 'end', 8],
+        end: ['row_buttons', 'start'],
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
+      },
+      row_buttons: {
+        end: ['parent', 'end'],
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
+      },
+      column_other: {
+        visibility: 'gone',
+        width: 'spread',
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        top: ['column_title_artist', 'bottom'],
+      }
+    }
+  }
+}

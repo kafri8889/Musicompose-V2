@@ -1,11 +1,19 @@
 package com.anafthdev.musicompose2.feature.music_player_sheet
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,10 +21,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ExperimentalMotionApi
+import androidx.constraintlayout.compose.MotionLayout
+import androidx.constraintlayout.compose.MotionScene
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -24,116 +39,55 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
+import com.anafthdev.musicompose2.feature.musicompose.MusicomposeState
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.theme.Inter
+import com.anafthdev.musicompose2.foundation.uiextension.currentFraction
 import kotlin.time.Duration.Companion.milliseconds
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MusicPlayerSheetScreen(
 	navController: NavController
 ) {
 	
-	val songController = LocalSongController.current
+	val config = LocalConfiguration.current
 	val musicomposeState = LocalMusicomposeState.current
 	
 	val viewModel = hiltViewModel<MusicPlayerSheetViewModel>()
 	
 	val state by viewModel.state.collectAsState()
-
+	
+	val scaffoldState = rememberBottomSheetScaffoldState(
+		bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
+	)
+	
 	BackHandler {
 		navController.popBackStack()
 	}
 	
-	Column(
-		horizontalAlignment = Alignment.CenterHorizontally,
+	BottomSheetScaffold(
+		scaffoldState = scaffoldState,
+		sheetContent = {
+			// TODO: show play queue
+			Box(
+				modifier = Modifier
+					.fillMaxWidth()
+					.fillMaxHeight(
+						// add some padding between MotionContent and SheetContent (1f -> 0.99f)
+						0.99f.minus(MOTION_CONTENT_HEIGHT.value / config.screenHeightDp)
+					)
+					.background(Color.Green)
+			)
+		},
 		modifier = Modifier
-			.statusBarsPadding()
+			.systemBarsPadding()
 			.fillMaxSize()
 	) {
-		SmallTopAppBar(
-			colors = TopAppBarDefaults.smallTopAppBarColors(
-				containerColor = Color.Transparent
-			),
-			title = {},
-			navigationIcon = {
-				IconButton(
-					onClick = {
-						navController.popBackStack()
-					}
-				) {
-					Icon(
-						imageVector = Icons.Rounded.ArrowBack,
-						contentDescription = null
-					)
-				}
-			},
-			actions = {
-				IconButton(
-					onClick = {
-						songController?.updateSong(
-							musicomposeState.currentSongPlayed.copy(
-								isFavorite = !musicomposeState.currentSongPlayed.isFavorite
-							)
-						)
-					}
-				) {
-					Image(
-						painter = painterResource(
-							id = if (musicomposeState.currentSongPlayed.isFavorite) R.drawable.ic_favorite_selected
-							else R.drawable.ic_favorite_unselected
-						),
-						contentDescription = null
-					)
-				}
-			}
-		)
-		
-		AlbumImage(albumPath = musicomposeState.currentSongPlayed.albumPath)
-		
-		Spacer(modifier = Modifier.height(16.dp))
-		
-		Text(
-			text = musicomposeState.currentSongPlayed.title,
-			style = MaterialTheme.typography.titleLarge.copy(
-				fontWeight = FontWeight.Bold
-			)
-		)
-		
-		Spacer(modifier = Modifier.height(16.dp))
-		
-		Text(
-			text = musicomposeState.currentSongPlayed.artist,
-			style = MaterialTheme.typography.titleMedium.copy(
-				fontFamily = Inter
-			)
-		)
-		
-		Spacer(modifier = Modifier.height(16.dp))
-		
-		SongProgress(
-			maxDuration = musicomposeState.currentSongPlayed.duration,
-			currentDuration = musicomposeState.currentDuration,
-			onChange = { progress ->
-				val duration = progress * musicomposeState.currentSongPlayed.duration
-				
-				songController?.snapTo(duration.toLong())
-			}
-		)
-		
-		Spacer(modifier = Modifier.height(16.dp))
-		
-		SongControlButtons(
-			isPlaying = musicomposeState.isPlaying,
-			onPrevious = {
-				songController?.previous()
-			},
-			onPlayPause = {
-				if (musicomposeState.isPlaying) songController?.pause()
-				else songController?.resume()
-			},
-			onNext = {
-				songController?.next()
-			}
+		MotionContent(
+			musicomposeState = musicomposeState,
+			fraction = scaffoldState.currentFraction,
+			modifier = Modifier
 		)
 	}
 }
@@ -141,7 +95,8 @@ fun MusicPlayerSheetScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AlbumImage(
-	albumPath: String
+	albumPath: String,
+	modifier: Modifier = Modifier
 ) {
 	
 	Card(
@@ -149,12 +104,7 @@ private fun AlbumImage(
 		elevation = CardDefaults.cardElevation(
 			defaultElevation = 8.dp
 		),
-		modifier = Modifier
-			.padding(
-				vertical = 16.dp
-			)
-			.fillMaxWidth(0.7f)
-			.aspectRatio(1f)
+		modifier = modifier
 	) {
 		Image(
 			painter = rememberAsyncImagePainter(
@@ -309,3 +259,151 @@ fun SongControlButtons(
 		}
 	}
 }
+
+@OptIn(ExperimentalMotionApi::class)
+@Composable
+private fun MotionContent(
+	fraction: Float,
+	musicomposeState: MusicomposeState,
+	modifier: Modifier = Modifier
+) {
+	
+	val context = LocalContext.current
+	val songController = LocalSongController.current
+	
+	val motionScene = remember {
+		context.resources
+			.openRawResource(R.raw.motion_scene)
+			.readBytes()
+			.decodeToString()
+	}
+	
+	Row(
+		modifier = modifier
+			.fillMaxWidth()
+	) {
+		MotionLayout(
+			motionScene = MotionScene(content = motionScene),
+			progress = fraction,
+			modifier = Modifier
+				.fillMaxWidth()
+		) {
+			
+			Spacer(modifier = Modifier.layoutId("top_bar"))
+			
+			AlbumImage(
+				albumPath = musicomposeState.currentSongPlayed.albumPath,
+				modifier = Modifier
+					.layoutId("album_image")
+					.fillMaxWidth(0.8f)
+					.aspectRatio(1f, true)
+			)
+			
+			Column(
+				horizontalAlignment = Alignment.CenterHorizontally,
+				verticalArrangement = Arrangement.SpaceEvenly,
+				modifier = Modifier
+					.layoutId("column_title_artist")
+			) {
+				AnimatedVisibility(visible = fraction < 0.8f) {
+					Spacer(modifier = Modifier.height(16.dp))
+				}
+				
+				Text(
+					maxLines = 1,
+					overflow = TextOverflow.Ellipsis,
+					text = musicomposeState.currentSongPlayed.title,
+					textAlign = if (fraction > 0.8f) TextAlign.Start else TextAlign.Center,
+					style = MaterialTheme.typography.titleLarge.copy(
+						fontWeight = FontWeight.Bold,
+						fontSize = if (fraction > 0.8f) MaterialTheme.typography.titleMedium.fontSize
+						else MaterialTheme.typography.titleLarge.fontSize
+					),
+					modifier = Modifier
+						.fillMaxWidth(if (fraction > 0.8f) 1f else 0.7f)
+				)
+				
+				Text(
+					maxLines = 1,
+					overflow = TextOverflow.Ellipsis,
+					text = musicomposeState.currentSongPlayed.artist,
+					textAlign = if (fraction > 0.8f) TextAlign.Start else TextAlign.Center,
+					style = MaterialTheme.typography.titleMedium.copy(
+						fontFamily = Inter,
+						fontSize = if (fraction > 0.8f) MaterialTheme.typography.titleSmall.fontSize
+						else MaterialTheme.typography.titleMedium.fontSize
+					),
+					modifier = Modifier
+						.fillMaxWidth(if (fraction > 0.8) 1f else 0.7f)
+				)
+			}
+			
+			Row(
+				modifier = Modifier
+					.layoutId("row_buttons")
+			) {
+				IconButton(
+					onClick = {
+						if (musicomposeState.isPlaying) songController?.pause()
+						else songController?.resume()
+					}
+				) {
+					Icon(
+						painter = painterResource(
+							id = if (!musicomposeState.isPlaying) R.drawable.ic_play_filled_rounded else R.drawable.ic_pause_filled_rounded
+						),
+						contentDescription = null
+					)
+				}
+				
+				IconButton(
+					onClick = {
+						songController?.next()
+					}
+				) {
+					Icon(
+						painter = painterResource(id = R.drawable.ic_next_filled_rounded),
+						contentDescription = null
+					)
+				}
+			}
+			
+			Column(
+				horizontalAlignment = Alignment.CenterHorizontally,
+				modifier = Modifier
+					.layoutId("column_other")
+			) {
+				Spacer(modifier = Modifier.height(24.dp))
+				
+				SongProgress(
+					maxDuration = musicomposeState.currentSongPlayed.duration,
+					currentDuration = musicomposeState.currentDuration,
+					onChange = { progress ->
+						val duration = progress * musicomposeState.currentSongPlayed.duration
+						
+						songController?.snapTo(duration.toLong())
+					}
+				)
+				
+				Spacer(modifier = Modifier.height(16.dp))
+				
+				SongControlButtons(
+					isPlaying = musicomposeState.isPlaying,
+					onPrevious = {
+						songController?.previous()
+					},
+					onPlayPause = {
+						if (musicomposeState.isPlaying) songController?.pause()
+						else songController?.resume()
+					},
+					onNext = {
+						songController?.next()
+					}
+				)
+			}
+		}
+	}
+	
+}
+
+private val MOTION_CONTENT_HEIGHT = 64.dp
