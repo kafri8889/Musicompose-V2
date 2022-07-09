@@ -39,5 +39,6 @@
     <string name="search_placeholder">Lagu, artis, atau album</string>
     <string name="enter_playlist_name">Masukkan nama daftar putar</string>
     <string name="select_your_language">Pilih bahasamu</string>
+    <string name="skip_forward_or_backward">Lewati maju/mundur</string>
 
 </resources>
