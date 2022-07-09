@@ -45,10 +45,10 @@ fun BoxScope.BottomMusicPlayerImpl(
 					MusicomposeDestination.BottomSheet.MusicPlayer.route
 				)
 			},
-			onFavoriteClicked = { isFavorite ->
+			onFavoriteClicked = {
 				songController?.updateSong(
 					musicomposeState.currentSongPlayed.copy(
-						isFavorite = isFavorite
+						isFavorite = !musicomposeState.currentSongPlayed.isFavorite
 					)
 				)
 			},

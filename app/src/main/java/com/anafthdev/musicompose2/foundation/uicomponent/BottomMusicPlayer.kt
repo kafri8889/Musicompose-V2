@@ -36,7 +36,7 @@ fun BottomMusicPlayer(
 	isPlaying: Boolean,
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit,
-	onFavoriteClicked: (Boolean) -> Unit,
+	onFavoriteClicked: () -> Unit,
 	onPlayPauseClicked: (Boolean) -> Unit
 ) {
 	
@@ -90,9 +90,7 @@ fun BottomMusicPlayer(
 			}
 			
 			IconButton(
-				onClick = {
-					onFavoriteClicked(!currentSong.isFavorite)
-				}
+				onClick = onFavoriteClicked
 			) {
 				Image(
 					painter = painterResource(
