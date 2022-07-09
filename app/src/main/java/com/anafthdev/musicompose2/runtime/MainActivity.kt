@@ -62,6 +62,24 @@ class MainActivity: LocalizedActivity() {
 			)
 		}
 		
+		override fun forward() {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.Forward
+			)
+		}
+		
+		override fun backward() {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.Backward
+			)
+		}
+		
+		override fun changePlaybackMode() {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.ChangePlaybackMode
+			)
+		}
+		
 		override fun snapTo(duration: Long) {
 			musicomposeViewModel.dispatch(
 				MusicomposeAction.SnapTo(
@@ -73,6 +91,12 @@ class MainActivity: LocalizedActivity() {
 		override fun updateSong(song: Song) {
 			musicomposeViewModel.dispatch(
 				MusicomposeAction.UpdateSong(song)
+			)
+		}
+		
+		override fun setShuffled(shuffle: Boolean) {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.SetShuffle(shuffle)
 			)
 		}
 		

@@ -187,7 +187,10 @@ fun MusicomposeNavHost(
 					sheetBackgroundColor = MaterialTheme.colorScheme.background
 				)
 				
-				MusicPlayerSheetScreen(navController = navController)
+				MusicPlayerSheetScreen(
+					navController = navController,
+					bottomSheetLayoutConfig = bottomSheetLayoutConfig
+				)
 			}
 			
 			bottomSheet(

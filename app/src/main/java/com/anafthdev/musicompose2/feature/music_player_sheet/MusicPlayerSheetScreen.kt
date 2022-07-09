@@ -6,18 +6,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,17 +33,23 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
+import com.anafthdev.musicompose2.data.PlaybackMode
+import com.anafthdev.musicompose2.data.SkipForwardBackward
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.feature.musicompose.MusicomposeState
+import com.anafthdev.musicompose2.feature.play_queue.PlayQueueScreen
+import com.anafthdev.musicompose2.foundation.common.BottomSheetLayoutConfig
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.uiextension.currentFraction
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MusicPlayerSheetScreen(
-	navController: NavController
+	navController: NavController,
+	bottomSheetLayoutConfig: BottomSheetLayoutConfig
 ) {
 	
 	val config = LocalConfiguration.current
@@ -58,6 +59,7 @@ fun MusicPlayerSheetScreen(
 	
 	val state by viewModel.state.collectAsState()
 	
+	val scope = rememberCoroutineScope()
 	val scaffoldState = rememberBottomSheetScaffoldState(
 		bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
 	)
@@ -77,8 +79,16 @@ fun MusicPlayerSheetScreen(
 						// add some padding between MotionContent and SheetContent (1f -> 0.99f)
 						0.99f.minus(MOTION_CONTENT_HEIGHT.value / config.screenHeightDp)
 					)
-					.background(Color.Green)
-			)
+			) {
+				PlayQueueScreen(
+					isExpanded = scaffoldState.bottomSheetState.isExpanded,
+					onBack = {
+						scope.launch {
+							scaffoldState.bottomSheetState.collapse()
+						}
+					}
+				)
+			}
 		},
 		modifier = Modifier
 			.systemBarsPadding()
@@ -87,6 +97,7 @@ fun MusicPlayerSheetScreen(
 		MotionContent(
 			musicomposeState = musicomposeState,
 			fraction = scaffoldState.currentFraction,
+			background = bottomSheetLayoutConfig.sheetBackgroundColor,
 			modifier = Modifier
 		)
 	}
@@ -260,10 +271,105 @@ fun SongControlButtons(
 	}
 }
 
+@Composable
+fun OtherButtons(
+	musicomposeState: MusicomposeState,
+	modifier: Modifier = Modifier,
+	onPlaybackModeClicked: () -> Unit,
+	onFavoriteClicked: () -> Unit,
+	onBackwardClicked: () -> Unit,
+	onForwardClicked: () -> Unit,
+	onShuffleClicked: () -> Unit
+) {
+	
+	Row(
+		horizontalArrangement = Arrangement.SpaceEvenly,
+		verticalAlignment = Alignment.CenterVertically,
+		modifier = modifier
+	) {
+		IconButton(
+			onClick = onBackwardClicked
+		) {
+			Icon(
+				painter = painterResource(
+					id = when (musicomposeState.skipForwardBackward) {
+						SkipForwardBackward.FIVE_SECOND -> R.drawable.ic_backward_5_sec
+						SkipForwardBackward.TEN_SECOND -> R.drawable.ic_backward_10_sec
+						SkipForwardBackward.FIFTEEN_SECOND -> R.drawable.ic_backward_15_sec
+					}
+				),
+				contentDescription = null
+			)
+		}
+		
+		IconButton(
+			colors = IconButtonDefaults.iconButtonColors(
+				contentColor = IconButtonDefaults.iconButtonColors().contentColor(
+					enabled = musicomposeState.playbackMode != PlaybackMode.REPEAT_OFF
+				).value
+			),
+			onClick = onPlaybackModeClicked
+		) {
+			Icon(
+				painter = painterResource(
+					id = when (musicomposeState.playbackMode) {
+						PlaybackMode.REPEAT_ONE -> R.drawable.ic_repeate_one
+						PlaybackMode.REPEAT_ALL -> R.drawable.ic_repeate_on
+						PlaybackMode.REPEAT_OFF -> R.drawable.ic_repeate_on
+					}
+				),
+				contentDescription = null
+			)
+		}
+		
+		IconButton(
+			onClick = onFavoriteClicked
+		) {
+			Image(
+				painter = painterResource(
+					id = if (musicomposeState.currentSongPlayed.isFavorite) R.drawable.ic_favorite_selected
+					else R.drawable.ic_favorite_unselected
+				),
+				contentDescription = null
+			)
+		}
+		
+		IconButton(
+			colors = IconButtonDefaults.iconButtonColors(
+				contentColor = IconButtonDefaults.iconButtonColors().contentColor(
+					enabled = musicomposeState.isShuffled
+				).value
+			),
+			onClick = onShuffleClicked
+		) {
+			Icon(
+				painter = painterResource(id = R.drawable.ic_shuffle),
+				contentDescription = null
+			)
+		}
+		
+		IconButton(
+			onClick = onForwardClicked
+		) {
+			Icon(
+				painter = painterResource(
+					id = when (musicomposeState.skipForwardBackward) {
+						SkipForwardBackward.FIVE_SECOND -> R.drawable.ic_forward_5_sec
+						SkipForwardBackward.TEN_SECOND -> R.drawable.ic_forward_10_sec
+						SkipForwardBackward.FIFTEEN_SECOND -> R.drawable.ic_forward_15_sec
+					}
+				),
+				contentDescription = null
+			)
+		}
+	}
+}
+
 @OptIn(ExperimentalMotionApi::class)
 @Composable
 private fun MotionContent(
 	fraction: Float,
+	background: Color,
 	musicomposeState: MusicomposeState,
 	modifier: Modifier = Modifier
 ) {
@@ -280,7 +386,8 @@ private fun MotionContent(
 	
 	Row(
 		modifier = modifier
-			.fillMaxWidth()
+			.background(background)
+			.fillMaxSize()
 	) {
 		MotionLayout(
 			motionScene = MotionScene(content = motionScene),
@@ -399,6 +506,33 @@ private fun MotionContent(
 					onNext = {
 						songController?.next()
 					}
+				)
+				
+				Spacer(modifier = Modifier.height(16.dp))
+				
+				OtherButtons(
+					musicomposeState = musicomposeState,
+					onPlaybackModeClicked = {
+						songController?.changePlaybackMode()
+					},
+					onFavoriteClicked = {
+						songController?.updateSong(
+							musicomposeState.currentSongPlayed.copy(
+								isFavorite = !musicomposeState.currentSongPlayed.isFavorite
+							)
+						)
+					},
+					onBackwardClicked = {
+						songController?.backward()
+					},
+					onForwardClicked = {
+						songController?.forward()
+					},
+					onShuffleClicked = {
+						songController?.setShuffled(!musicomposeState.isShuffled)
+					},
+					modifier = Modifier
+						.fillMaxWidth()
 				)
 			}
 		}

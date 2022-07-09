@@ -15,9 +15,17 @@ interface SongController {
 	
 	fun next()
 	
+	fun forward()
+	
+	fun backward()
+	
+	fun changePlaybackMode()
+	
 	fun snapTo(duration: Long)
 	
 	fun updateSong(song: Song)
+	
+	fun setShuffled(shuffle: Boolean)
 	
 	fun hideBottomMusicPlayer()
 	

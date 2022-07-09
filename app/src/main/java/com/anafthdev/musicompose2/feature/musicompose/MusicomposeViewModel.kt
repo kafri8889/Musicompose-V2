@@ -47,10 +47,40 @@ class MusicomposeViewModel @Inject constructor(
 		}
 		
 		viewModelScope.launch(environment.dispatcher) {
+			environment.getPlaybackMode().collect { mode ->
+				setState {
+					copy(
+						playbackMode = mode
+					)
+				}
+			}
+		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.getSkipForwardBackward().collect { skipForwardBackward ->
+				setState {
+					copy(
+						skipForwardBackward = skipForwardBackward
+					)
+				}
+			}
+		}
+		
+		viewModelScope.launch(environment.dispatcher) {
 			environment.isPlaying().collect { isPlaying ->
 				setState {
 					copy(
 						isPlaying = isPlaying
+					)
+				}
+			}
+		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.isShuffled().collect { isShuffled ->
+				setState {
+					copy(
+						isShuffled = isShuffled
 					)
 				}
 			}
@@ -85,6 +115,11 @@ class MusicomposeViewModel @Inject constructor(
 					else environment.pause()
 				}
 			}
+			is MusicomposeAction.SetShuffle -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.setShuffle(action.isShuffled)
+				}
+			}
 			is MusicomposeAction.UpdateSong -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.updateSong(action.song)
@@ -100,9 +135,24 @@ class MusicomposeViewModel @Inject constructor(
 					environment.playLastSongPlayed()
 				}
 			}
+			is MusicomposeAction.ChangePlaybackMode -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.changePlaybackMode()
+				}
+			}
+			is MusicomposeAction.Backward -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.backward()
+				}
+			}
 			is MusicomposeAction.Previous -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.previous()
+				}
+			}
+			is MusicomposeAction.Forward -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.forward()
 				}
 			}
 			is MusicomposeAction.Next -> {

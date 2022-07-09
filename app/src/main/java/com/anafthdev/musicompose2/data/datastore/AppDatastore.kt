@@ -8,10 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.anafthdev.musicompose2.data.SortAlbumOption
-import com.anafthdev.musicompose2.data.SortArtistOption
-import com.anafthdev.musicompose2.data.SortPlaylistOption
-import com.anafthdev.musicompose2.data.SortSongOption
+import com.anafthdev.musicompose2.data.*
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.preference.Language
 import com.anafthdev.musicompose2.data.preference.Preference
@@ -52,7 +49,7 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		}
 	}
 	
-	suspend fun setSortPlaylisttOption(option: SortPlaylistOption) {
+	suspend fun setSortPlaylistOption(option: SortPlaylistOption) {
 		context.datastore.edit { preferences ->
 			preferences[sortPlaylistOption] = option.ordinal
 		}
@@ -61,6 +58,18 @@ class AppDatastore @Inject constructor(private val context: Context) {
 	suspend fun setLastSongPlayed(audioID: Long) {
 		context.datastore.edit { preferences ->
 			preferences[lastSongPlayed] = audioID
+		}
+	}
+	
+	suspend fun setPlaybackMode(mode: PlaybackMode) {
+		context.datastore.edit { preferences ->
+			preferences[playbackMode] = mode.ordinal
+		}
+	}
+	
+	suspend fun setSkipForwardBackward(duration: SkipForwardBackward) {
+		context.datastore.edit { preferences ->
+			preferences[skipForwardBackward] = duration.ordinal
 		}
 	}
 	
@@ -92,17 +101,26 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		preferences[lastSongPlayed] ?: Song.default.audioID
 	}
 	
+	val getPlaybackMode: Flow<PlaybackMode> = context.datastore.data.map { preferences ->
+		PlaybackMode.values()[preferences[playbackMode] ?: PlaybackMode.REPEAT_OFF.ordinal]
+	}
+	
+	val getSkipForwardBackward: Flow<SkipForwardBackward> = context.datastore.data.map { preferences ->
+		SkipForwardBackward.values()[preferences[skipForwardBackward] ?: SkipForwardBackward.FIVE_SECOND.ordinal]
+	}
+	
 	companion object {
 		val Context.datastore: DataStore<Preferences> by preferencesDataStore("app_datastore")
 		
-		val language = intPreferencesKey(Preference.LANGUAGE)
 		val uiMode = intPreferencesKey(Preference.UI_MODE)
+		val language = intPreferencesKey(Preference.LANGUAGE)
+		val playbackMode = intPreferencesKey(Preference.PLAYBACK_MODE)
+		val lastSongPlayed = longPreferencesKey(Preference.LAST_SONG_PLAYED)
 		val sortSongOption = intPreferencesKey(Preference.SORT_SONG_OPTION)
 		val sortAlbumOption = intPreferencesKey(Preference.SORT_ALBUM_OPTION)
 		val sortArtistOption = intPreferencesKey(Preference.SORT_ARTIST_OPTION)
 		val sortPlaylistOption = intPreferencesKey(Preference.SORT_PLAYLIST_OPTION)
-		val lastSongPlayed = longPreferencesKey(Preference.LAST_SONG_PLAYED)
-		
+		val skipForwardBackward = intPreferencesKey(Preference.SKIP_FORWARD_BACKWARD)
 	}
 }
 

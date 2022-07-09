@@ -1,5 +1,7 @@
 package com.anafthdev.musicompose2.feature.musicompose.environment
 
+import com.anafthdev.musicompose2.data.PlaybackMode
+import com.anafthdev.musicompose2.data.SkipForwardBackward
 import com.anafthdev.musicompose2.data.model.Song
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -12,11 +14,19 @@ interface IMusicomposeEnvironment {
 	
 	fun isPlaying(): Flow<Boolean>
 	
+	fun isShuffled(): Flow<Boolean>
+	
 	fun getCurrentDuration(): Flow<Long>
 	
 	fun getCurrentPlayedSong(): Flow<Song>
 	
+	fun getSkipForwardBackward(): Flow<SkipForwardBackward>
+	
+	fun getPlaybackMode(): Flow<PlaybackMode>
+	
 	fun isBottomMusicPlayerShowed(): Flow<Boolean>
+	
+	fun snapTo(duration: Long, fromUser: Boolean = true)
 	
 	suspend fun play(song: Song)
 	
@@ -28,9 +38,15 @@ interface IMusicomposeEnvironment {
 	
 	suspend fun next()
 	
-	fun snapTo(duration: Long, fromUser: Boolean = true)
+	suspend fun forward()
+	
+	suspend fun backward()
+	
+	suspend fun changePlaybackMode()
 	
 	suspend fun updateSong(song: Song)
+	
+	suspend fun setShuffle(shuffle: Boolean)
 	
 	suspend fun setShowBottomMusicPlayer(show: Boolean)
 	

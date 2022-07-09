@@ -45,6 +45,6 @@ class SortSheetEnvironment @Inject constructor(
 	}
 	
 	override suspend fun setSortPlaylistOption(option: SortPlaylistOption) {
-		appDatastore.setSortPlaylisttOption(option)
+		appDatastore.setSortPlaylistOption(option)
 	}
 }

@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.core.net.toUri
+import com.anafthdev.musicompose2.data.PlaybackMode
+import com.anafthdev.musicompose2.data.SkipForwardBackward
 import com.anafthdev.musicompose2.data.SortSongOption
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.data.model.Playlist
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.time.Duration.Companion.seconds
 
 class MusicomposeEnvironment @Inject constructor(
 	@Named(DiName.IO) override val dispatcher: CoroutineDispatcher,
@@ -38,8 +41,17 @@ class MusicomposeEnvironment @Inject constructor(
 	private val _currentDuration = MutableStateFlow(0L)
 	private val currentDuration: StateFlow<Long> = _currentDuration
 	
+	private val _skipForwardBackward = MutableStateFlow(SkipForwardBackward.FIVE_SECOND)
+	private val skipForwardBackward: StateFlow<SkipForwardBackward> = _skipForwardBackward
+	
+	private val _playbackMode = MutableStateFlow(PlaybackMode.REPEAT_ALL)
+	private val playbackMode: StateFlow<PlaybackMode> = _playbackMode
+	
 	private val _isPlaying = MutableStateFlow(false)
 	private val isPlaying: StateFlow<Boolean> = _isPlaying
+	
+	private val _isShuffled = MutableStateFlow(false)
+	private val isShuffled: StateFlow<Boolean> = _isShuffled
 	
 	private val _isBottomMusicPlayerShowed = MutableStateFlow(false)
 	private val isBottomMusicPlayerShowed: StateFlow<Boolean> = _isBottomMusicPlayerShowed
@@ -90,6 +102,26 @@ class MusicomposeEnvironment @Inject constructor(
 				_songs.emit(sortedSongs)
 			}
 		}
+		
+		CoroutineScope(dispatcher).launch {
+			combine(
+				appDatastore.getPlaybackMode,
+				appDatastore.getSkipForwardBackward
+			) { mPlaybackMode, mSkipForwardBackward ->
+				mPlaybackMode to mSkipForwardBackward
+			}.collect { (mPlaybackMode, mSkipForwardBackward) ->
+				_playbackMode.emit(mPlaybackMode)
+				_skipForwardBackward.emit(mSkipForwardBackward)
+				
+				playerHandler.post {
+					exoPlayer.repeatMode = when (mPlaybackMode) {
+						PlaybackMode.REPEAT_ALL -> Player.REPEAT_MODE_ALL
+						PlaybackMode.REPEAT_ONE -> Player.REPEAT_MODE_ONE
+						PlaybackMode.REPEAT_OFF -> Player.REPEAT_MODE_OFF
+					}
+				}
+			}
+		}
 	}
 	
 	override fun getSongs(): Flow<List<Song>> {
@@ -100,8 +132,20 @@ class MusicomposeEnvironment @Inject constructor(
 		return currentPlayedSong
 	}
 	
+	override fun getSkipForwardBackward(): Flow<SkipForwardBackward> {
+		return skipForwardBackward
+	}
+	
+	override fun getPlaybackMode(): Flow<PlaybackMode> {
+		return playbackMode
+	}
+	
 	override fun isPlaying(): Flow<Boolean> {
 		return isPlaying
+	}
+	
+	override fun isShuffled(): Flow<Boolean> {
+		return isShuffled
 	}
 	
 	override fun getCurrentDuration(): Flow<Long> {
@@ -110,6 +154,12 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override fun isBottomMusicPlayerShowed(): Flow<Boolean> {
 		return isBottomMusicPlayerShowed
+	}
+	
+	override fun snapTo(duration: Long, fromUser: Boolean) {
+		_currentDuration.tryEmit(duration)
+		
+		if (fromUser) playerHandler.post { exoPlayer.seekTo(duration) }
 	}
 	
 	override suspend fun play(song: Song) {
@@ -172,10 +222,38 @@ class MusicomposeEnvironment @Inject constructor(
 		// TODO: next 
 	}
 	
-	override fun snapTo(duration: Long, fromUser: Boolean) {
-		_currentDuration.tryEmit(duration)
-		
-		if (fromUser) playerHandler.post { exoPlayer.seekTo(duration) }
+	override suspend fun forward() {
+		playerHandler.post {
+			snapTo(
+				duration = when (skipForwardBackward.value) {
+					SkipForwardBackward.FIVE_SECOND -> exoPlayer.currentPosition + 5.seconds.inWholeMilliseconds
+					SkipForwardBackward.TEN_SECOND -> exoPlayer.currentPosition + 10.seconds.inWholeMilliseconds
+					SkipForwardBackward.FIFTEEN_SECOND -> exoPlayer.currentPosition + 15.seconds.inWholeMilliseconds
+				}
+			)
+		}
+	}
+	
+	override suspend fun backward() {
+		playerHandler.post {
+			snapTo(
+				duration = when (skipForwardBackward.value) {
+					SkipForwardBackward.FIVE_SECOND -> exoPlayer.currentPosition - 5.seconds.inWholeMilliseconds
+					SkipForwardBackward.TEN_SECOND -> exoPlayer.currentPosition - 10.seconds.inWholeMilliseconds
+					SkipForwardBackward.FIFTEEN_SECOND -> exoPlayer.currentPosition - 15.seconds.inWholeMilliseconds
+				}
+			)
+		}
+	}
+	
+	override suspend fun changePlaybackMode() {
+		appDatastore.setPlaybackMode(
+			when (playbackMode.value) {
+				PlaybackMode.REPEAT_ALL -> PlaybackMode.REPEAT_ONE
+				PlaybackMode.REPEAT_ONE -> PlaybackMode.REPEAT_OFF
+				PlaybackMode.REPEAT_OFF -> PlaybackMode.REPEAT_ALL
+			}
+		)
 	}
 	
 	override suspend fun updateSong(song: Song) {
@@ -207,6 +285,10 @@ class MusicomposeEnvironment @Inject constructor(
 				)
 			)
 		}
+	}
+	
+	override suspend fun setShuffle(shuffle: Boolean) {
+		_isShuffled.emit(shuffle)
 	}
 	
 	override suspend fun setShowBottomMusicPlayer(show: Boolean) {
