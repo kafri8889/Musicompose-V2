@@ -16,6 +16,7 @@ import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
+import com.anafthdev.musicompose2.foundation.extension.isNotDefault
 import com.anafthdev.musicompose2.foundation.extension.toast
 import com.anafthdev.musicompose2.utils.AppUtil.collator
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -188,47 +189,49 @@ class MusicomposeEnvironment @Inject constructor(
 	}
 	
 	override suspend fun play(song: Song) {
-		val justPlayedPlaylist = repository.getPlaylist(Playlist.justPlayed.id)
-		justPlayedPlaylist?.let { playlist ->
-			repository.updatePlaylists(
-				playlist.copy(
-					songs = playlist.songs.toMutableList().apply {
-						val contain = playlist.songs.find {
-							it == song.audioID
-						} != null
-						
-						if (contain) removeIf { it == song.audioID }
-						
-						if (playlist.songs.size < 10) add(song.audioID)
-						else {
-							removeAt(0)
-							add(song.audioID)
+		if (song.isNotDefault()) {
+			val justPlayedPlaylist = repository.getPlaylist(Playlist.justPlayed.id)
+			justPlayedPlaylist?.let { playlist ->
+				repository.updatePlaylists(
+					playlist.copy(
+						songs = playlist.songs.toMutableList().apply {
+							val contain = playlist.songs.find {
+								it == song.audioID
+							} != null
+							
+							if (contain) removeIf { it == song.audioID }
+							
+							if (playlist.songs.size < 10) add(song.audioID)
+							else {
+								removeAt(0)
+								add(song.audioID)
+							}
 						}
-					}
+					)
 				)
-			)
-		}
-		song.title.toast(context)
-		_currentPlayedSong.emit(song)
-		
-		appDatastore.setLastSongPlayed(song.audioID)
-		
-		playerHandler.post {
-			exoPlayer.setMediaItem(MediaItem.fromUri(song.path.toUri()))
-			exoPlayer.prepare()
-			exoPlayer.play()
-		}
-		
-		songRunnable = Runnable {
-			snapTo(
-				duration = if (exoPlayer.duration != -1L) exoPlayer.currentPosition else 0L,
-				fromUser = false
-			)
+			}
+			song.title.toast(context)
+			_currentPlayedSong.emit(song)
 			
-			songHandler.postDelayed(songRunnable, 1000)
+			appDatastore.setLastSongPlayed(song.audioID)
+			
+			playerHandler.post {
+				exoPlayer.setMediaItem(MediaItem.fromUri(song.path.toUri()))
+				exoPlayer.prepare()
+				exoPlayer.play()
+			}
+			
+			songRunnable = Runnable {
+				snapTo(
+					duration = if (exoPlayer.duration != -1L) exoPlayer.currentPosition else 0L,
+					fromUser = false
+				)
+				
+				songHandler.postDelayed(songRunnable, 1000)
+			}
+			
+			songHandler.post(songRunnable)
 		}
-		
-		songHandler.post(songRunnable)
 	}
 	
 	override suspend fun pause() {

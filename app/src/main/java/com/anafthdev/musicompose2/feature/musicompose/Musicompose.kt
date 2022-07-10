@@ -1,5 +1,11 @@
 package com.anafthdev.musicompose2.feature.musicompose
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -12,10 +18,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.datastore.AppDatastore
 import com.anafthdev.musicompose2.data.datastore.LocalAppDatastore
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
@@ -24,18 +32,24 @@ import com.anafthdev.musicompose2.foundation.common.SongController
 import com.anafthdev.musicompose2.foundation.extension.isDark
 import com.anafthdev.musicompose2.foundation.extension.isDynamicDark
 import com.anafthdev.musicompose2.foundation.extension.isDynamicLight
+import com.anafthdev.musicompose2.foundation.extension.toast
 import com.anafthdev.musicompose2.foundation.theme.Musicompose2
 import com.anafthdev.musicompose2.foundation.theme.black01
 import com.anafthdev.musicompose2.foundation.theme.black10
 import com.anafthdev.musicompose2.foundation.uicomponent.LocalBottomMusicPlayerAlbumImageAngle
+import com.anafthdev.musicompose2.foundation.uicomponent.PermissionDeniedPermanentlyPopup
+import com.anafthdev.musicompose2.foundation.uicomponent.StoragePermissionReasonPopup
 import com.anafthdev.musicompose2.foundation.uimode.UiModeViewModel
 import com.anafthdev.musicompose2.foundation.uimode.data.LocalUiMode
 import com.anafthdev.musicompose2.runtime.navigation.MusicomposeNavHost
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun Musicompose(
 	appDatastore: AppDatastore,
@@ -43,6 +57,7 @@ fun Musicompose(
 	viewModel: MusicomposeViewModel,
 ) {
 	
+	val context = LocalContext.current
 	val lifeCycleOwner = LocalLifecycleOwner.current
 	
 	val uiModeViewModel = hiltViewModel<UiModeViewModel>()
@@ -54,7 +69,7 @@ fun Musicompose(
 	val isSystemInDarkTheme = uiModeState.uiMode.isDark() or uiModeState.uiMode.isDynamicDark()
 	
 	val scope = rememberCoroutineScope()
-	val systemUiController = rememberSystemUiController()
+	val storagePermissionState = rememberPermissionState(Manifest.permission.READ_EXTERNAL_STORAGE)
 	val bottomMusicPlayerInfiniteTransition = rememberInfiniteTransition()
 	
 	val angle by bottomMusicPlayerInfiniteTransition.animateFloat(
@@ -72,10 +87,14 @@ fun Musicompose(
 		val observer = LifecycleEventObserver { _, event ->
 			when (event) {
 				Lifecycle.Event.ON_CREATE -> {
-					viewModel.dispatch(MusicomposeAction.PlayLastSongPlayed)
-					scope.launch {
-						delay(800)
-						songController.showBottomMusicPlayer()
+					if (storagePermissionState.hasPermission) {
+						viewModel.dispatch(MusicomposeAction.PlayLastSongPlayed)
+						scope.launch {
+							delay(800)
+							songController.showBottomMusicPlayer()
+						}
+					} else {
+						storagePermissionState.launchPermissionRequest()
 					}
 				}
 				else -> {}
@@ -102,21 +121,62 @@ fun Musicompose(
 			darkTheme = isSystemInDarkTheme,
 			dynamicColor = useDynamicColor
 		) {
-			val backgroundColor = MaterialTheme.colorScheme.background
-			
-			SideEffect {
-				systemUiController.setSystemBarsColor(
-					color = Color.Transparent,
-					darkIcons = backgroundColor.luminance() > 0.5f
-				)
+			PermissionRequired(
+				permissionState = storagePermissionState,
+				permissionNotGrantedContent = {
+					StoragePermissionReasonPopup(
+						onDeny = {
+							context.getString(R.string.permission_denied_by_user).toast(
+								context = context,
+								length = Toast.LENGTH_LONG
+							)
+							
+							(context as Activity).finishAffinity()
+						},
+						onAllow = {
+							storagePermissionState.launchPermissionRequest()
+						}
+					)
+				},
+				permissionNotAvailableContent = {
+					PermissionDeniedPermanentlyPopup(
+						onClose = {
+							(context as Activity).finishAffinity()
+						},
+						onOpen = {
+							context.startActivity(
+								Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+									data = Uri.fromParts("package", context.packageName,null)
+									addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+								}
+							)
+						}
+					)
+				}
+			) {
+				MusicomposeScreen()
 			}
-			
-			MusicomposeNavHost(
-				modifier = Modifier
-					.fillMaxSize()
-					.background(MaterialTheme.colorScheme.background)
-			)
 		}
 	}
 	
+}
+
+@Composable
+private fun MusicomposeScreen() {
+	val backgroundColor = MaterialTheme.colorScheme.background
+	
+	val systemUiController = rememberSystemUiController()
+	
+	SideEffect {
+		systemUiController.setSystemBarsColor(
+			color = Color.Transparent,
+			darkIcons = backgroundColor.luminance() > 0.5f
+		)
+	}
+	
+	MusicomposeNavHost(
+		modifier = Modifier
+			.fillMaxSize()
+			.background(MaterialTheme.colorScheme.background)
+	)
 }

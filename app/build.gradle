@@ -107,7 +107,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
     // Accompanist
-    implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-permissions:0.23.1"
     implementation "com.google.accompanist:accompanist-navigation-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_version"

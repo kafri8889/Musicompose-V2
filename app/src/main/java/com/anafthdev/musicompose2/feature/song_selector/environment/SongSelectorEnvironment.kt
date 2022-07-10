@@ -6,6 +6,7 @@ import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.common.Quad
 import com.anafthdev.musicompose2.foundation.di.DiName
+import com.anafthdev.musicompose2.foundation.extension.isNotDefault
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -54,7 +55,7 @@ class SongSelectorEnvironment @Inject constructor(
 				mPlaylists.find { it.id == mPlaylist.id }?.let { nPlaylist ->
 					val songList = mPlaylist.songs.map { songID ->
 						mSongs.find { it.audioID == songID } ?: Song.default
-					}.filterNot { it.audioID == Song.default.audioID }
+					}.filter { it.isNotDefault() }
 					
 					_playlist.emit(nPlaylist)
 					_selectedSong.emit(songList)

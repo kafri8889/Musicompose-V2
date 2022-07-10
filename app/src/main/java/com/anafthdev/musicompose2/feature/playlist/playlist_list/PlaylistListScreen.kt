@@ -21,6 +21,7 @@ import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
+import com.anafthdev.musicompose2.foundation.extension.isNotDefault
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
 import com.anafthdev.musicompose2.foundation.uicomponent.PlaylistItem
 
@@ -64,7 +65,7 @@ fun PlaylistListScreen(
 				val songs = remember(playlist, musicomposeState.songs) {
 					playlist.songs.map { songID ->
 						musicomposeState.songs.find { it.audioID == songID } ?: Song.default
-					}.filterNot { it.audioID == Song.default.audioID }
+					}.filter { it.isNotDefault() }
 				}
 				
 				PlaylistItem(

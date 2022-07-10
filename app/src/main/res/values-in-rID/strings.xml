@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="ok">Ok</string>
+    <string name="ok">@android:string/ok</string>
     <string name="song">Lagu</string>
     <string name="dark">Gelap</string>
     <string name="edit">Edit</string>
+    <string name="deny">Tolak</string>
+    <string name="open">Buka</string>
+    <string name="close">Tutup</string>
+    <string name="allow">Izinkan</string>
     <string name="theme">Tema</string>
     <string name="light">Terang</string>
     <string name="album">Album</string>
@@ -28,6 +32,7 @@
     <string name="artist_name">Nama artis</string>
     <string name="just_played">Baru saja dimainkan</string>
     <string name="now_playing">Sedang dimainkan</string>
+    <string name="media_access">Akses media</string>
     <string name="new_playlist">Daftar putar baru</string>
     <string name="dynamic_dark">Gelap dinamik</string>
     <string name="dynamic_light">Terang dinamik</string>
@@ -39,6 +44,9 @@
     <string name="search_placeholder">Lagu, artis, atau album</string>
     <string name="enter_playlist_name">Masukkan nama daftar putar</string>
     <string name="select_your_language">Pilih bahasamu</string>
+    <string name="media_access_message">Aplikasi ini membutuhkan izin membaca penyimpanan eksternal agar berfungsi dengan normal</string>
     <string name="skip_forward_or_backward">Lewati maju/mundur</string>
+    <string name="permission_denied_by_user">Izin ditolak oleh pengguna</string>
+    <string name="permission_denied_permanently_message">Izin ditolak, buka pengaturan untuk mengizinkannya</string>
 
 </resources>
