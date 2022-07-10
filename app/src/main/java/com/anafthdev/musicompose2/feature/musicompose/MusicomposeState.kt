@@ -7,6 +7,7 @@ import com.anafthdev.musicompose2.data.model.Song
 
 data class MusicomposeState(
 	val songs: List<Song> =  emptyList(),
+	val currentSongQueue: List<Song> = emptyList(),
 	val currentSongPlayed: Song = Song.default,
 	val currentDuration: Long = 0,
 	val isPlaying: Boolean = false,

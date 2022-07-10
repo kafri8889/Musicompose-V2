@@ -27,6 +27,16 @@ class MusicomposeViewModel @Inject constructor(
 		}
 		
 		viewModelScope.launch(environment.dispatcher) {
+			environment.getCurrentSongQueue().collect { songs ->
+				setState {
+					copy(
+						currentSongQueue = songs
+					)
+				}
+			}
+		}
+		
+		viewModelScope.launch(environment.dispatcher) {
 			environment.getCurrentPlayedSong().collect { song ->
 				setState {
 					copy(

@@ -18,6 +18,8 @@ interface IMusicomposeEnvironment {
 	
 	fun getCurrentDuration(): Flow<Long>
 	
+	fun getCurrentSongQueue(): Flow<List<Song>>
+	
 	fun getCurrentPlayedSong(): Flow<Song>
 	
 	fun getSkipForwardBackward(): Flow<SkipForwardBackward>

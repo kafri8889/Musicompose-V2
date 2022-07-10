@@ -1,9 +1,13 @@
 package com.anafthdev.musicompose2.feature.musicompose.environment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import com.anafthdev.musicompose2.data.PlaybackMode
 import com.anafthdev.musicompose2.data.SkipForwardBackward
 import com.anafthdev.musicompose2.data.SortSongOption
@@ -12,10 +16,8 @@ import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
+import com.anafthdev.musicompose2.foundation.extension.toast
 import com.anafthdev.musicompose2.utils.AppUtil.collator
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -25,15 +27,19 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlin.time.Duration.Companion.seconds
 
+@SuppressLint("UnsafeOptInUsageError")
 class MusicomposeEnvironment @Inject constructor(
 	@Named(DiName.IO) override val dispatcher: CoroutineDispatcher,
-	@ApplicationContext context: Context,
+	@ApplicationContext private val context: Context,
 	private val appDatastore: AppDatastore,
 	private val repository: Repository
 ): IMusicomposeEnvironment {
 	
 	private val _songs = MutableStateFlow(emptyList<Song>())
 	private val songs: StateFlow<List<Song>> = _songs
+	
+	private val _currentSongQueue = MutableStateFlow(emptyList<Song>())
+	private val currentSongQueue: StateFlow<List<Song>> = _currentSongQueue
 	
 	private val _currentPlayedSong = MutableStateFlow(Song.default)
 	private val currentPlayedSong: StateFlow<Song> = _currentPlayedSong
@@ -65,7 +71,27 @@ class MusicomposeEnvironment @Inject constructor(
 			override fun onPlaybackStateChanged(playbackState: Int) {
 				super.onPlaybackStateChanged(playbackState)
 				if (playbackState == ExoPlayer.STATE_ENDED) {
-				
+					when (playbackMode.value) {
+						PlaybackMode.REPEAT_ALL -> {
+							val currentIndex = currentSongQueue.value.indexOfFirst {
+								it.audioID == currentPlayedSong.value.audioID
+							}
+							
+							val nextSong = when {
+								currentIndex == currentSongQueue.value.lastIndex -> currentSongQueue.value[0]
+								currentIndex != -1 -> currentSongQueue.value[currentIndex + 1]
+								else -> currentSongQueue.value[0]
+							}
+							
+							CoroutineScope(dispatcher).launch { play(nextSong) }
+						}
+						PlaybackMode.REPEAT_OFF -> {
+							this@apply.stop()
+						}
+						PlaybackMode.REPEAT_ONE -> {
+							CoroutineScope(dispatcher).launch { play(currentPlayedSong.value) }
+						}
+					}
 				}
 				
 			}
@@ -100,6 +126,9 @@ class MusicomposeEnvironment @Inject constructor(
 				}
 				
 				_songs.emit(sortedSongs)
+				
+				// TODO: set song queue
+				_currentSongQueue.emit(sortedSongs)
 			}
 		}
 		
@@ -112,14 +141,6 @@ class MusicomposeEnvironment @Inject constructor(
 			}.collect { (mPlaybackMode, mSkipForwardBackward) ->
 				_playbackMode.emit(mPlaybackMode)
 				_skipForwardBackward.emit(mSkipForwardBackward)
-				
-				playerHandler.post {
-					exoPlayer.repeatMode = when (mPlaybackMode) {
-						PlaybackMode.REPEAT_ALL -> Player.REPEAT_MODE_ALL
-						PlaybackMode.REPEAT_ONE -> Player.REPEAT_MODE_ONE
-						PlaybackMode.REPEAT_OFF -> Player.REPEAT_MODE_OFF
-					}
-				}
 			}
 		}
 	}
@@ -150,6 +171,10 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override fun getCurrentDuration(): Flow<Long> {
 		return currentDuration
+	}
+	
+	override fun getCurrentSongQueue(): Flow<List<Song>> {
+		return currentSongQueue
 	}
 	
 	override fun isBottomMusicPlayerShowed(): Flow<Boolean> {
@@ -183,7 +208,7 @@ class MusicomposeEnvironment @Inject constructor(
 				)
 			)
 		}
-		
+		song.title.toast(context)
 		_currentPlayedSong.emit(song)
 		
 		appDatastore.setLastSongPlayed(song.audioID)
@@ -215,11 +240,31 @@ class MusicomposeEnvironment @Inject constructor(
 	}
 	
 	override suspend fun previous() {
-		// TODO: previous 
+		val currentIndex = currentSongQueue.value.indexOfFirst {
+			it.audioID == currentPlayedSong.value.audioID
+		}
+		
+		val previousSong = when {
+			currentIndex == 0 -> currentSongQueue.value[currentSongQueue.value.lastIndex]
+			currentIndex >= 1 -> currentSongQueue.value[currentIndex - 1]
+			else -> currentSongQueue.value[0]
+		}
+		
+		CoroutineScope(dispatcher).launch { play(previousSong) }
 	}
 	
 	override suspend fun next() {
-		// TODO: next 
+		val currentIndex = currentSongQueue.value.indexOfFirst {
+			it.audioID == currentPlayedSong.value.audioID
+		}
+		
+		val nextSong = when {
+			currentIndex == currentSongQueue.value.lastIndex -> currentSongQueue.value[0]
+			currentIndex != -1 -> currentSongQueue.value[currentIndex + 1]
+			else -> currentSongQueue.value[0]
+		}
+		
+		CoroutineScope(dispatcher).launch { play(nextSong) }
 	}
 	
 	override suspend fun forward() {
