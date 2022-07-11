@@ -12,6 +12,7 @@
     <string name="theme">Tema</string>
     <string name="light">Terang</string>
     <string name="album">Album</string>
+    <string name="n_sec">%1$s Det</string>
     <string name="delete">Hapus</string>
     <string name="artist">Artis</string>
     <string name="cancel">Batalkan</string>
@@ -23,6 +24,7 @@
     <string name="playlist">Daftar putar</string>
     <string name="language">Bahasa</string>
     <string name="add_song">Tambahkan lagu</string>
+    <string name="n_second">%1$s Detik</string>
     <string name="play_song">Putar lagu</string>
     <string name="song_name">Nama Lagu</string>
     <string name="date_added">Tanggal ditambahkan</string>
@@ -46,6 +48,7 @@
     <string name="select_your_language">Pilih bahasamu</string>
     <string name="media_access_message">Aplikasi ini membutuhkan izin membaca penyimpanan eksternal agar berfungsi dengan normal</string>
     <string name="skip_forward_or_backward">Lewati maju/mundur</string>
+    <string name="forward_backward_duration">Durasi maju/mundur</string>
     <string name="permission_denied_by_user">Izin ditolak oleh pengguna</string>
     <string name="permission_denied_permanently_message">Izin ditolak, buka pengaturan untuk mengizinkannya</string>
 

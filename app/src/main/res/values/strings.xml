@@ -12,6 +12,7 @@
     <string name="theme">Theme</string>
     <string name="light">Light</string>
     <string name="album">Album</string>
+    <string name="n_sec">%1$s Sec</string>
     <string name="delete">Delete</string>
     <string name="artist">Artist</string>
     <string name="cancel">Cancel</string>
@@ -23,6 +24,7 @@
     <string name="playlist">Playlist</string>
     <string name="language">Language</string>
     <string name="add_song">Add song</string>
+    <string name="n_second">%1$s Second</string>
     <string name="play_song">Play song</string>
     <string name="song_name">Song name</string>
     <string name="date_added">Date added</string>
@@ -46,6 +48,7 @@
     <string name="select_your_language">Select your language</string>
     <string name="media_access_message">This app requires read external storage permission to function normally</string>
     <string name="skip_forward_or_backward">Skip forward/backward</string>
+    <string name="forward_backward_duration">Forward/Backward duration</string>
     <string name="permission_denied_by_user">Permission denied by user</string>
     <string name="permission_denied_permanently_message">Permission denied, go to settings to allow it</string>
 
