@@ -94,6 +94,12 @@ class MainActivity: LocalizedActivity() {
 			)
 		}
 		
+		override fun updateQueueSong(songs: List<Song>) {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.UpdateQueueSong(songs)
+			)
+		}
+		
 		override fun setShuffled(shuffle: Boolean) {
 			musicomposeViewModel.dispatch(
 				MusicomposeAction.SetShuffle(shuffle)

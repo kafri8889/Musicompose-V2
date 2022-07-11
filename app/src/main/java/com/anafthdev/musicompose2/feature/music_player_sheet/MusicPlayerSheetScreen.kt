@@ -71,7 +71,6 @@ fun MusicPlayerSheetScreen(
 	BottomSheetScaffold(
 		scaffoldState = scaffoldState,
 		sheetContent = {
-			// TODO: show play queue
 			Box(
 				modifier = Modifier
 					.fillMaxWidth()

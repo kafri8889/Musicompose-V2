@@ -9,10 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
@@ -27,13 +27,17 @@ fun SongQueueItem(
 	song: Song,
 	selected: Boolean,
 	modifier: Modifier = Modifier,
+	elevation: Dp = 0.dp,
 	onClick: () -> Unit
 ) {
 	
 	Card(
 		onClick = onClick,
+		elevation = CardDefaults.cardElevation(
+			draggedElevation = elevation
+		),
 		colors = CardDefaults.cardColors(
-			containerColor = Color.Transparent
+			containerColor = MaterialTheme.colorScheme.surfaceVariant
 		),
 		modifier = modifier
 	) {

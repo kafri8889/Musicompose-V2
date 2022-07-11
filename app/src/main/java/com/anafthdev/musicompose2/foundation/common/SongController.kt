@@ -25,6 +25,8 @@ interface SongController {
 	
 	fun updateSong(song: Song)
 	
+	fun updateQueueSong(songs: List<Song>)
+	
 	fun setShuffled(shuffle: Boolean)
 	
 	fun hideBottomMusicPlayer()

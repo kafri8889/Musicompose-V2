@@ -107,8 +107,8 @@ class MusicomposeEnvironment @Inject constructor(
 	init {
 		CoroutineScope(dispatcher).launch {
 			combine(
-				repository.getSongs(),
-				appDatastore.getSortSongOption
+				repository.getSongs().distinctUntilChanged(),
+				appDatastore.getSortSongOption.distinctUntilChanged()
 			) { mSongs, sortSongOption ->
 				mSongs to sortSongOption
 			}.collect { (mSongs, sortSongOption) ->
@@ -337,6 +337,10 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override suspend fun setShuffle(shuffle: Boolean) {
 		_isShuffled.emit(shuffle)
+	}
+	
+	override suspend fun updateQueueSong(songs: List<Song>) {
+		_currentSongQueue.emit(songs)
 	}
 	
 	override suspend fun setShowBottomMusicPlayer(show: Boolean) {
