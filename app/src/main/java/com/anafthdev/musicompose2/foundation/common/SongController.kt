@@ -23,6 +23,11 @@ interface SongController {
 	fun pause()
 	
 	/**
+	 * Stop current played song
+	 */
+	fun stop()
+	
+	/**
 	 * Play previous song
 	 */
 	fun previous()

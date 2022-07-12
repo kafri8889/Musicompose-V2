@@ -17,4 +17,5 @@ sealed interface MusicomposeAction {
 	object Previous: MusicomposeAction
 	object Forward: MusicomposeAction
 	object Next: MusicomposeAction
+	object Stop: MusicomposeAction
 }

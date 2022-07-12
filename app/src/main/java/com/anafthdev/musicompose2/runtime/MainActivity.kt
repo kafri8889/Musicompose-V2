@@ -1,6 +1,11 @@
 package com.anafthdev.musicompose2.runtime
 
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
@@ -17,6 +22,7 @@ import com.anafthdev.musicompose2.feature.musicompose.MusicomposeViewModel
 import com.anafthdev.musicompose2.foundation.common.SongController
 import com.anafthdev.musicompose2.foundation.localized.LocalizedActivity
 import com.anafthdev.musicompose2.foundation.localized.data.OnLocaleChangedListener
+import com.anafthdev.musicompose2.foundation.service.MediaPlayerService
 import com.anafthdev.musicompose2.utils.SongUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,12 +30,14 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity: LocalizedActivity() {
+class MainActivity: LocalizedActivity(), ServiceConnection {
 	
 	@Inject lateinit var appDatastore: AppDatastore
 	@Inject lateinit var repository: Repository
 	
 	private val musicomposeViewModel: MusicomposeViewModel by viewModels()
+	
+	private var mediaPlayerService: MediaPlayerService? = null
 	
 	private val songController = object: SongController {
 		override fun play(song: Song) {
@@ -51,6 +59,12 @@ class MainActivity: LocalizedActivity() {
 				MusicomposeAction.SetPlaying(
 					isPlaying = false
 				)
+			)
+		}
+		
+		override fun stop() {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.Stop
 			)
 		}
 		
@@ -151,7 +165,7 @@ class MainActivity: LocalizedActivity() {
 		
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		
-		this.setListener(object: OnLocaleChangedListener {
+		setListener(object: OnLocaleChangedListener {
 			override fun onChanged() {
 				lifecycleScope.launch {
 					repository.updatePlaylist(Playlist.favorite.id, getString(R.string.favorite))
@@ -159,6 +173,18 @@ class MainActivity: LocalizedActivity() {
 				}
 			}
 		})
+		
+		val serviceIntent = Intent(this, MediaPlayerService::class.java)
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			startForegroundService(serviceIntent)
+		} else startService(serviceIntent)
+		
+		bindService(
+			serviceIntent,
+			this,
+			BIND_AUTO_CREATE
+		)
 		
 		setContent {
 			Musicompose(
@@ -184,6 +210,27 @@ class MainActivity: LocalizedActivity() {
 			repository.updatePlaylist(Playlist.favorite.id, getString(R.string.favorite))
 			repository.updatePlaylist(Playlist.justPlayed.id, getString(R.string.just_played))
 		}
+	}
+	
+	override fun onDestroy() {
+		super.onDestroy()
+		
+		try {
+			unbindService(this)
+		} catch (e: IllegalArgumentException) {
+			Timber.e(e, "Service not registered")
+		}
+	}
+	
+	override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+		val binder = p1 as MediaPlayerService.MediaPlayerServiceBinder
+		
+		mediaPlayerService = binder.getService()
+		mediaPlayerService!!.setSongController(songController)
+	}
+	
+	override fun onServiceDisconnected(p0: ComponentName?) {
+		mediaPlayerService = null
 	}
 	
 }

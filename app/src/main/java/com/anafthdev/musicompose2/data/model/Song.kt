@@ -1,9 +1,12 @@
 package com.anafthdev.musicompose2.data.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "song_table")
 data class Song(
 	@PrimaryKey val audioID: Long,
@@ -18,7 +21,7 @@ data class Song(
 	@ColumnInfo(name = "path") val path: String,
 	@ColumnInfo(name = "dateAdded") val dateAdded: Long,
 	@ColumnInfo(name = "isFavorite") var isFavorite: Boolean = false,
-) {
+): Parcelable {
 	companion object {
 		val default = Song(
 			audioID = -1L,

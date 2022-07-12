@@ -1,21 +1,43 @@
 package com.anafthdev.musicompose2.feature.musicompose
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.viewModelScope
-import com.anafthdev.musicompose2.feature.musicompose.environment.IMusicomposeEnvironment
+import com.anafthdev.musicompose2.feature.musicompose.environment.MusicomposeEnvironment
+import com.anafthdev.musicompose2.foundation.service.MediaPlayerService
 import com.anafthdev.musicompose2.foundation.viewmodel.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
+@SuppressLint("StaticFieldLeak")
 class MusicomposeViewModel @Inject constructor(
-	environment: IMusicomposeEnvironment
-): StatefulViewModel<MusicomposeState, Unit, MusicomposeAction, IMusicomposeEnvironment>(
+	@ApplicationContext private val context: Context,
+	environment: MusicomposeEnvironment
+): StatefulViewModel<MusicomposeState, Unit, MusicomposeAction, MusicomposeEnvironment>(
 	MusicomposeState(),
 	environment
 ) {
 	
+	private val serviceIntent = Intent(context, MediaPlayerService::class.java).apply {
+		putExtra("musicomposeState", state.value)
+	}
+	
 	init {
+		viewModelScope.launch(environment.dispatcher) {
+			state.collect { musicomposeState ->
+				serviceIntent.putExtra("musicomposeState", musicomposeState)
+				
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					context.startForegroundService(serviceIntent)
+				} else context.startService(serviceIntent)
+			}
+		}
+		
 		viewModelScope.launch(environment.dispatcher) {
 			environment.getSongs().collect { songs ->
 				setState {
@@ -163,6 +185,11 @@ class MusicomposeViewModel @Inject constructor(
 			is MusicomposeAction.Backward -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.backward()
+				}
+			}
+			is MusicomposeAction.Stop -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.stop()
 				}
 			}
 			is MusicomposeAction.Previous -> {

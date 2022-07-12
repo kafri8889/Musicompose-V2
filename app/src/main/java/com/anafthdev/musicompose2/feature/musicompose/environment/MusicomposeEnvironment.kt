@@ -246,6 +246,10 @@ class MusicomposeEnvironment @Inject constructor(
 		playerHandler.post { exoPlayer.play() }
 	}
 	
+	override suspend fun stop() {
+		playerHandler.post { exoPlayer.stop() }
+	}
+	
 	override suspend fun previous() {
 		val currentIndex = currentSongQueue.value.indexOfFirst {
 			it.audioID == currentPlayedSong.value.audioID

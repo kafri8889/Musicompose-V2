@@ -36,6 +36,8 @@ interface IMusicomposeEnvironment {
 	
 	suspend fun resume()
 	
+	suspend fun stop()
+	
 	suspend fun previous()
 	
 	suspend fun next()
