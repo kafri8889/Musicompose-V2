@@ -21,9 +21,7 @@ import com.anafthdev.musicompose2.foundation.common.ClearRippleTheme
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.extension.isPlaying
 import com.anafthdev.musicompose2.foundation.extension.isSelected
-import com.anafthdev.musicompose2.foundation.uicomponent.AlbumItem
-import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
-import com.anafthdev.musicompose2.foundation.uicomponent.SongItem
+import com.anafthdev.musicompose2.foundation.uicomponent.*
 
 @Composable
 fun AlbumScreen(
@@ -48,80 +46,89 @@ fun AlbumScreen(
 		navController.popBackStack()
 	}
 	
-	LazyColumn(
+	Box(
 		modifier = Modifier
 			.statusBarsPadding()
 			.fillMaxSize()
 	) {
-		item {
-			SmallTopAppBar(
-				colors = TopAppBarDefaults.smallTopAppBarColors(
-					containerColor = Color.Transparent
-				),
-				title = {
-					Text(
-						text = state.album.name,
-						style = MaterialTheme.typography.titleMedium.copy(
-							fontWeight = FontWeight.Bold
+		LazyColumn {
+			item {
+				SmallTopAppBar(
+					colors = TopAppBarDefaults.smallTopAppBarColors(
+						containerColor = Color.Transparent
+					),
+					title = {
+						Text(
+							text = state.album.name,
+							style = MaterialTheme.typography.titleMedium.copy(
+								fontWeight = FontWeight.Bold
+							)
 						)
-					)
-				},
-				navigationIcon = {
-					IconButton(
-						onClick = {
-							navController.popBackStack()
+					},
+					navigationIcon = {
+						IconButton(
+							onClick = {
+								navController.popBackStack()
+							}
+						) {
+							Icon(
+								imageVector = Icons.Rounded.ArrowBack,
+								contentDescription = null
+							)
 						}
-					) {
-						Icon(
-							imageVector = Icons.Rounded.ArrowBack,
-							contentDescription = null
+					}
+				)
+				
+				CompositionLocalProvider(
+					LocalRippleTheme provides ClearRippleTheme
+				) {
+					AlbumItem(
+						album = state.album,
+						containerColor = MaterialTheme.colorScheme.surfaceVariant,
+						onClick = {},
+						modifier = Modifier
+							.padding(
+								vertical = 8.dp,
+								horizontal = 16.dp
+							)
+					)
+				}
+				
+				PlayAll(
+					songs = state.album.songs,
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+				)
+			}
+			
+			items(
+				items = state.album.songs,
+				key = { song: Song -> song.hashCode() }
+			) { song ->
+				SongItem(
+					song = song,
+					showAlbumImage = false,
+					selected = song.isSelected(),
+					isMusicPlaying = song.isPlaying(),
+					onClick = {
+						songController?.play(song)
+					},
+					onFavoriteClicked = { isFavorite ->
+						songController?.updateSong(
+							song.copy(
+								isFavorite = isFavorite
+							)
 						)
 					}
-				}
-			)
-			
-			CompositionLocalProvider(
-				LocalRippleTheme provides ClearRippleTheme
-			) {
-				AlbumItem(
-					album = state.album,
-					containerColor = MaterialTheme.colorScheme.surfaceVariant,
-					onClick = {},
-					modifier = Modifier
-						.padding(
-							vertical = 8.dp,
-							horizontal = 16.dp
-						)
 				)
+			}
+			
+			// BottomMusicPlayer padding
+			item {
+				Spacer(modifier = Modifier.height(BottomMusicPlayerDefault.Height))
 			}
 		}
 		
-		items(
-			items = state.album.songs,
-			key = { song: Song -> song.hashCode() }
-		) { song ->
-			SongItem(
-				song = song,
-				showAlbumImage = false,
-				selected = song.isSelected(),
-				isMusicPlaying = song.isPlaying(),
-				onClick = {
-					songController?.play(song)
-				},
-				onFavoriteClicked = { isFavorite ->
-					songController?.updateSong(
-						song.copy(
-							isFavorite = isFavorite
-						)
-					)
-				}
-			)
-		}
-		
-		// BottomMusicPlayer padding
-		item {
-			Spacer(modifier = Modifier.height(BottomMusicPlayerDefault.Height))
-		}
+		BottomMusicPlayerImpl(navController = navController)
 	}
-	
 }

@@ -17,7 +17,6 @@ import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
 import com.anafthdev.musicompose2.foundation.extension.isNotDefault
-import com.anafthdev.musicompose2.foundation.extension.toast
 import com.anafthdev.musicompose2.utils.AppUtil.collator
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -41,6 +40,9 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	private val _currentSongQueue = MutableStateFlow(emptyList<Song>())
 	private val currentSongQueue: StateFlow<List<Song>> = _currentSongQueue
+	
+	private val _unshuffledSongQueue = MutableStateFlow(emptyList<Song>())
+	private val unshuffledSongQueue: StateFlow<List<Song>> = _unshuffledSongQueue
 	
 	private val _currentPlayedSong = MutableStateFlow(Song.default)
 	private val currentPlayedSong: StateFlow<Song> = _currentPlayedSong
@@ -129,7 +131,9 @@ class MusicomposeEnvironment @Inject constructor(
 				_songs.emit(sortedSongs)
 				
 				// TODO: set song queue
-				_currentSongQueue.emit(sortedSongs)
+				if (currentSongQueue.value.isEmpty()) {
+					_currentSongQueue.emit(sortedSongs)
+				}
 			}
 		}
 		
@@ -210,7 +214,7 @@ class MusicomposeEnvironment @Inject constructor(
 					)
 				)
 			}
-			song.title.toast(context)
+			
 			_currentPlayedSong.emit(song)
 			
 			appDatastore.setLastSongPlayed(song.audioID)
@@ -337,6 +341,26 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override suspend fun setShuffle(shuffle: Boolean) {
 		_isShuffled.emit(shuffle)
+		
+		if (shuffle) {
+			_unshuffledSongQueue.emit(currentSongQueue.value)
+			_currentSongQueue.emit(currentSongQueue.value.shuffled())
+		} else {
+			if (unshuffledSongQueue.value.isNotEmpty()) {
+				_currentSongQueue.emit(unshuffledSongQueue.value)
+			}
+		}
+	}
+	
+	override suspend fun playAll(songs: List<Song>) {
+		if (songs.isEmpty()) return
+		
+		val mSongs = if (isShuffled.value) songs.shuffled() else songs
+		
+		_unshuffledSongQueue.emit(songs)
+		_currentSongQueue.emit(mSongs)
+		
+		play(mSongs[0])
 	}
 	
 	override suspend fun updateQueueSong(songs: List<Song>) {

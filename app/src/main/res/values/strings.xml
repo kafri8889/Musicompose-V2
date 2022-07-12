@@ -25,6 +25,7 @@
     <string name="language">Language</string>
     <string name="add_song">Add song</string>
     <string name="n_second">%1$s Second</string>
+    <string name="play_all">Play all</string>
     <string name="play_song">Play song</string>
     <string name="song_name">Song name</string>
     <string name="date_added">Date added</string>

@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anafthdev.musicompose2.data.model.Song
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
@@ -16,6 +18,7 @@ import com.anafthdev.musicompose2.foundation.common.LocalSongController
 import com.anafthdev.musicompose2.foundation.extension.isPlaying
 import com.anafthdev.musicompose2.foundation.extension.isSelected
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
+import com.anafthdev.musicompose2.foundation.uicomponent.PlayAll
 import com.anafthdev.musicompose2.foundation.uicomponent.SongItem
 
 @Composable
@@ -31,6 +34,14 @@ fun HomeScreen() {
 			.fillMaxSize()
 			.background(MaterialTheme.colorScheme.background)
 	) {
+		
+		item {
+			PlayAll(
+				songs = musicomposeState.songs,
+				modifier = Modifier
+					.padding(horizontal = 16.dp)
+			)
+		}
 		
 		items(
 			items = musicomposeState.songs,

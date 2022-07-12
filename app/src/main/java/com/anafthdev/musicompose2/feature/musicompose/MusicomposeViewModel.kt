@@ -119,6 +119,11 @@ class MusicomposeViewModel @Inject constructor(
 					environment.snapTo(action.duration)
 				}
 			}
+			is MusicomposeAction.PlayAll -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.playAll(action.songs)
+				}
+			}
 			is MusicomposeAction.SetPlaying -> {
 				viewModelScope.launch(environment.dispatcher) {
 					if (action.isPlaying) environment.resume()

@@ -50,6 +50,8 @@ interface IMusicomposeEnvironment {
 	
 	suspend fun setShuffle(shuffle: Boolean)
 	
+	suspend fun playAll(songs: List<Song>)
+	
 	suspend fun updateQueueSong(songs: List<Song>)
 	
 	suspend fun setShowBottomMusicPlayer(show: Boolean)

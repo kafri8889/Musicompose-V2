@@ -43,6 +43,7 @@ import com.anafthdev.musicompose2.foundation.extension.toDp
 import com.anafthdev.musicompose2.foundation.theme.Inter
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerDefault
 import com.anafthdev.musicompose2.foundation.uicomponent.BottomMusicPlayerImpl
+import com.anafthdev.musicompose2.foundation.uicomponent.PlayAll
 import com.anafthdev.musicompose2.foundation.uicomponent.SongItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -277,6 +278,12 @@ fun PlaylistScreen(
 						}  // Playlist name, button edit, button delete
 						
 					}
+					
+					PlayAll(
+						songs = state.songs,
+						modifier = Modifier
+							.padding(horizontal = 16.dp)
+					)
 				}
 			}
 			

@@ -40,13 +40,17 @@ class MainActivity: LocalizedActivity() {
 		
 		override fun resume() {
 			musicomposeViewModel.dispatch(
-				MusicomposeAction.SetPlaying(true)
+				MusicomposeAction.SetPlaying(
+					isPlaying = true
+				)
 			)
 		}
 		
 		override fun pause() {
 			musicomposeViewModel.dispatch(
-				MusicomposeAction.SetPlaying(false)
+				MusicomposeAction.SetPlaying(
+					isPlaying = false
+				)
 			)
 		}
 		
@@ -90,31 +94,49 @@ class MainActivity: LocalizedActivity() {
 		
 		override fun updateSong(song: Song) {
 			musicomposeViewModel.dispatch(
-				MusicomposeAction.UpdateSong(song)
+				MusicomposeAction.UpdateSong(
+					song = song
+				)
+			)
+		}
+		
+		override fun playAll(songs: List<Song>) {
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.PlayAll(
+					songs = songs
+				)
 			)
 		}
 		
 		override fun updateQueueSong(songs: List<Song>) {
 			musicomposeViewModel.dispatch(
-				MusicomposeAction.UpdateQueueSong(songs)
+				MusicomposeAction.UpdateQueueSong(
+					songs = songs
+				)
 			)
 		}
 		
 		override fun setShuffled(shuffle: Boolean) {
 			musicomposeViewModel.dispatch(
-				MusicomposeAction.SetShuffle(shuffle)
+				MusicomposeAction.SetShuffle(
+					isShuffled = shuffle
+				)
 			)
 		}
 		
 		override fun hideBottomMusicPlayer() {
 			musicomposeViewModel.dispatch(
-				MusicomposeAction.SetShowBottomMusicPlayer(false)
+				MusicomposeAction.SetShowBottomMusicPlayer(
+					isShowed = false
+				)
 			)
 		}
 		
 		override fun showBottomMusicPlayer() {
 			musicomposeViewModel.dispatch(
-				MusicomposeAction.SetShowBottomMusicPlayer(true)
+				MusicomposeAction.SetShowBottomMusicPlayer(
+					isShowed = true
+				)
 			)
 		}
 	}

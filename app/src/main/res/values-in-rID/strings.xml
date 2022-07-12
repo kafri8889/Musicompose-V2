@@ -25,6 +25,7 @@
     <string name="language">Bahasa</string>
     <string name="add_song">Tambahkan lagu</string>
     <string name="n_second">%1$s Detik</string>
+    <string name="play_all">Putar semua</string>
     <string name="play_song">Putar lagu</string>
     <string name="song_name">Nama Lagu</string>
     <string name="date_added">Tanggal ditambahkan</string>
