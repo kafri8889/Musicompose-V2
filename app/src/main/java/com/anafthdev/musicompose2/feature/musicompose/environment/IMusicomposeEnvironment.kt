@@ -30,13 +30,13 @@ interface IMusicomposeEnvironment {
 	
 	fun snapTo(duration: Long, fromUser: Boolean = true)
 	
+	fun stop()
+	
 	suspend fun play(song: Song)
 	
 	suspend fun pause()
 	
 	suspend fun resume()
-	
-	suspend fun stop()
 	
 	suspend fun previous()
 	

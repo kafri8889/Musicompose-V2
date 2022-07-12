@@ -23,7 +23,6 @@
 
         <activity
             android:name=".runtime.MainActivity"
-            android:noHistory="true"
             android:exported="true"
             android:theme="@style/Theme.Musicompose2">
             <intent-filter>

@@ -187,11 +187,7 @@ class MusicomposeViewModel @Inject constructor(
 					environment.backward()
 				}
 			}
-			is MusicomposeAction.Stop -> {
-				viewModelScope.launch(environment.dispatcher) {
-					environment.stop()
-				}
-			}
+			is MusicomposeAction.Stop -> environment.stop()
 			is MusicomposeAction.Previous -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.previous()

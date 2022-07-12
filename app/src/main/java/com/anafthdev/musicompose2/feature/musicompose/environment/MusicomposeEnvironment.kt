@@ -192,6 +192,10 @@ class MusicomposeEnvironment @Inject constructor(
 		if (fromUser) playerHandler.post { exoPlayer.seekTo(duration) }
 	}
 	
+	override fun stop() {
+		exoPlayer.stop()
+	}
+	
 	override suspend fun play(song: Song) {
 		if (song.isNotDefault()) {
 			val justPlayedPlaylist = repository.getPlaylist(Playlist.justPlayed.id)
@@ -244,10 +248,6 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override suspend fun resume() {
 		playerHandler.post { exoPlayer.play() }
-	}
-	
-	override suspend fun stop() {
-		playerHandler.post { exoPlayer.stop() }
 	}
 	
 	override suspend fun previous() {
