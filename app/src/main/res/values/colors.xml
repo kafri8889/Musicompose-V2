@@ -2,5 +2,6 @@
 <resources>
 
     <color name="md_light_primary_container">#EADDFF</color>
+    <color name="ic_launcher_background">#6553a2</color>
 
 </resources>

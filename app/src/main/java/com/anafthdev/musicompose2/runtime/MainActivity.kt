@@ -168,8 +168,8 @@ class MainActivity: LocalizedActivity(), ServiceConnection {
 		setListener(object: OnLocaleChangedListener {
 			override fun onChanged() {
 				lifecycleScope.launch {
-					repository.updatePlaylist(Playlist.favorite.id, getString(R.string.favorite))
-					repository.updatePlaylist(Playlist.justPlayed.id, getString(R.string.just_played))
+					repository.updatePlaylist(Playlist.favorite.id, getString(R.string.favorite), Playlist.favorite.icon)
+					repository.updatePlaylist(Playlist.justPlayed.id, getString(R.string.just_played), Playlist.justPlayed.icon)
 				}
 			}
 		})
@@ -207,8 +207,8 @@ class MainActivity: LocalizedActivity(), ServiceConnection {
 				Playlist.justPlayed
 			)
 			
-			repository.updatePlaylist(Playlist.favorite.id, getString(R.string.favorite))
-			repository.updatePlaylist(Playlist.justPlayed.id, getString(R.string.just_played))
+			repository.updatePlaylist(Playlist.favorite.id, getString(R.string.favorite), Playlist.favorite.icon)
+			repository.updatePlaylist(Playlist.justPlayed.id, getString(R.string.just_played), Playlist.justPlayed.icon)
 		}
 	}
 	
