@@ -7,6 +7,13 @@
         end: ['parent', 'end'],
         top: ['parent', 'top']
       },
+      top_app_bar_content: {
+        width: 'spread',
+        height: 64,
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        top: ['parent', 'top']
+      },
       album_image:{
         width: "spread",
         height: 256,
@@ -35,6 +42,12 @@
       }
     },
     end: {
+      top_app_bar_content: {
+        visibility: 'gone',
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        top: ['parent', 'top']
+      },
       album_image:{
         width: 56,
         height: 56,

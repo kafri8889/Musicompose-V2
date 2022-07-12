@@ -20,6 +20,8 @@
     <string name="sort_by">Sort by</string>
     <string name="setting">Setting</string>
     <string name="unknown">Unknown</string>
+    <string name="x_album">Album: %1$s</string>
+    <string name="x_artist">Artist: %1$s</string>
     <string name="favorite">Favorite</string>
     <string name="playlist">Playlist</string>
     <string name="language">Language</string>
@@ -28,6 +30,7 @@
     <string name="play_all">Play all</string>
     <string name="play_song">Play song</string>
     <string name="song_name">Song name</string>
+    <string name="set_timer">Set timer</string>
     <string name="date_added">Date added</string>
     <string name="album_name">Album name</string>
     <string name="my_playlist">My playlist</string>
@@ -42,6 +45,7 @@
     <string name="playlist_name">Playlist name</string>
     <string name="rename_playlist">Rename playlist</string>
     <string name="number_of_songs">Number of songs</string>
+    <string name="add_to_playlist">Add to playlist</string>
     <string name="language_summary">Select the language you use</string>
     <string name="add_favorite_song">Add favorite song</string>
     <string name="search_placeholder">Song, artist, or album</string>

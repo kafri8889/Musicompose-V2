@@ -5,7 +5,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +38,7 @@ import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.PlaybackMode
 import com.anafthdev.musicompose2.data.SkipForwardBackward
+import com.anafthdev.musicompose2.feature.more_option_music_player_sheet.MoreOptionMusicPlayerSheetScreen
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.feature.musicompose.MusicomposeState
 import com.anafthdev.musicompose2.feature.play_queue.PlayQueueScreen
@@ -64,41 +68,72 @@ fun MusicPlayerSheetScreen(
 		bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
 	)
 	
+	val moreOptionSheetState = rememberModalBottomSheetState(
+		initialValue = ModalBottomSheetValue.Hidden
+	)
+	
 	BackHandler {
-		navController.popBackStack()
+		when {
+			scaffoldState.bottomSheetState.isExpanded -> scope.launch {
+				scaffoldState.bottomSheetState.collapse()
+			}
+			moreOptionSheetState.isVisible -> scope.launch {
+				moreOptionSheetState.hide()
+			}
+			else -> navController.popBackStack()
+		}
 	}
 	
-	BottomSheetScaffold(
-		scaffoldState = scaffoldState,
+	ModalBottomSheetLayout(
+		sheetState = moreOptionSheetState,
+		sheetShape = MaterialTheme.shapes.large.copy(
+			bottomEnd = CornerSize(0),
+			bottomStart = CornerSize(0)
+		),
 		sheetContent = {
-			Box(
-				modifier = Modifier
-					.fillMaxWidth()
-					.fillMaxHeight(
-						// add some padding between MotionContent and SheetContent (1f -> 0.99f)
-						0.99f.minus(MOTION_CONTENT_HEIGHT.value / config.screenHeightDp)
-					)
-			) {
-				PlayQueueScreen(
-					isExpanded = scaffoldState.bottomSheetState.isExpanded,
-					onBack = {
-						scope.launch {
-							scaffoldState.bottomSheetState.collapse()
-						}
-					}
-				)
-			}
+			MoreOptionMusicPlayerSheetScreen(
+				navController = navController
+			)
 		},
 		modifier = Modifier
-			.systemBarsPadding()
 			.fillMaxSize()
 	) {
-		MotionContent(
-			musicomposeState = musicomposeState,
-			fraction = scaffoldState.currentFraction,
-			background = bottomSheetLayoutConfig.sheetBackgroundColor,
+		BottomSheetScaffold(
+			scaffoldState = scaffoldState,
+			sheetContent = {
+				Box(
+					modifier = Modifier
+						.fillMaxWidth()
+						.fillMaxHeight(
+							// add some padding between MotionContent and SheetContent (1f -> 0.99f)
+							0.99f.minus(MOTION_CONTENT_HEIGHT.value / config.screenHeightDp)
+						)
+				) {
+					PlayQueueScreen(
+						isExpanded = scaffoldState.bottomSheetState.isExpanded,
+						onBack = {
+							scope.launch {
+								scaffoldState.bottomSheetState.collapse()
+							}
+						}
+					)
+				}
+			},
 			modifier = Modifier
-		)
+				.systemBarsPadding()
+				.fillMaxSize()
+		) {
+			MotionContent(
+				musicomposeState = musicomposeState,
+				fraction = scaffoldState.currentFraction,
+				background = bottomSheetLayoutConfig.sheetBackgroundColor,
+				onMoreClicked = {
+					scope.launch {
+						moreOptionSheetState.show()
+					}
+				}
+			)
+		}
 	}
 }
 
@@ -370,7 +405,8 @@ private fun MotionContent(
 	fraction: Float,
 	background: Color,
 	musicomposeState: MusicomposeState,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
+	onMoreClicked: () -> Unit
 ) {
 	
 	val context = LocalContext.current
@@ -396,6 +432,23 @@ private fun MotionContent(
 		) {
 			
 			Spacer(modifier = Modifier.layoutId("top_bar"))
+			
+			Row(
+				horizontalArrangement = Arrangement.End,
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier
+					.fillMaxWidth()
+					.layoutId("top_app_bar_content")
+			) {
+				IconButton(
+					onClick = onMoreClicked
+				) {
+					Icon(
+						imageVector = Icons.Rounded.MoreVert,
+						contentDescription = null
+					)
+				}
+			}
 			
 			AlbumImage(
 				albumPath = musicomposeState.currentSongPlayed.albumPath,
