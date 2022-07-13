@@ -14,9 +14,15 @@ import android.view.KeyEvent
 import com.anafthdev.musicompose2.data.SongAction
 import com.anafthdev.musicompose2.feature.musicompose.MusicomposeState
 import com.anafthdev.musicompose2.foundation.common.SongController
+import com.anafthdev.musicompose2.foundation.common.song_alarm_manager.SongAlarmManager
 import com.anafthdev.musicompose2.utils.NotificationUtil
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MediaPlayerService: Service() {
+	
+	@Inject lateinit var songAlarmManager: SongAlarmManager
 	
 	private lateinit var mediaSession: MediaSession
 	private lateinit var mediaStyle: Notification.MediaStyle
@@ -71,6 +77,7 @@ class MediaPlayerService: Service() {
 		when (SongAction.values()[intent?.action?.toInt() ?: SongAction.NOTHING.ordinal]) {
 			SongAction.PAUSE -> songController?.pause()
 			SongAction.RESUME -> songController?.resume()
+			SongAction.STOP -> songController?.stop()
 			SongAction.NEXT -> songController?.next()
 			SongAction.PREVIOUS -> songController?.previous()
 			SongAction.NOTHING -> {}
@@ -122,6 +129,7 @@ class MediaPlayerService: Service() {
 		mediaSession.isActive = false
 		mediaSession.release()
 		notificationManager.cancelAll()
+		songAlarmManager.cancelTimer()
 		songController?.stop()
 		stopForeground(STOP_FOREGROUND_REMOVE).also {
 			isForegroundService = false
@@ -130,6 +138,7 @@ class MediaPlayerService: Service() {
 	
 	override fun onLowMemory() {
 		super.onLowMemory()
+		songAlarmManager.cancelTimer()
 		songController?.stop()
 	}
 	

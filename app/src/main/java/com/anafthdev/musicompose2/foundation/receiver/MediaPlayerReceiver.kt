@@ -27,6 +27,13 @@ class MediaPlayerReceiver: BroadcastReceiver() {
 					context.startForegroundService(serviceIntent)
 				} else context.startService(serviceIntent)
 			}
+			SongAction.STOP -> {
+				serviceIntent.action = SongAction.STOP.ordinal.toString()
+				
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					context.startForegroundService(serviceIntent)
+				} else context.startService(serviceIntent)
+			}
 			SongAction.NEXT -> {
 				serviceIntent.action = SongAction.NEXT.ordinal.toString()
 				

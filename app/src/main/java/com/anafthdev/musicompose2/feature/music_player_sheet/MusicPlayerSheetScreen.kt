@@ -3,6 +3,7 @@ package com.anafthdev.musicompose2.feature.music_player_sheet
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,8 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.material3.Icon
@@ -28,6 +31,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,14 +56,20 @@ import com.anafthdev.musicompose2.feature.musicompose.MusicomposeState
 import com.anafthdev.musicompose2.feature.play_queue.PlayQueueScreen
 import com.anafthdev.musicompose2.foundation.common.BottomSheetLayoutConfig
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
+import com.anafthdev.musicompose2.foundation.extension.indexOf
 import com.anafthdev.musicompose2.foundation.extension.isAddToPlaylist
 import com.anafthdev.musicompose2.foundation.extension.isSetTimer
 import com.anafthdev.musicompose2.foundation.extension.toast
 import com.anafthdev.musicompose2.foundation.theme.Inter
+import com.anafthdev.musicompose2.foundation.theme.circle
 import com.anafthdev.musicompose2.foundation.uicomponent.MoreOptionPlaylistItem
+import com.anafthdev.musicompose2.foundation.uicomponent.SetTimerSlider
 import com.anafthdev.musicompose2.foundation.uiextension.currentFraction
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -127,7 +137,19 @@ fun MusicPlayerSheetScreen(
 			moreOptionType = MoreOptionMusicPlayerSheetType.ADD_TO_PLAYLIST
 		},
 		onSetTimerClicked = {
-		
+			moreOptionType = MoreOptionMusicPlayerSheetType.SET_TIMER
+		},
+		onTimerSet = { minutes ->
+			viewModel.dispatch(
+				MusicPlayerSheetAction.SetTimer(minutes)
+			)
+			
+			scope.launch {
+				moreOptionSheetState.hide()
+				moreOptionType = MoreOptionMusicPlayerSheetType.ALBUM
+			}
+			
+			context.getString(R.string.timer_is_set).toast(context, Toast.LENGTH_LONG)
 		},
 		onPlaylistClicked = { playlist ->
 			val contain = playlist.songs.contains(musicomposeState.currentSongPlayed.audioID)
@@ -632,6 +654,7 @@ fun MoreOptionSheet(
 	onArtistClicked: () -> Unit,
 	onAddToPlaylist: () -> Unit,
 	onSetTimerClicked: () -> Unit,
+	onTimerSet: (Duration) -> Unit,
 	onPlaylistClicked: (Playlist) -> Unit,
 	content: @Composable () -> Unit
 ) {
@@ -652,7 +675,11 @@ fun MoreOptionSheet(
 					)
 				}
 				MoreOptionMusicPlayerSheetType.SET_TIMER -> {
-				
+					SetTimerSheetScreen(
+						isTimerActive = state.isTimerActive,
+						onBack = onBack,
+						onSet = onTimerSet
+					)
 				}
 				else -> {
 					MoreOptionMusicPlayerSheetScreen(
@@ -731,6 +758,151 @@ fun AddToPlaylistSheetScreen(
 				Spacer(modifier = Modifier.height(24.dp))
 			}
 		}
+	}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SetTimerSheetScreen(
+	isTimerActive: Boolean,
+	onSet: (Duration) -> Unit,
+	onBack: () -> Unit
+) {
+	
+	var value by remember { mutableStateOf(0f) }
+	
+	val minute = remember(value) { value.roundToInt() }
+	
+	Column(
+		modifier = Modifier
+			.fillMaxWidth()
+			.background(MaterialTheme.colorScheme.surfaceVariant)
+	) {
+		Box(
+			modifier = Modifier
+				.padding(16.dp)
+				.fillMaxWidth()
+		) {
+			IconButton(
+				onClick = onBack,
+				modifier = Modifier
+					.align(Alignment.CenterStart)
+			) {
+				Icon(
+					imageVector = Icons.Rounded.Close,
+					contentDescription = null
+				)
+			}
+			
+			Text(
+				text = stringResource(
+					id = R.string.set_timer
+				),
+				maxLines = 1,
+				overflow = TextOverflow.Ellipsis,
+				textAlign = TextAlign.Center,
+				style = MaterialTheme.typography.titleMedium.copy(
+					fontWeight = FontWeight.Bold
+				),
+				modifier = Modifier
+					.padding(horizontal = 16.dp)
+					.align(Alignment.Center)
+			)
+			
+			IconButton(
+				onClick = {
+					onSet(minute.minutes)
+				},
+				modifier = Modifier
+					.align(Alignment.CenterEnd)
+			) {
+				Icon(
+					imageVector = Icons.Rounded.Check,
+					contentDescription = null,
+				)
+			}
+		}
+		
+		Row(
+			verticalAlignment = Alignment.CenterVertically,
+			modifier = Modifier
+				.padding(horizontal = 16.dp)
+		) {
+			Text(
+				text = buildAnnotatedString {
+					if (value == 0f) append(stringResource(id = R.string.timer_disabled))
+					else {
+						val s = stringResource(
+							id = R.string.stop_audio_within_n_minutes,
+							minute
+						)
+						
+						append(s)
+						
+						val (startIndex, endIndex) = s.indexOf(minute.toString())
+						
+						addStyle(
+							style = MaterialTheme.typography.titleMedium.copy(
+								fontFamily = Inter,
+								color = MaterialTheme.colorScheme.primary
+							).toSpanStyle(),
+							start = startIndex,
+							end = endIndex + 1
+						)
+					}
+				},
+				style = MaterialTheme.typography.titleMedium.copy(
+					fontFamily = Inter
+				),
+				modifier = Modifier
+					.padding(end = 8.dp)
+					.weight(0.7f)
+			)
+			
+			AnimatedVisibility(
+				visible = isTimerActive,
+				modifier = Modifier
+					.height(48.dp)
+					.weight(0.3f)
+			) {
+				Card(
+					shape = circle,
+					colors = CardDefaults.cardColors(
+						containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+					),
+					border = BorderStroke(
+						width = 1.dp,
+						color = MaterialTheme.colorScheme.tertiary
+					),
+					modifier = Modifier
+						.fillMaxSize()
+				) {
+					Box(
+						contentAlignment = Alignment.Center,
+						modifier = Modifier
+							.fillMaxSize()
+					) {
+						Text(
+							text = "Active",
+							style = MaterialTheme.typography.titleSmall.copy(
+								fontFamily = Inter
+							)
+						)
+					}
+				}
+			}
+		}
+		
+		SetTimerSlider(
+			value = value,
+			onValueChange = {
+				value = it
+			},
+			modifier = Modifier
+				.padding(16.dp)
+		)
+		
+		Spacer(modifier = Modifier.height(24.dp))
 	}
 }
 

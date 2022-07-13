@@ -25,6 +25,16 @@ class MusicPlayerSheetViewModel @Inject constructor(
 				}
 			}
 		}
+		
+		viewModelScope.launch(environment.dispatcher) {
+			environment.isTimerActive().collect { isActive ->
+				setState {
+					copy(
+						isTimerActive = isActive
+					)
+				}
+			}
+		}
 	}
 	
 	override fun dispatch(action: MusicPlayerSheetAction) {
@@ -32,6 +42,11 @@ class MusicPlayerSheetViewModel @Inject constructor(
 			is MusicPlayerSheetAction.AddToPlaylist -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.addToPlaylist(action.song, action.playlist)
+				}
+			}
+			is MusicPlayerSheetAction.SetTimer -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.setTimer(action.duration)
 				}
 			}
 		}

@@ -62,6 +62,9 @@ class MusicomposeEnvironment @Inject constructor(
 	private val _isShuffled = MutableStateFlow(false)
 	private val isShuffled: StateFlow<Boolean> = _isShuffled
 	
+	private val _hasStopped = MutableStateFlow(false)
+	private val hasStopped: StateFlow<Boolean> = _hasStopped
+	
 	private val _isBottomMusicPlayerShowed = MutableStateFlow(false)
 	private val isBottomMusicPlayerShowed: StateFlow<Boolean> = _isBottomMusicPlayerShowed
 	
@@ -130,7 +133,6 @@ class MusicomposeEnvironment @Inject constructor(
 				
 				_songs.emit(sortedSongs)
 				
-				// TODO: set song queue
 				if (currentSongQueue.value.isEmpty()) {
 					_currentSongQueue.emit(sortedSongs)
 				}
@@ -194,6 +196,10 @@ class MusicomposeEnvironment @Inject constructor(
 	
 	override fun stop() {
 		exoPlayer.stop()
+		
+		CoroutineScope(dispatcher).launch {
+			_hasStopped.emit(true)
+		}
 	}
 	
 	override suspend fun play(song: Song) {
@@ -219,6 +225,7 @@ class MusicomposeEnvironment @Inject constructor(
 				)
 			}
 			
+			_hasStopped.emit(false)
 			_currentPlayedSong.emit(song)
 			
 			appDatastore.setLastSongPlayed(song.audioID)
@@ -247,7 +254,9 @@ class MusicomposeEnvironment @Inject constructor(
 	}
 	
 	override suspend fun resume() {
-		playerHandler.post { exoPlayer.play() }
+		if (hasStopped.value and currentPlayedSong.value.isNotDefault()) {
+			play(currentPlayedSong.value)
+		} else playerHandler.post { exoPlayer.play() }
 	}
 	
 	override suspend fun previous() {

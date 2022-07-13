@@ -2,6 +2,7 @@
 <resources>
 
     <string name="ok">@android:string/ok</string>
+    <string name="off">Mati</string>
     <string name="song">Lagu</string>
     <string name="dark">Gelap</string>
     <string name="edit">Edit</string>
@@ -39,11 +40,16 @@
     <string name="artist_name">Nama artis</string>
     <string name="just_played">Baru saja dimainkan</string>
     <string name="now_playing">Sedang dimainkan</string>
+    <string name="timer_is_set">Pengatur waktu disetel</string>
     <string name="media_access">Akses media</string>
     <string name="new_playlist">Daftar putar baru</string>
     <string name="dynamic_dark">Gelap dinamik</string>
+    <string name="sixty_minute">60 mnt</string>
+    <string name="thirty_minute">30 mnt</string>
+    <string name="ninety_minute">90 mnt</string>
     <string name="dynamic_light">Terang dinamik</string>
     <string name="playlist_name">Nama daftar putar</string>
+    <string name="timer_disabled">Pengatur waktu dinonaktifkan</string>
     <string name="rename_playlist">Ubah nama daftar putar</string>
     <string name="number_of_songs">Jumlah lagu</string>
     <string name="add_to_playlist">Tambahkan ke daftar putar</string>
@@ -57,6 +63,7 @@
     <string name="skip_forward_or_backward">Lewati maju/mundur</string>
     <string name="forward_backward_duration">Durasi maju/mundur</string>
     <string name="permission_denied_by_user">Izin ditolak oleh pengguna</string>
+    <string name="stop_audio_within_n_minutes">Hentikan audio dalam %1$s menit</string>
     <string name="permission_denied_permanently_message">Izin ditolak, buka pengaturan untuk mengizinkannya</string>
 
 </resources>

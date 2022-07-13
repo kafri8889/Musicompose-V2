@@ -2,6 +2,7 @@
     <string name="app_name" translatable="false">Musicompose 2</string>
 
     <string name="ok">@android:string/ok</string>
+    <string name="off">Off</string>
     <string name="song">Song</string>
     <string name="dark">Dark</string>
     <string name="edit">Edit</string>
@@ -39,11 +40,16 @@
     <string name="artist_name">Artist name</string>
     <string name="just_played">Just played</string>
     <string name="now_playing">Now playing</string>
+    <string name="timer_is_set">Timer is set</string>
     <string name="media_access">Media access</string>
     <string name="new_playlist">New playlist</string>
     <string name="dynamic_dark">Dynamic dark</string>
+    <string name="sixty_minute">60 mnt</string>
+    <string name="thirty_minute">30 mnt</string>
+    <string name="ninety_minute">90 mnt</string>
     <string name="dynamic_light">Dynamic light</string>
     <string name="playlist_name">Playlist name</string>
+    <string name="timer_disabled">Timer disabled</string>
     <string name="rename_playlist">Rename playlist</string>
     <string name="number_of_songs">Number of songs</string>
     <string name="add_to_playlist">Add to playlist</string>
@@ -57,6 +63,7 @@
     <string name="skip_forward_or_backward">Skip forward/backward</string>
     <string name="forward_backward_duration">Forward/Backward duration</string>
     <string name="permission_denied_by_user">Permission denied by user</string>
+    <string name="stop_audio_within_n_minutes">Stop audio within %1$s minutes</string>
     <string name="permission_denied_permanently_message">Permission denied, go to settings to allow it</string>
 
 </resources>
