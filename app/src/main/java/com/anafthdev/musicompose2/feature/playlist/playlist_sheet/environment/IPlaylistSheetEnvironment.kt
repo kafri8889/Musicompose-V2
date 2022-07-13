@@ -10,14 +10,10 @@ interface IPlaylistSheetEnvironment {
 	
 	fun getPlaylist(): Flow<Playlist>
 	
-	fun getPlaylistName(): Flow<String>
-	
 	suspend fun setPlaylist(playlistID: Int)
 	
 	suspend fun updatePlaylist(playlist: Playlist)
 	
-	suspend fun setPlaylistName(name: String)
-	
-	suspend fun createPlaylist()
+	suspend fun createPlaylist(name: String)
 	
 }

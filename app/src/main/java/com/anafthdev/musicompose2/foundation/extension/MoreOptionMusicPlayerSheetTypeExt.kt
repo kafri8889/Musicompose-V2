@@ -5,6 +5,11 @@ import androidx.compose.ui.res.stringResource
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.feature.more_option_music_player_sheet.data.MoreOptionMusicPlayerSheetType
 
+fun MoreOptionMusicPlayerSheetType.isAlbum() = this == MoreOptionMusicPlayerSheetType.ALBUM
+fun MoreOptionMusicPlayerSheetType.isArtist() = this == MoreOptionMusicPlayerSheetType.ARTIST
+fun MoreOptionMusicPlayerSheetType.isSetTimer() = this == MoreOptionMusicPlayerSheetType.SET_TIMER
+fun MoreOptionMusicPlayerSheetType.isAddToPlaylist() = this == MoreOptionMusicPlayerSheetType.ADD_TO_PLAYLIST
+
 @Composable
 fun MoreOptionMusicPlayerSheetType.getLabel(s: String): String {
 	return when (this) {

@@ -13,6 +13,7 @@
     <string name="light">Light</string>
     <string name="album">Album</string>
     <string name="n_sec">%1$s Sec</string>
+    <string name="added">Added</string>
     <string name="delete">Delete</string>
     <string name="artist">Artist</string>
     <string name="cancel">Cancel</string>
@@ -47,6 +48,7 @@
     <string name="number_of_songs">Number of songs</string>
     <string name="add_to_playlist">Add to playlist</string>
     <string name="language_summary">Select the language you use</string>
+    <string name="added_to_playlist">Added to playlist</string>
     <string name="add_favorite_song">Add favorite song</string>
     <string name="search_placeholder">Song, artist, or album</string>
     <string name="enter_playlist_name">Enter playlist name</string>

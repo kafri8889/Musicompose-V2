@@ -13,6 +13,7 @@
     <string name="light">Terang</string>
     <string name="album">Album</string>
     <string name="n_sec">%1$s Det</string>
+    <string name="added">Ditambahkan</string>
     <string name="delete">Hapus</string>
     <string name="artist">Artis</string>
     <string name="cancel">Batalkan</string>
@@ -47,6 +48,7 @@
     <string name="number_of_songs">Jumlah lagu</string>
     <string name="add_to_playlist">Tambahkan ke daftar putar</string>
     <string name="language_summary">Pilih bahasa yang kamu gunakan</string>
+    <string name="added_to_playlist">Ditambahkan ke daftar putar</string>
     <string name="add_favorite_song">Tambahkan lagu favorit</string>
     <string name="search_placeholder">Lagu, artis, atau album</string>
     <string name="enter_playlist_name">Masukkan nama daftar putar</string>

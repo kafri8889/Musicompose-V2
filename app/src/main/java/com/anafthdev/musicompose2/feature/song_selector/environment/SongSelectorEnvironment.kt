@@ -92,8 +92,6 @@ class SongSelectorEnvironment @Inject constructor(
 			)
 		}.distinctBy { it.audioID }
 		
-		Timber.i("selek: $mSelectedSong")
-		
 		_selectedSong.emit(mSelectedSong)
 		repository.updateSongs(*mSelectedSong.toTypedArray())
 		repository.updatePlaylists(

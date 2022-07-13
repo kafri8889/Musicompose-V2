@@ -25,28 +25,22 @@ class PlaylistSheetViewModel @Inject constructor(
 				}
 			}
 		}
-		
-		viewModelScope.launch(environment.dispatcher) {
-			environment.getPlaylistName().collect { name ->
-				setState {
-					copy(
-						playlistName = name
-					)
-				}
-			}
-		}
 	}
 	
 	override fun dispatch(action: PlaylistSheetAction) {
 		when (action) {
 			is PlaylistSheetAction.ChangePlaylistName -> {
 				viewModelScope.launch(environment.dispatcher) {
-					environment.setPlaylistName(action.name)
+					setState {
+						copy(
+							playlistName = action.name
+						)
+					}
 				}
 			}
 			is PlaylistSheetAction.CreatePlaylist -> {
 				viewModelScope.launch(environment.dispatcher) {
-					environment.createPlaylist()
+					environment.createPlaylist(action.name)
 				}
 			}
 			is PlaylistSheetAction.GetPlaylist -> {

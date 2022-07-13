@@ -136,7 +136,7 @@ fun PlaylistSheetScreen(
 					onClick = {
 						if (option == PlaylistOption.NEW) {
 							viewModel.dispatch(
-								PlaylistSheetAction.CreatePlaylist
+								PlaylistSheetAction.CreatePlaylist(state.playlistName)
 							)
 						} else {
 							viewModel.dispatch(

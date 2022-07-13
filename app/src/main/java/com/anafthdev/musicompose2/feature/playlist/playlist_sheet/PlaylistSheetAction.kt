@@ -6,5 +6,5 @@ sealed interface PlaylistSheetAction {
 	data class GetPlaylist(val playlistID: Int): PlaylistSheetAction
 	data class UpdatePlaylist(val playlist: Playlist): PlaylistSheetAction
 	data class ChangePlaylistName(val name: String): PlaylistSheetAction
-	object CreatePlaylist: PlaylistSheetAction
+	data class CreatePlaylist(val name: String): PlaylistSheetAction
 }

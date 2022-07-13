@@ -1,13 +1,17 @@
 package com.anafthdev.musicompose2.feature.music_player_sheet
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.material3.Icon
@@ -23,6 +27,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,15 +41,22 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.anafthdev.musicompose2.R
+import com.anafthdev.musicompose2.data.MusicomposeDestination
 import com.anafthdev.musicompose2.data.PlaybackMode
 import com.anafthdev.musicompose2.data.SkipForwardBackward
+import com.anafthdev.musicompose2.data.model.Playlist
 import com.anafthdev.musicompose2.feature.more_option_music_player_sheet.MoreOptionMusicPlayerSheetScreen
+import com.anafthdev.musicompose2.feature.more_option_music_player_sheet.data.MoreOptionMusicPlayerSheetType
 import com.anafthdev.musicompose2.feature.musicompose.LocalMusicomposeState
 import com.anafthdev.musicompose2.feature.musicompose.MusicomposeState
 import com.anafthdev.musicompose2.feature.play_queue.PlayQueueScreen
 import com.anafthdev.musicompose2.foundation.common.BottomSheetLayoutConfig
 import com.anafthdev.musicompose2.foundation.common.LocalSongController
+import com.anafthdev.musicompose2.foundation.extension.isAddToPlaylist
+import com.anafthdev.musicompose2.foundation.extension.isSetTimer
+import com.anafthdev.musicompose2.foundation.extension.toast
 import com.anafthdev.musicompose2.foundation.theme.Inter
+import com.anafthdev.musicompose2.foundation.uicomponent.MoreOptionPlaylistItem
 import com.anafthdev.musicompose2.foundation.uiextension.currentFraction
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
@@ -56,7 +68,7 @@ fun MusicPlayerSheetScreen(
 	bottomSheetLayoutConfig: BottomSheetLayoutConfig
 ) {
 	
-	val config = LocalConfiguration.current
+	val context = LocalContext.current
 	val musicomposeState = LocalMusicomposeState.current
 	
 	val viewModel = hiltViewModel<MusicPlayerSheetViewModel>()
@@ -69,13 +81,19 @@ fun MusicPlayerSheetScreen(
 	)
 	
 	val moreOptionSheetState = rememberModalBottomSheetState(
-		initialValue = ModalBottomSheetValue.Hidden
+		initialValue = ModalBottomSheetValue.Hidden,
+		skipHalfExpanded = true
 	)
+
+	var moreOptionType by remember { mutableStateOf(MoreOptionMusicPlayerSheetType.ALBUM) }
 	
 	BackHandler {
 		when {
 			scaffoldState.bottomSheetState.isExpanded -> scope.launch {
 				scaffoldState.bottomSheetState.collapse()
+			}
+			moreOptionType.isAddToPlaylist() || moreOptionType.isSetTimer() -> {
+				moreOptionType = MoreOptionMusicPlayerSheetType.ALBUM
 			}
 			moreOptionSheetState.isVisible -> scope.launch {
 				moreOptionSheetState.hide()
@@ -84,44 +102,55 @@ fun MusicPlayerSheetScreen(
 		}
 	}
 	
-	ModalBottomSheetLayout(
+	MoreOptionSheet(
+		type = moreOptionType,
+		state = state,
 		sheetState = moreOptionSheetState,
-		sheetShape = MaterialTheme.shapes.large.copy(
-			bottomEnd = CornerSize(0),
-			bottomStart = CornerSize(0)
-		),
-		sheetContent = {
-			MoreOptionMusicPlayerSheetScreen(
-				navController = navController
+		onBack = {
+			moreOptionType = MoreOptionMusicPlayerSheetType.ALBUM
+		},
+		onAlbumClicked = {
+			navController.navigate(
+				MusicomposeDestination.Album.createRoute(
+					musicomposeState.currentSongPlayed.albumID
+				)
 			)
 		},
-		modifier = Modifier
-			.fillMaxSize()
-	) {
-		BottomSheetScaffold(
-			scaffoldState = scaffoldState,
-			sheetContent = {
-				Box(
-					modifier = Modifier
-						.fillMaxWidth()
-						.fillMaxHeight(
-							// add some padding between MotionContent and SheetContent (1f -> 0.99f)
-							0.99f.minus(MOTION_CONTENT_HEIGHT.value / config.screenHeightDp)
-						)
-				) {
-					PlayQueueScreen(
-						isExpanded = scaffoldState.bottomSheetState.isExpanded,
-						onBack = {
-							scope.launch {
-								scaffoldState.bottomSheetState.collapse()
-							}
-						}
+		onArtistClicked = {
+			navController.navigate(
+				MusicomposeDestination.Artist.createRoute(
+					musicomposeState.currentSongPlayed.artistID
+				)
+			)
+		},
+		onAddToPlaylist = {
+			moreOptionType = MoreOptionMusicPlayerSheetType.ADD_TO_PLAYLIST
+		},
+		onSetTimerClicked = {
+		
+		},
+		onPlaylistClicked = { playlist ->
+			val contain = playlist.songs.contains(musicomposeState.currentSongPlayed.audioID)
+			
+			if (!contain) {
+				viewModel.dispatch(
+					MusicPlayerSheetAction.AddToPlaylist(
+						song = musicomposeState.currentSongPlayed,
+						playlist = playlist
 					)
-				}
-			},
-			modifier = Modifier
-				.systemBarsPadding()
-				.fillMaxSize()
+				)
+				
+				context.getString(R.string.added_to_playlist).toast(context, Toast.LENGTH_LONG)
+			} else context.getString(R.string.added).toast(context, Toast.LENGTH_LONG)
+			
+			scope.launch {
+				moreOptionSheetState.hide()
+				moreOptionType = MoreOptionMusicPlayerSheetType.ALBUM
+			}
+		}
+	) {
+		PlayQueueSheet(
+			state = scaffoldState
 		) {
 			MotionContent(
 				musicomposeState = musicomposeState,
@@ -590,6 +619,159 @@ private fun MotionContent(
 		}
 	}
 	
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun MoreOptionSheet(
+	state: MusicPlayerSheetState,
+	sheetState: ModalBottomSheetState,
+	type: MoreOptionMusicPlayerSheetType,
+	onBack: () -> Unit,
+	onAlbumClicked: () -> Unit,
+	onArtistClicked: () -> Unit,
+	onAddToPlaylist: () -> Unit,
+	onSetTimerClicked: () -> Unit,
+	onPlaylistClicked: (Playlist) -> Unit,
+	content: @Composable () -> Unit
+) {
+	
+	ModalBottomSheetLayout(
+		sheetState = sheetState,
+		sheetShape = MaterialTheme.shapes.large.copy(
+			bottomEnd = CornerSize(0),
+			bottomStart = CornerSize(0)
+		),
+		sheetContent = {
+			when (type) {
+				MoreOptionMusicPlayerSheetType.ADD_TO_PLAYLIST -> {
+					AddToPlaylistSheetScreen(
+						playlists = state.playlists,
+						onBack = onBack,
+						onPlaylistClicked = onPlaylistClicked
+					)
+				}
+				MoreOptionMusicPlayerSheetType.SET_TIMER -> {
+				
+				}
+				else -> {
+					MoreOptionMusicPlayerSheetScreen(
+						onAlbumClicked = onAlbumClicked,
+						onArtistClicked = onArtistClicked,
+						onAddToPlaylist = onAddToPlaylist,
+						onSetTimerClicked = onSetTimerClicked
+					)
+				}
+			}
+		},
+		modifier = Modifier
+			.fillMaxSize()
+	) {
+		content()
+	}
+}
+
+@Composable
+fun AddToPlaylistSheetScreen(
+	playlists: List<Playlist>,
+	onBack: () -> Unit,
+	onPlaylistClicked: (Playlist) -> Unit
+) {
+
+	Column(
+		modifier = Modifier
+			.background(MaterialTheme.colorScheme.surfaceVariant)
+			.fillMaxWidth()
+	) {
+		Row(
+			verticalAlignment = Alignment.CenterVertically,
+			modifier = Modifier
+				.fillMaxWidth()
+		) {
+			IconButton(
+				onClick = onBack,
+				modifier = Modifier
+					.padding(16.dp)
+			) {
+				Icon(
+					imageVector = Icons.Rounded.ArrowBack,
+					contentDescription = null,
+				)
+			}
+			
+			Text(
+				maxLines = 1,
+				overflow = TextOverflow.Ellipsis,
+				text = stringResource(id = R.string.add_to_playlist),
+				style = MaterialTheme.typography.titleSmall.copy(
+					fontFamily = Inter
+				),
+				modifier = Modifier
+					.padding(end = 24.dp)
+			)
+		}
+		
+		LazyColumn(
+			modifier = Modifier
+				.fillMaxWidth()
+		) {
+			items(
+				items = playlists,
+				key = { item: Playlist -> item.hashCode() }
+			) { playlist ->
+				MoreOptionPlaylistItem(
+					playlist = playlist,
+					onClick = {
+						onPlaylistClicked(playlist)
+					}
+				)
+			}
+			
+			item {
+				Spacer(modifier = Modifier.height(24.dp))
+			}
+		}
+	}
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun PlayQueueSheet(
+	state: BottomSheetScaffoldState,
+	content: @Composable () -> Unit
+) {
+	
+	val config = LocalConfiguration.current
+	
+	val scope = rememberCoroutineScope()
+	
+	BottomSheetScaffold(
+		scaffoldState = state,
+		sheetContent = {
+			Box(
+				modifier = Modifier
+					.fillMaxWidth()
+					.fillMaxHeight(
+						// add some padding between MotionContent and SheetContent (1f -> 0.99f)
+						0.99f.minus(MOTION_CONTENT_HEIGHT.value / config.screenHeightDp)
+					)
+			) {
+				PlayQueueScreen(
+					isExpanded = state.bottomSheetState.isExpanded,
+					onBack = {
+						scope.launch {
+							state.bottomSheetState.collapse()
+						}
+					}
+				)
+			}
+		},
+		modifier = Modifier
+			.systemBarsPadding()
+			.fillMaxSize()
+	) {
+		content()
+	}
 }
 
 private val MOTION_CONTENT_HEIGHT = 64.dp
