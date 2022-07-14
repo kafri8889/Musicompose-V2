@@ -281,7 +281,11 @@ fun SearchScreen(
 						
 						IconButton(
 							onClick = {
-								// TODO: to ArtistScreen
+								navController.navigate(
+									MusicomposeDestination.Artist.createRoute(
+										artistID = artist.id
+									)
+								)
 							}
 						) {
 							Icon(
@@ -340,7 +344,11 @@ fun SearchScreen(
 					AlbumItem(
 						album = album,
 						onClick = {
-							// TODO: to AlbumScreen
+							navController.navigate(
+								MusicomposeDestination.Album.createRoute(
+									albumID = album.id
+								)
+							)
 						}
 					)
 				}

@@ -88,7 +88,6 @@ fun Musicompose(
 			when (event) {
 				Lifecycle.Event.ON_CREATE -> {
 					if (storagePermissionState.hasPermission) {
-						// TODO: jangan play pas service udah di bind 
 						viewModel.dispatch(MusicomposeAction.PlayLastSongPlayed)
 						scope.launch {
 							delay(800)
