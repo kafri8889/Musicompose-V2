@@ -37,8 +37,8 @@ class SongAlarmManager @Inject constructor(
 	fun cancelTimer() {
 		val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 		
-		alarmManager.cancel(stopAudioPendingIntent())
 		if (stopAudioPendingIntent() != null) {
+			alarmManager.cancel(stopAudioPendingIntent())
 			stopAudioPendingIntent()!!.cancel()
 		}
 	}

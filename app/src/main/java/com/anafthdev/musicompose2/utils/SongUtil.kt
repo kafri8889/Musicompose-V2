@@ -5,11 +5,14 @@ import android.net.Uri
 import android.provider.MediaStore
 import com.anafthdev.musicompose2.R
 import com.anafthdev.musicompose2.data.model.Song
+import kotlin.time.Duration.Companion.milliseconds
 
 object SongUtil {
 	
 	fun getSong(
 		context: Context,
+		isTracksSmallerThan100KBSkipped: Boolean = true,
+		isTracksShorterThan60SecondsSkipped: Boolean = true
 	): List<Song> {
 		
 		val songList = ArrayList<Song>()
@@ -26,6 +29,7 @@ object SongUtil {
 			MediaStore.Audio.Media.DURATION,
 			MediaStore.Audio.Media.ALBUM_ID,
 			MediaStore.Audio.Media.DATE_ADDED,
+			MediaStore.Audio.Media.SIZE
 		)
 		
 		val cursorIndexSongID: Int
@@ -37,6 +41,7 @@ object SongUtil {
 		val cursorIndexSongDuration: Int
 		val cursorIndexSongAlbumID: Int
 		val cursorIndexSongDateAdded: Int
+		val cursorIndexSongSize: Int
 		
 		val songCursor = context.contentResolver.query(
 			audioUriExternal,
@@ -56,6 +61,7 @@ object SongUtil {
 			cursorIndexSongDuration = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 			cursorIndexSongAlbumID = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
 			cursorIndexSongDateAdded = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED)
+			cursorIndexSongSize = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
 			
 			while (songCursor.moveToNext()) {
 				val audioID = songCursor.getLong(cursorIndexSongID)
@@ -67,25 +73,42 @@ object SongUtil {
 				val duration = songCursor.getLong(cursorIndexSongDuration)
 				val albumId = songCursor.getString(cursorIndexSongAlbumID)
 				val dateAdded = songCursor.getLong(cursorIndexSongDateAdded)
+				val size = songCursor.getInt(cursorIndexSongSize)
 				
 				val albumPath = Uri.withAppendedPath(Uri.parse("content://media/external/audio/albumart"), albumId)
 				val path = Uri.withAppendedPath(audioUriExternal, "" + audioID)
 				
-				songList.add(
-					Song(
-						audioID = audioID,
-						displayName = displayName,
-						title = title,
-						artist = if (artist.equals("<unknown>", true)) context.getString(R.string.unknown) else artist,
-						artistID = artistID,
-						album = album,
-						albumID = albumId,
-						duration = duration,
-						albumPath = albumPath.toString(),
-						path = path.toString(),
-						dateAdded = dateAdded
-					)
+				val durationGreaterThan60Sec = duration.milliseconds.inWholeSeconds > 60
+				val sizeGreaterThan100KB = (size / 1024) > 100
+				
+				val song = Song(
+					audioID = audioID,
+					displayName = displayName,
+					title = title,
+					artist = if (artist.equals("<unknown>", true)) context.getString(R.string.unknown) else artist,
+					artistID = artistID,
+					album = album,
+					albumID = albumId,
+					duration = duration,
+					albumPath = albumPath.toString(),
+					path = path.toString(),
+					dateAdded = dateAdded
 				)
+				
+				when {
+					isTracksSmallerThan100KBSkipped and isTracksShorterThan60SecondsSkipped -> {
+						if (sizeGreaterThan100KB and durationGreaterThan60Sec) songList.add(song)
+					}
+					!isTracksSmallerThan100KBSkipped and isTracksShorterThan60SecondsSkipped -> {
+						if (durationGreaterThan60Sec) songList.add(song)
+					}
+					isTracksSmallerThan100KBSkipped and !isTracksShorterThan60SecondsSkipped -> {
+						if (sizeGreaterThan100KB) songList.add(song)
+					}
+					!isTracksSmallerThan100KBSkipped and !isTracksShorterThan60SecondsSkipped -> {
+						songList.add(song)
+					}
+				}
 			}
 			
 			songCursor.close()

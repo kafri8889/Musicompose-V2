@@ -167,6 +167,11 @@ class MusicomposeViewModel @Inject constructor(
 					environment.updateQueueSong(action.songs)
 				}
 			}
+			is MusicomposeAction.CheckScannedSong -> {
+				viewModelScope.launch(environment.dispatcher) {
+					environment.checkScannedSong(action.songs)
+				}
+			}
 			is MusicomposeAction.SetShowBottomMusicPlayer -> {
 				viewModelScope.launch(environment.dispatcher) {
 					environment.setShowBottomMusicPlayer(action.isShowed)

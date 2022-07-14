@@ -22,6 +22,10 @@ class Repository @Inject constructor(
 		localDatasource.updateSongs(*song)
 	}
 	
+	suspend fun deleteSongs(vararg song: Song) {
+		localDatasource.deleteSongs(*song)
+	}
+	
 	suspend fun insertSongs(vararg song: Song) {
 		localDatasource.insertSongs(*song)
 	}

@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.time.Duration
@@ -38,7 +37,7 @@ class MusicPlayerSheetEnvironment @Inject constructor(
 		CoroutineScope(dispatcher).launch {
 			while (true) {
 				delay(2000)
-				_isTimerActive.emit(songAlarmManager.isExists().also { Timber.i("eksis?: $it") })
+				_isTimerActive.emit(songAlarmManager.isExists())
 			}
 		}
 		

@@ -56,6 +56,8 @@ interface IMusicomposeEnvironment {
 	
 	suspend fun updateQueueSong(songs: List<Song>)
 	
+	suspend fun checkScannedSong(songList: List<Song>)
+	
 	suspend fun setShowBottomMusicPlayer(show: Boolean)
 	
 	suspend fun playLastSongPlayed()

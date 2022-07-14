@@ -18,6 +18,7 @@ import com.anafthdev.musicompose2.data.repository.Repository
 import com.anafthdev.musicompose2.foundation.di.DiName
 import com.anafthdev.musicompose2.foundation.extension.isNotDefault
 import com.anafthdev.musicompose2.utils.AppUtil.collator
+import com.anafthdev.musicompose2.utils.SongUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -148,6 +149,20 @@ class MusicomposeEnvironment @Inject constructor(
 			}.collect { (mPlaybackMode, mSkipForwardBackward) ->
 				_playbackMode.emit(mPlaybackMode)
 				_skipForwardBackward.emit(mSkipForwardBackward)
+			}
+		}
+		
+		CoroutineScope(dispatcher).launch {
+			combine(
+				appDatastore.isTracksSmallerThan100KBSkipped.distinctUntilChanged(),
+				appDatastore.isTracksShorterThan60SecondsSkipped.distinctUntilChanged()
+			) { kbSkipped, secSkipped ->
+				kbSkipped to secSkipped
+			}.collect { (kbSkipped, secSkipped) ->
+				refreshSong(
+					skipTracksSmallerThan100KB = kbSkipped,
+					skipTracksShorterThan60Seconds = secSkipped
+				)
 			}
 		}
 	}
@@ -380,6 +395,25 @@ class MusicomposeEnvironment @Inject constructor(
 		_currentSongQueue.emit(songs)
 	}
 	
+	override suspend fun checkScannedSong(songList: List<Song>) {
+		val songsToSave = arrayListOf<Song>()
+		val songsToDelete = arrayListOf<Song>()
+		
+		val savedSongIDs = songs.value.map { it.audioID }
+		val songListIDs = songList.map { it.audioID }
+		
+		songList.forEach {
+			if (it.audioID !in savedSongIDs) songsToSave.add(it)
+		}
+		
+		songs.value.forEach {
+			if (it.audioID !in songListIDs) songsToDelete.add(it)
+		}
+		
+		repository.insertSongs(*songsToSave.toTypedArray())
+		repository.deleteSongs(*songsToDelete.toTypedArray())
+	}
+	
 	override suspend fun setShowBottomMusicPlayer(show: Boolean) {
 		_isBottomMusicPlayerShowed.emit(show)
 	}
@@ -390,6 +424,19 @@ class MusicomposeEnvironment @Inject constructor(
 				play(song)
 			}
 		}
+	}
+	
+	private suspend fun refreshSong(
+		skipTracksSmallerThan100KB: Boolean,
+		skipTracksShorterThan60Seconds: Boolean
+	) {
+		val songs = SongUtil.getSong(
+			context = context,
+			isTracksSmallerThan100KBSkipped = skipTracksSmallerThan100KB,
+			isTracksShorterThan60SecondsSkipped = skipTracksShorterThan60Seconds
+		)
+		
+		checkScannedSong(songs)
 	}
 	
 }

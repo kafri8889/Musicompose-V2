@@ -74,6 +74,11 @@ fun SettingScreen(
 				SkipForwardBackward.FIFTEEN_SECOND -> R.drawable.ic_forward_15_sec
 			},
 			showValue = true
+		),
+		BasicPreference(
+			key = "scan_options",
+			title = stringResource(id = R.string.scan_options),
+			iconResId = R.drawable.ic_song_scan,
 		)
 	)
 	
@@ -145,6 +150,9 @@ fun SettingScreen(
 						}
 						preferences[2].key -> {
 							showSkipForwardBackwardPopup = true
+						}
+						preferences[3].key -> {
+							navController.navigate(MusicomposeDestination.ScanOptions.route)
 						}
 					}
 				}

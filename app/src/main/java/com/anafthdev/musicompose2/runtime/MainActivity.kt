@@ -25,6 +25,7 @@ import com.anafthdev.musicompose2.foundation.localized.data.OnLocaleChangedListe
 import com.anafthdev.musicompose2.foundation.service.MediaPlayerService
 import com.anafthdev.musicompose2.utils.SongUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -199,9 +200,22 @@ class MainActivity: LocalizedActivity(), ServiceConnection {
 		super.onResume()
 		
 		lifecycleScope.launch {
-			val songs = SongUtil.getSong(this@MainActivity).toTypedArray()
+			val isTracksSmallerThan100KBSkipped = appDatastore.isTracksSmallerThan100KBSkipped
+				.firstOrNull() ?: true
 			
-			repository.insertSongs(*songs)
+			val isTracksShorterThan60SecondsSkipped = appDatastore.isTracksShorterThan60SecondsSkipped
+				.firstOrNull() ?: true
+			
+			val songs = SongUtil.getSong(
+				context = this@MainActivity,
+				isTracksSmallerThan100KBSkipped = isTracksSmallerThan100KBSkipped,
+				isTracksShorterThan60SecondsSkipped = isTracksShorterThan60SecondsSkipped
+			)
+			
+			musicomposeViewModel.dispatch(
+				MusicomposeAction.CheckScannedSong(songs)
+			)
+			
 			repository.insertPlaylists(
 				Playlist.favorite,
 				Playlist.justPlayed

@@ -12,6 +12,8 @@ sealed class MusicomposeDestination(open val route: String) {
 	
 	object Theme: MusicomposeDestination("theme")
 	
+	object ScanOptions: MusicomposeDestination("scan-options")
+	
 	object Album: MusicomposeDestination("album/{albumID}") {
 		fun createRoute(albumID: String): String {
 			return "album/$albumID"

@@ -35,6 +35,7 @@
     <string name="set_timer">Set timer</string>
     <string name="date_added">Date added</string>
     <string name="album_name">Album name</string>
+    <string name="scan_options">Scan options</string>
     <string name="my_playlist">My playlist</string>
     <string name="change_name">Change name</string>
     <string name="artist_name">Artist name</string>
@@ -64,6 +65,8 @@
     <string name="forward_backward_duration">Forward/Backward duration</string>
     <string name="permission_denied_by_user">Permission denied by user</string>
     <string name="stop_audio_within_n_minutes">Stop audio within %1$s minutes</string>
+    <string name="skip_tracks_smaller_than_100_kb">Skip tracks smaller than 100 KB</string>
+    <string name="skip_tracks_shorter_than_60_seconds">Skip tracks shorter than 60 seconds</string>
     <string name="permission_denied_permanently_message">Permission denied, go to settings to allow it</string>
 
 </resources>

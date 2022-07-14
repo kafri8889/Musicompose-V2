@@ -29,6 +29,7 @@ import com.anafthdev.musicompose2.feature.music_player_sheet.MusicPlayerSheetScr
 import com.anafthdev.musicompose2.feature.playlist.delete_playlist.DeletePlaylistScreen
 import com.anafthdev.musicompose2.feature.playlist.playlist.PlaylistScreen
 import com.anafthdev.musicompose2.feature.playlist.playlist_sheet.PlaylistSheetScreen
+import com.anafthdev.musicompose2.feature.scan_options.ScanOptionsScreen
 import com.anafthdev.musicompose2.feature.search.SearchScreen
 import com.anafthdev.musicompose2.feature.setting.SettingScreen
 import com.anafthdev.musicompose2.feature.song_selector.SongSelectorScreen
@@ -100,6 +101,10 @@ fun MusicomposeNavHost(
 			
 			composable(MusicomposeDestination.Theme.route) {
 				ThemeScreen(navController = navController)
+			}
+			
+			composable(MusicomposeDestination.ScanOptions.route) {
+				ScanOptionsScreen(navController = navController)
 			}
 			
 			composable(

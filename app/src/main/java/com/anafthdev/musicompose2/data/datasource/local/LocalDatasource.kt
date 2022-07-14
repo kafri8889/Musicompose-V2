@@ -24,6 +24,10 @@ class LocalDatasource @Inject constructor(
 		songDao.update(*song)
 	}
 	
+	suspend fun deleteSongs(vararg song: Song) {
+		songDao.delete(*song)
+	}
+	
 	suspend fun insertSongs(vararg song: Song) {
 		songDao.insert(*song)
 	}

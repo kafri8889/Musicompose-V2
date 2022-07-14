@@ -3,10 +3,7 @@ package com.anafthdev.musicompose2.data.datastore
 import android.content.Context
 import androidx.compose.runtime.compositionLocalOf
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.anafthdev.musicompose2.data.*
 import com.anafthdev.musicompose2.data.model.Song
@@ -73,6 +70,18 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		}
 	}
 	
+	suspend fun setSkipTracksSmallerThan100KB(skip: Boolean) {
+		context.datastore.edit { preferences ->
+			preferences[skipTracksSmallerThan100KB] = skip
+		}
+	}
+	
+	suspend fun setSkipTracksShorterThan60Seconds(skip: Boolean) {
+		context.datastore.edit { preferences ->
+			preferences[skipTracksShorterThan60Seconds] = skip
+		}
+	}
+	
 	val getLanguage: Flow<Language> = context.datastore.data.map { preferences ->
 		Language.values()[preferences[language] ?: Language.INDONESIAN.ordinal]
 	}
@@ -109,6 +118,14 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		SkipForwardBackward.values()[preferences[skipForwardBackward] ?: SkipForwardBackward.FIVE_SECOND.ordinal]
 	}
 	
+	val isTracksSmallerThan100KBSkipped: Flow<Boolean> = context.datastore.data.map { preferences ->
+		preferences[skipTracksSmallerThan100KB] ?: true
+	}
+	
+	val isTracksShorterThan60SecondsSkipped: Flow<Boolean> = context.datastore.data.map { preferences ->
+		preferences[skipTracksShorterThan60Seconds] ?: true
+	}
+	
 	companion object {
 		val Context.datastore: DataStore<Preferences> by preferencesDataStore("app_datastore")
 		
@@ -121,6 +138,8 @@ class AppDatastore @Inject constructor(private val context: Context) {
 		val sortArtistOption = intPreferencesKey(Preference.SORT_ARTIST_OPTION)
 		val sortPlaylistOption = intPreferencesKey(Preference.SORT_PLAYLIST_OPTION)
 		val skipForwardBackward = intPreferencesKey(Preference.SKIP_FORWARD_BACKWARD)
+		val skipTracksSmallerThan100KB = booleanPreferencesKey(Preference.SKIP_TRACKS_SMALLER_THAN_100_KB)
+		val skipTracksShorterThan60Seconds = booleanPreferencesKey(Preference.SKIP_TRACKS_SHORTER_THAN_60_SECONDS)
 	}
 }
 
