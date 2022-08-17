@@ -2,6 +2,10 @@
 
 Music app made with Jetpack Compose, improvement from [Musicompose](https://github.com/kafri8889/Musicompose)
 
+## Next update
+- Share song
+- Lyrics?
+
 ## Preview
 <p float="left">
   <img src="https://github.com/kafri8889/Musicompose-V2/blob/master/img/home.jpg" height="600" width="270" >
